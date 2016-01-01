@@ -1,5 +1,5 @@
-# hex-galactic-client
-This is JavaScript client application for my game HexGalactic. HexGalactic is intended to be primarilly a massively multiplayer persistent online programming game. Nonetheless, it is intended to have a modular scenario system  for local script testing and map making tools, but can also alow for more traditional direct player control tactics games using HexGalactic rules or other rule sets.
+# hexagonal-space-client
+This is JavaScript client application for my game platform Hexagonal Space. The primary game is HexGalactic, a massively multiplayer persistent online programming game. However, Hexagonal Space can also host map creators, code simulators, and more traditional direct player control tactics games using HexGalactic rules or other rule sets.
 
 ## License
 This project is explicitlly UNLICENSED. It is still protected by copyright. 
