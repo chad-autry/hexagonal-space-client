@@ -3,6 +3,7 @@ var ngCore = require('angular2/core'),
     ngRouter = require('angular2/router'),
     linkActiveClass = require('../../common/LinkActiveClassDirective'),
     jwt = require('angular2-jwt'),
+    ScenarioService = require('../../services/ScenarioService'),
     Auth = require('ng2-ui-auth');
 
 module.exports = ngCore
@@ -27,6 +28,12 @@ module.exports = ngCore
               <a [routerLink]="['Scenarios']">
                 <i class="fa fa-list"></i>
                 Scenarios
+              </a>
+            </li>
+            <li linkActiveClass="active" *ngIf="scenarioService.isShowMap()">
+              <a [routerLink]="['Map']">
+                <i class="fa fa-map"></i>
+                Map
               </a>
             </li>
             <li>
@@ -56,8 +63,9 @@ module.exports = ngCore
      directives: [ngRouter.ROUTER_DIRECTIVES, linkActiveClass, ngCommonDirectives.NgIf]
      })
     .Class({
-        constructor: [Auth.Auth, jwt.JwtHelper, function(auth, jwtHelper) {
+        constructor: [Auth.Auth, jwt.JwtHelper, ScenarioService, function(auth, jwtHelper, scenarioService) {
             this.auth = auth;
             this.jwtHelper = jwtHelper;
+            this.scenarioService = scenarioService;
         }]
     });

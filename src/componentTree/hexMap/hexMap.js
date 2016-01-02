@@ -3,11 +3,10 @@ var ngCore = require('angular2/core'),
 
 module.exports = ngCore
     .Component({
-        selector: 'app-home',
+        selector: 'map',
         template: `
-<div class="container">
-
-</div>`
+<canvas hex-board resize hidpi="off" style="background-color: black; width:100%; height:100%; position: absolute; left: 0px;top: 0px; z-index: -1;">
+`
      })
     .Class({
         constructor: [ngBrowser.Title, function( title) {
@@ -15,6 +14,6 @@ module.exports = ngCore
             this.title = title;
         }],
         routerOnActivate: function(nextInstruction, prevInstruction) {
-            this.title.setTitle("HS | Scenarios");
+            this.title.setTitle("HS | Map");
         }
     });

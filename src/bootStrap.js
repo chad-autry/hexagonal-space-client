@@ -3,11 +3,12 @@
 var ng = require('angular2/platform/browser'),
     ngCore = require('angular2/core'),
     ngRouter = require('angular2/router'),
-    rootComponent = require('./app.js'),
+    rootComponent = require('./componentTree/app.js'),
     ngHttp = require('angular2/http'),
     ngTesting = require('angular2/http/testing'),
     jwt = require('angular2-jwt'),
-    satellizer = require('ng2-ui-auth');
+    satellizer = require('ng2-ui-auth'),
+    ScenarioService = require('./services/ScenarioService');
     
     //This is the public ID google gave the ng2bp project to authorize with. It will work locally, or from the githib page.
     //It requires the private key to verify the response on the server and actually access any information. Replace with your own project's key
@@ -37,6 +38,11 @@ var ng = require('angular2/platform/browser'),
                 return new jwt.JwtHelper();
             }}
         ),
+        ngCore.provide(ScenarioService, {useFactory:
+            function() {
+                return new ScenarioService();
+            },
+        }),
         satellizer.SATELLIZER_PROVIDERS({providers: {google: {clientId: GOOGLE_CLIENT_ID}}}),
         ngCore.provide(jwt.AuthHttp, {
             useFactory: (auth, config) => {
