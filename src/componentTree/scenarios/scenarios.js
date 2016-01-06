@@ -14,7 +14,7 @@ module.exports = ngCore
         <div class="col-xs-12 col-md-6"  *ngFor="#scenario of scenarioService.getScenarios()">
             <div class="panel panel-default" (click)='scenarioService.activateScenario(scenario)'>
                 <div class="panel-heading">
-                    <!--Note: Floating elements using pull-right need to come before non-flating elements to be vertically centered properly-->
+                    <!--Note: Floating elements using pull-right need to come before non-floating elements in order to be vertically centered properly-->
                     <span class="pull-right label label-success" *ngIf='scenarioService.isActive(scenario)'>Active</span>
                     <h3 class="panel-title">{{scenario.title}}</h3>
 
