@@ -8,6 +8,7 @@ var ng = require('angular2/platform/browser'),
     ngTesting = require('angular2/http/testing'),
     jwt = require('angular2-jwt'),
     satellizer = require('ng2-ui-auth'),
+    HexMapService = require('./componentTree/hexMap/hexMapService.js'),
     ScenarioService = require('./services/ScenarioService');
     
     //This is the public ID google gave the ng2bp project to authorize with. It will work locally, or from the githib page.
@@ -38,10 +39,16 @@ var ng = require('angular2/platform/browser'),
                 return new jwt.JwtHelper();
             }}
         ),
-        ngCore.provide(ScenarioService, {useFactory:
+        ngCore.provide(HexMapService, {useFactory:
             function() {
-                return new ScenarioService();
+                return new HexMapService();
+            }}
+        ),
+        ngCore.provide(ScenarioService, {useFactory:
+            function(hexMapService) {
+                return new ScenarioService(hexMapService);
             },
+            deps: [HexMapService]
         }),
         satellizer.SATELLIZER_PROVIDERS({providers: {google: {clientId: GOOGLE_CLIENT_ID}}}),
         ngCore.provide(jwt.AuthHttp, {
