@@ -10,8 +10,8 @@ module.exports = ngCore
     .Component({
         selector: 'app-navbar',
         template: `
-    <div class="container">
-      <div class="navbar navbar-default">
+    <div class="container" style="z-index: 100">
+      <div class="navbar navbar-default" style="z-index: 300">
         <!--Note: I don't care about giving a different mouse icon for collapsing, since it is mainly for mobile -->
         <div class="navbar-header" (click)="menuCollapsed = !menuCollapsed">
           <div class="navbar-toggle">
