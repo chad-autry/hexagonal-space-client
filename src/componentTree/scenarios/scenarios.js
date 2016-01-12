@@ -36,5 +36,6 @@ module.exports = ngCore
         }],
         routerOnActivate: function(nextInstruction, prevInstruction) {
             this.title.setTitle("HS | Scenarios");
+            this.scenarioService.loadScenarios();
         }
     });

@@ -16,7 +16,7 @@
  * @constructor
  * @example var scenarioService = new (require(ScenarioService))(hexMapService);
  */
- module.exports = function ScenarioService(hexMapService) {
+ module.exports = function ScenarioService(hexMapService, http) {
     //Protect the constructor from being called as a normal method
     if (!(this instanceof ScenarioService)) {
         return new ScenarioService(hexMapService);
@@ -25,6 +25,7 @@
     var scenarios = [];
     var activeScenario;
     this.hexMapService = hexMapService;
+    this.http = http;
            
     //Just pushing a single hard coded test instance that can be decorated with new values as I figure out what's needed
     scenarios.push({instances:[], title:'Test Flight', description:'A basic local scenario where the user can manually move a single ship for testing',singleton: true});
@@ -34,6 +35,10 @@
         //Delegate to the activated scenario
         return !!this.activeScenario;
     };
+    
+    this.loadScenarios = function() {
+        this.http.request('/scenarios').subscribe(res => console.log(res));
+    }
     
     this.getScenarios = function() {
        return scenarios;

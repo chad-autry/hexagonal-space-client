@@ -23,8 +23,13 @@ var ng = require('angular2/platform/browser'),
     document.addEventListener('DOMContentLoaded', function() {
         var backEnd = new ngTesting.MockBackend();
         backEnd.connections.subscribe((c) => {
-            //Our mock backend service returns a JWT token with a payload of {name: "John Doe"}  no matter what the request
-            c.mockRespond({ json: function(){return {token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSm9obiBEb2UifQ.xuEv8qrfXu424LZk8bVgr9MQJUIrp1rHcPyZw_KSsds'};}});
+            console.log(c.request.url);
+            if (c.request.url === '/auth/login') {
+                //Our mock backend service returns a JWT token with a payload of {name: "John Doe"}  no matter what the request
+                c.mockRespond({ json: function(){return {token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSm9obiBEb2UifQ.xuEv8qrfXu424LZk8bVgr9MQJUIrp1rHcPyZw_KSsds'};}});
+            } else if (c.request.url === '/scenarios') {
+                c.mockRespond({ scenarios:[{title:'Test Flight', description:'A basic local scenario where the user can manually move a single ship for testing', service:'testflight'}] });
+            }
         });
 
         ng.bootstrap(rootComponent, [ng.Title, ngRouter.ROUTER_PROVIDERS, ngHttp.BaseRequestOptions,
@@ -45,10 +50,10 @@ var ng = require('angular2/platform/browser'),
             }}
         ),
         ngCore.provide(ScenarioService, {useFactory:
-            function(hexMapService) {
-                return new ScenarioService(hexMapService);
+            function(hexMapService, http) {
+                return new ScenarioService(hexMapService, http);
             },
-            deps: [HexMapService]
+            deps: [HexMapService, ngHttp.Http]
         }),
         satellizer.SATELLIZER_PROVIDERS({providers: {google: {clientId: GOOGLE_CLIENT_ID}}}),
         ngCore.provide(jwt.AuthHttp, {
