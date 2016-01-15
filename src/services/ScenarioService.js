@@ -16,20 +16,17 @@
  * @constructor
  * @example var scenarioService = new (require(ScenarioService))(hexMapService);
  */
- module.exports = function ScenarioService(hexMapService, http) {
+ module.exports = function ScenarioService(hexMapService, http, auth) {
     //Protect the constructor from being called as a normal method
     if (!(this instanceof ScenarioService)) {
         return new ScenarioService(hexMapService);
     }
     
-    var scenarios = [];
-    var activeScenario;
+    this.scenarios = [];
+    this.activeScenario;
     this.hexMapService = hexMapService;
     this.http = http;
-           
-    //Just pushing a single hard coded test instance that can be decorated with new values as I figure out what's needed
-    scenarios.push({instances:[], title:'Test Flight', description:'A basic local scenario where the user can manually move a single ship for testing',singleton: true});
-    scenarios.push({instances:[], title:'Bulk It Up', description:'A fake scenario so two can be in the list', singleton: true});
+    this.auth = auth;
        
     this.isShowMap = function() {
         //Delegate to the activated scenario
@@ -37,11 +34,19 @@
     };
     
     this.loadScenarios = function() {
-        this.http.request('/scenarios').subscribe(res => console.log(res));
+        //Check wether we need to go load the scenarios or if we already have them
+        //save off the current userId
+       // var remoteCallUserId = this.auth.userId;
+        this.http.request('/scenarios').subscribe(
+            res => {
+                //If the user is still the same after the async call, set the scenarios
+                this.scenarios = res.json().scenarios;
+            }
+        );
     }
     
     this.getScenarios = function() {
-       return scenarios;
+       return this.scenarios;
     };
     
     this.activateScenario = function(scenario) {
