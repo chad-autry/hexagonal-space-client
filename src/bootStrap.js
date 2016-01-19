@@ -28,7 +28,7 @@ var ng = require('angular2/platform/browser'),
                 //Our mock backend service returns a JWT token with a payload of {name: "John Doe"}  no matter what the request
                 c.mockRespond({ json: function(){return {token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSm9obiBEb2UifQ.xuEv8qrfXu424LZk8bVgr9MQJUIrp1rHcPyZw_KSsds'};}});
             } else if (c.request.url === '/scenarios') {
-                c.mockRespond({ json: function(){return {scenarios:[{title:'Test Flight', description:'A basic local scenario where the user can manually move a single ship for testing', service:'testflight'}]};}});
+                c.mockRespond({ json: function(){return {scenarios:[{id:1, title:'Test Flight', description:'A basic local scenario where the user can manually move a single ship for testing', controller:'/TestFlight.js'}]};}});
             }
         });
 

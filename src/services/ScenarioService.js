@@ -7,6 +7,7 @@
  
  var HexDefinition = require('cartesian-hexagonal'); //external project required in constructors
  var GridContext = require('hex-grid-map/src/contexts/GridContext.js');
+ var System = require('systemjs');
 
 /**
  * Pretty much the controller of the platform, 
@@ -25,6 +26,7 @@
     this.scenarios = [];
     this.activeScenario;
     this.hexMapService = hexMapService;
+    this.scenarioControllerMap = {};
     this.http = http;
     this.auth = auth;
        
@@ -50,18 +52,30 @@
     };
     
     this.activateScenario = function(scenario) {
-       this.activeScenario = scenario;
-       console.log(scenario.title + this.isShowMap());
-       var hexDimensions = new HexDefinition(55, 0.5, 0, 3);
-       var contexts = [];
+       var scenarioController;
+       //Clear the current scenario
        this.hexMapService.board.clear();
-       contexts.push(new GridContext(hexDimensions));
-       this.hexMapService.board.setHexDimensions(hexDimensions);
-       this.hexMapService.board.setContexts(contexts);
-       this.hexMapService.board.init();
+       this.activeScenario = null;
+       //If we already have the scenario's backing service cached, load it
+       if (this.scenarioControllerMap.hasOwnProperty(scenario.controller)) {
+           this.activeScenario = scenario;
+           scenarioController = new this.scenarioControllerMap[scenario.controller](this.hexMapService.board, GridContext);
+           this.activeScenario = scenarioController;
+           //scenarioController.init();
+           
+       } else {
+           //else set the loading icon, save current user, cancel button, asyncronously load the service
+           System.import(scenario.controller).then(controllerConstructor => {
+               this.scenarioControllerMap[scenario.controller] = controllerConstructor;
+               scenarioController = new controllerConstructor(this.hexMapService.board, GridContext);
+               //TODO Check if we're still the same user and make sure the async operation wasn't canceled
+               this.activeScenario = scenarioController;
+               //scenarioController.init();
+           });
+       }
     };
     
     this.isActive = function(scenario) {
-        return scenario === this.activeScenario;
+        return !!scenario && !!this.activeScenario && scenario.id === this.activeScenario.id;
     };
 };
