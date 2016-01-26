@@ -1,6 +1,6 @@
 var ngCore = require('angular2/core'),
     HexMapService = require('./hexMapService.js'),
-    HexBoard = require('hex-grid-map/src/HexBoard.js');
+    HexBoard = require('hex-grid-map-3d/src/HexBoard.js');
 
 //This directive creates a HexBoard for the decorated canvas element, and injects it back onto the service
 module.exports = ngCore.Directive({
