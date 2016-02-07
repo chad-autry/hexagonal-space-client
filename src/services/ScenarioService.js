@@ -5,19 +5,9 @@
  * @module ScenarioService
  */
  
- var HexDefinition = require('cartesian-hexagonal'); //external project required in constructors
+  //external project required in constructors
 
- var GridContext = require('hex-grid-map-3d/src/contexts/GridContext.js');
- var CellContext = require('hex-grid-map-3d/src/contexts/CellContext.js');
- var VectorDrawnItemFactory = require('hex-grid-map-3d/src/drawnItemFactories/VectorDrawnItemFactory.js');
- var PathDrawnItemFactory = require('hex-grid-map-3d/src/drawnItemFactories/PathDrawnItemFactory.js');
- var ArrowDrawnItemFactory = require('hex-grid-map-3d/src/drawnItemFactories/ArrowDrawnItemFactory.js');
- var DelegatingDrawnItemFactory = require('hex-grid-map-3d/src/drawnItemFactories/DelegatingDrawnItemFactory.js');
- var DrawnItemContext = require('hex-grid-map-3d/src/contexts/DrawnItemContext.js');
- var DataSource = require('hex-grid-map-3d/src/dataSources/DataSource.js');
- var CellDrawnItemFactory = require('hex-grid-map-3d/src/drawnItemFactories/RegularPolygonDrawnItemFactory');
- var SphereDrawnItemFactory = require('hex-grid-map-3d/src/drawnItemFactories/SphereDrawnItemFactory');
- var FieldOfSquaresDrawnItemFactory = require('hex-grid-map-3d/src/drawnItemFactories/FieldOfSquaresDrawnItemFactory');
+
 
  var System = require('systemjs');
 
@@ -40,21 +30,8 @@
     this.hexMapService = hexMapService;
     this.scenarioControllerMap = {};
     this.http = http;
-    this.auth = auth;
-    this.GridContext = GridContext;
-    this.CellContext = CellContext;
-    this.VectorDrawnItemFactory = VectorDrawnItemFactory;
-    this.PathDrawnItemFactory = PathDrawnItemFactory;
-    this.ArrowDrawnItemFactory = ArrowDrawnItemFactory;
-    this.DelegatingDrawnItemFactory = DelegatingDrawnItemFactory;
-    this.DrawnItemContext = DrawnItemContext;
-    this.DataSource = DataSource;
-    this.CellDrawnItemFactory = CellDrawnItemFactory;
-    this.SphereDrawnItemFactory = SphereDrawnItemFactory;
-    this.FieldOfSquaresDrawnItemFactory = FieldOfSquaresDrawnItemFactory;
+    this.auth = auth;  
     
-    
-
     this.isShowMap = function() {
         //Delegate to the activated scenario
         return !!this.activeScenario;
@@ -86,23 +63,18 @@
        //If we already have the scenario's backing service cached, load it
        if (this.scenarioControllerMap.hasOwnProperty(scenario.controller)) {
            this.activeScenario = scenario;
-           scenarioController = new this.scenarioControllerMap[scenario.controller](this.hexMapService.board, this.GridContext, this.CellContext, this.VectorDrawnItemFactory, 
-               this.PathDrawnItemFactory, this.ArrowDrawnItemFactory, this.DelegatingDrawnItemFactory, this.DrawnItemContext,
-               this.DataSource, this.CellDrawnItemFactory, this.SphereDrawnItemFactory, this.FieldOfSquaresDrawnItemFactory);
+           scenarioController = new this.scenarioControllerMap[scenario.controller](this.hexMapService.mapDataListener);
            this.activeScenario = scenarioController;
-           //scenarioController.init();
            
        } else {
            //TODO else set the loading icon, save current user, cancel button, 
            //and asyncronously load the service
            System.import(scenario.controller).then(controllerConstructor => {
-               this.scenarioControllerMap[scenario.controller] = controllerConstructor;
-               scenarioController = new controllerConstructor(this.hexMapService.board, this.GridContext, this.CellContext, this.VectorDrawnItemFactory, 
-                   this.PathDrawnItemFactory, this.ArrowDrawnItemFactory, this.DelegatingDrawnItemFactory, this.DrawnItemContext,
-                   this.DataSource, this.CellDrawnItemFactory, this.SphereDrawnItemFactory, this.FieldOfSquaresDrawnItemFactory);
                //TODO Check if we're still the same user and make sure the async operation wasn't canceled
+               this.scenarioControllerMap[scenario.controller] = controllerConstructor;
+               scenarioController = new controllerConstructor(this.hexMapService.mapDataListener);
+               
                this.activeScenario = scenarioController;
-               //scenarioController.init();
            });
        }
     };

@@ -4,7 +4,7 @@
  * The class and module are the same thing, the contructor comment takes precedence.
  * @module ScenarioService
  */
- var HexDefinition = require('cartesian-hexagonal'); //external project required in constructors
+ var EmittingDataSource = require('data-chains/src/EmittingDataSource.js');
 
 /**
  * This service is the controller for the first 'TestFlight' scenario.
@@ -17,126 +17,76 @@
  * Click the station to request a new ship
  * @constructor
  */
- module.exports = function TestFlight(hexBoard, GridContext, CellContext, VectorDrawnItemFactory, PathDrawnItemFactory, ArrowDrawnItemFactory, DelegatingDrawnItemFactory, DrawnItemContext,
-        DataSource, CellDrawnItemFactory, SphereDrawnItemFactory, FieldOfSquaresDrawnItemFactory) {
+ module.exports = function TestFlight(dataSourceListener) {
     //Protect the constructor from being called as a normal method
     if (!(this instanceof TestFlight)) {
-        return new TestFlight(hexBoard, GridContext, CellContext, VectorDrawnItemFactory, PathDrawnItemFactory, ArrowDrawnItemFactory, DelegatingDrawnItemFactory, DrawnItemContext,
-        DataSource, CellDrawnItemFactory, SphereDrawnItemFactory, FieldOfSquaresDrawnItemFactory);
+        return new TestFlight(dataSourceListener);
     }
-    //Setup the initial map
-    var hexDimensions = new HexDefinition(55, 1, 0, 3);
-    var contexts = [];
-       
-       
-    //The various contexts
-    //Create the cell items datasource, drawnItemFactories, and special compound contex
-    var cellDataSource = new DataSource();
-    var simpleDrawnItemFactory = new CellDrawnItemFactory(hexDimensions);
-    var sphereDrawnItemFactor = new SphereDrawnItemFactory(hexDimensions);
-    var arrowDrawnItemFactory = new ArrowDrawnItemFactory(hexDimensions);
     
-    //For Asteroids we use brown grey, brownish grey, greyish brown, grey brown. For debris would probablly go more blue-grey
-    var asteroidFieldDrawnItemFactory = new FieldOfSquaresDrawnItemFactory(hexDimensions, 9, 20, ["#8d8468", "#86775f", "#7a6a4f", "#7f7053"]);
-    var cellDrawnItemFactoryMap = {simple: simpleDrawnItemFactory, sphere: sphereDrawnItemFactor, arrow: arrowDrawnItemFactory, asteroids: asteroidFieldDrawnItemFactory};
-    var cellDrawnItemFactory = new DelegatingDrawnItemFactory(cellDrawnItemFactoryMap);
-    var cellContext = new CellContext(cellDataSource, cellDrawnItemFactory, 5, hexDimensions);
-    
-    //Create and push the grid context
-    contexts.push(new GridContext(hexDimensions));
-    
-    //Definte and push the vector DataSource, DrawnItemFactory, and Context
-    var vectorDataSource = new DataSource();
-    var vectorDrawnItemFactory = new VectorDrawnItemFactory(hexDimensions);
-    contexts.push(new DrawnItemContext(vectorDataSource, vectorDrawnItemFactory, hexDimensions));
-    
-    //Push the above grid cell context defined earlier
-    contexts.push(cellContext);
+    //Create a new StoringDataSource and set it as the source of the provided DataSourceListener
+    var dataSource = new EmittingDataSource();
+    dataSourceListener.setDataSource(dataSource);
 
-    //Create and push the LensFlareContext
-    //contexts.push(new ForegroundContext([{u:0, v:0}], hexDimensions));
-     
+    //There is no 'DataModel' to the datasource. Use it to pass the MapMouseClicked event handler
     //I like to know where hexes are when clicked on
-    var globalMouseClicked = function(dx, x, dy, y){
-        var hexagonalCoordinates = hexDimensions.getReferencePoint(x - dx, y - dy);
-        //$rootScope.$broadcast('addAlert',{type:'info', msg:'Clicked U:'+hexagonalCoordinates.u + ' V:' +hexagonalCoordinates.v});
+    var mapMouseClicked = function(u, v){
+        //$rootScope.$broadcast('addAlert',{type:'info', msg:'Clicked U:'+u + ' V:' +v});
     };
-      
+    dataSource.addItems([{type:'mapMouseClicked', function:mapMouseClicked}]);
        
-    hexBoard.setHexDimensions(hexDimensions);
-    hexBoard.setContexts(contexts);
-    hexBoard.setMouseClicked(globalMouseClicked);
-    //Setup the on-click of the station to spawn a new Ship
-    //Setup a button which can be clicked to advance the turn
-    hexBoard.init();
+    //Add all the other elements for the scene
+    //Add a star
+    //The scenario is very losely couple with the display, it works with game type objects only
+    dataSource.addItems([{id:'sun', type:'star', size: 100, u:0, v:0}]);
+        
+    //Add a sphere to represent earth
+    dataSource.addItems([{id: 'earth', type:'planet', size: 66, u:5, v:5}]);
+        
+    //Add a sphere to represent the moon
+    dataSource.addItems([{id:'moon', type:'moon', size: 33, u:3, v:8}]);
+        
+        
+        
+    //Add arrows to represent gravity, rotation represents direction
+    //Gravity around the sun
+    dataSource.addItems([{type:'gravity', u: 0, v: -1, rotation: 180}]);
+    dataSource.addItems([{type:'gravity', u: -1, v: 0, rotation: 240}]);
+    dataSource.addItems([{type:'gravity', u: -1, v: 1, rotation: 300}]);
+    dataSource.addItems([{type:'gravity', u: 0, v: 1, rotation: 0}]);
+    dataSource.addItems([{type:'gravity', u: 1, v: 0, rotation: 60}]);
+    dataSource.addItems([{type:'gravity', u: 1, v: -1, rotation: 120}]);
+        
+    //gravity around the planet
+    dataSource.addItems([{type:'gravity', u: 5, v: 4, rotation: 180}]);
+    dataSource.addItems([{type:'gravity', u: 4, v: 5, rotation: 240}]);
+    dataSource.addItems([{type:'gravity', u: 4, v: 6, rotation: 300}]);
+    dataSource.addItems([{type:'gravity', u: 5, v: 6, rotation: 0}]);
+    dataSource.addItems([{type:'gravity', u: 6, v: 5, rotation: 60}]);
+    dataSource.addItems([{type:'gravity', u: 6, v: 4, rotation: 120}]);
     
-    //programatically create the map using the contexts
-//Add a star
-        //The rotation is the "nearly isometric" converted to radians. #f97306 = xkcd orange
-        cellDataSource.addItems([{id:'sun', type:'sphere', size: 100, lineWidth: 6, greatCircleAngles: [0, Math.PI/3, -Math.PI/3], latitudeAngles: [0, Math.PI/6, Math.PI/3, -Math.PI/6, -Math.PI/3], 
-        lineColor: '#f97306', backgroundColor: '#ffff14', borderStar: {radius1: 3, radius2: 6, points: 20, borderColor: '#f97306'}, u:0, v:0}]);
-        
-        //Add a sphere to represent earth
-        cellDataSource.addItems([{id: 'earth', type:'sphere', size: 66, lineWidth: 4, greatCircleAngles: [0, Math.PI/3, -Math.PI/3], latitudeAngles: [0, Math.PI/6, Math.PI/3, -Math.PI/6, -Math.PI/3], 
-        lineColor: '#653700', backgroundColor: '#0343df', borderWidth: 2, borderColor: '#ffffff', u:5, v:5}]);
-        
-        //Add a sphere to represent the moon
-        cellDataSource.addItems([{id:'moon', type:'sphere', size: 33, lineWidth: 2, greatCircleAngles: [0, Math.PI/3, -Math.PI/3], latitudeAngles: [0, Math.PI/6, Math.PI/3, -Math.PI/6, -Math.PI/3], 
-        lineColor: '#929591', backgroundColor: '#e1e1d6', borderWidth: 3, borderColor: 'black', u:3, v:8}]);
-        
-        
-        
-        //Add arrows to represent gravity
-        //Gravity around the sun
-        cellDataSource.addItems([{type:'arrow', u: 0, v: -1, fillColor: '#929591', lineWidth: 3, lineColor: '#929591', rotation: 180, scaleLength: 0.75, scaleWidth:0.75}]);
-        cellDataSource.addItems([{type:'arrow', u: -1, v: 0, fillColor: '#929591', lineWidth: 3, lineColor: '#929591', rotation: 240, scaleLength: 0.75, scaleWidth:0.75}]);
-        cellDataSource.addItems([{type:'arrow', u: -1, v: 1, fillColor: '#929591', lineWidth: 3, lineColor: '#929591', rotation: 300, scaleLength: 0.75, scaleWidth:0.75}]);
-        cellDataSource.addItems([{type:'arrow', u: 0, v: 1, fillColor: '#929591', lineWidth: 3, lineColor: '#929591', rotation: 0, scaleLength: 0.75, scaleWidth:0.75}]);
-        cellDataSource.addItems([{type:'arrow', u: 1, v: 0, fillColor: '#929591', lineWidth: 3, lineColor: '#929591', rotation: 60, scaleLength: 0.75, scaleWidth:0.75}]);
-        cellDataSource.addItems([{type:'arrow', u: 1, v: -1, fillColor: '#929591', lineWidth: 3, lineColor: '#929591', rotation: 120, scaleLength: 0.75, scaleWidth:0.75}]);
-        
-        //gravity around the planet
-        cellDataSource.addItems([{type:'arrow', u: 5, v: 4, fillColor: '#929591', lineWidth: 3, lineColor: '#929591', rotation: 180, scaleLength: 0.75, scaleWidth:0.75}]);
-        cellDataSource.addItems([{type:'arrow', u: 4, v: 5, fillColor: '#929591', lineWidth: 3, lineColor: '#929591', rotation: 240, scaleLength: 0.75, scaleWidth:0.75}]);
-        cellDataSource.addItems([{type:'arrow', u: 4, v: 6, fillColor: '#929591', lineWidth: 3, lineColor: '#929591', rotation: 300, scaleLength: 0.75, scaleWidth:0.75}]);
-        cellDataSource.addItems([{type:'arrow', u: 5, v: 6, fillColor: '#929591', lineWidth: 3, lineColor: '#929591', rotation: 0, scaleLength: 0.75, scaleWidth:0.75}]);
-        cellDataSource.addItems([{type:'arrow', u: 6, v: 5, fillColor: '#929591', lineWidth: 3, lineColor: '#929591', rotation: 60, scaleLength: 0.75, scaleWidth:0.75}]);
-        cellDataSource.addItems([{type:'arrow', u: 6, v: 4, fillColor: '#929591', lineWidth: 3, lineColor: '#929591', rotation: 120, scaleLength: 0.75, scaleWidth:0.75}]);
-        
-        //unfilled gravity around the moon
-        cellDataSource.addItems([{type:'arrow', u: 3, v: 7, lineWidth: 3, lineColor: '#929591', rotation: 180, scaleLength: 0.75, scaleWidth:0.75}]);
-        cellDataSource.addItems([{type:'arrow', u: 2, v: 8, lineWidth: 3, lineColor: '#929591', rotation: 240, scaleLength: 0.75, scaleWidth:0.75}]);
-        cellDataSource.addItems([{type:'arrow', u: 2, v: 9, lineWidth: 3, lineColor: '#929591', rotation: 300, scaleLength: 0.75, scaleWidth:0.75}]);
-        cellDataSource.addItems([{type:'arrow', u: 3, v: 9, lineWidth: 3, lineColor: '#929591', rotation: 0, scaleLength: 0.75, scaleWidth:0.75}]);
-        cellDataSource.addItems([{type:'arrow', u: 4, v: 8, lineWidth: 3, lineColor: '#929591', rotation: 60, scaleLength: 0.75, scaleWidth:0.75}]);
-        cellDataSource.addItems([{type:'arrow', u: 4, v: 7, lineWidth: 3, lineColor: '#929591', rotation: 120, scaleLength: 0.75, scaleWidth:0.75}]);
-        
-        //Add a fleet of red 'ships' (triangles) on the dark side of the moon, and a fleet of green ships at the sun
-        cellDataSource.addItems([{type:'simple', radius: 30, sides: 3, color: '#15b01a', u:1, v:0}, {type:'simple', radius: 55, sides: 3, color: '#e50000', u:2, v:9}]);
-        cellDataSource.addItems([{type:'simple', radius: 30, sides: 3, color: '#15b01a', u:1, v:0}, {type:'simple', radius: 30, sides: 3, color: '#e50000', u:2, v:9}]);
-        cellDataSource.addItems([{type:'simple', radius: 30, sides: 3, color: '#15b01a', u:1, v:0}, {type:'simple', radius: 30, sides: 3, color: '#e50000', u:2, v:9}]);
-        cellDataSource.addItems([{type:'simple', radius: 30, sides: 3, color: '#15b01a', u:1, v:0}, {type:'simple', radius: 30, sides: 3, color: '#e50000', u:2, v:9}]);
-        cellDataSource.addItems([{type:'simple', radius: 30, sides: 3, color: '#15b01a', u:1, v:0}, {type:'simple', radius: 30, sides: 3, color: '#e50000', u:2, v:9}]);
-        cellDataSource.addItems([{type:'simple', radius: 30, sides: 3, color: '#15b01a', u:1, v:0}, {type:'simple', radius: 30, sides: 3, color: '#e50000', u:2, v:9}]);
-        cellDataSource.addItems([{type:'simple', radius: 30, sides: 3, color: '#15b01a', u:1, v:0}, {type:'simple', radius: 30, sides: 3, color: '#e50000', u:2, v:9}]);
-        cellDataSource.addItems([{type:'simple', radius: 30, sides: 3, color: '#15b01a', u:1, v:0}, {type:'simple', radius: 30, sides: 3, color: '#e50000', u:2, v:9}]);
-        cellDataSource.addItems([{type:'simple', radius: 30, sides: 3, color: '#15b01a', u:1, v:0}, {type:'simple', radius: 30, sides: 3, color: '#e50000', u:2, v:9}]);
-        cellDataSource.addItems([{type:'simple', radius: 30, sides: 3, color: '#15b01a', u:1, v:0}, {type:'simple', radius: 30, sides: 3, color: '#e50000', u:2, v:9}]);
-        cellDataSource.addItems([{type:'simple', radius: 30, sides: 3, color: '#15b01a', u:1, v:0}, {type:'simple', radius: 30, sides: 3, color: '#e50000', u:2, v:9}]);
-        
-        //A small asteroid field. Double asteroids in the middle
-        var onClickAsteroids = function() {
-            $rootScope.$broadcast('addAlert',{type:'success', msg:"Asteroids"});
-        };
-        cellDataSource.addItems([{type:'asteroids', u:-1, v:10, onClick:onClickAsteroids}, {type:'asteroids', u:-2, v:10, onClick:onClickAsteroids},{type:'asteroids', u:-3, v:10, onClick:onClickAsteroids}]);
-        cellDataSource.addItems([{type:'asteroids', u:-3, v:11, onClick:onClickAsteroids}, {type:'asteroids', u:-2, v:11, onClick:onClickAsteroids},{type:'asteroids', u:-2, v:10, onClick:onClickAsteroids}]);
-        cellDataSource.addItems([{type:'asteroids', u:-1, v:9, onClick:onClickAsteroids}, {type:'asteroids', u:-2, v:9, onClick:onClickAsteroids}]);
-        
-        //A blue 'space station'
-        var onClickStation = function() {
-            $rootScope.$broadcast('addAlert',{type:'success', msg:"Do you believe I'm a space station? Use your imagination"});
-        };
-        cellDataSource.addItems([{type:'simple', radius: 30, sides: 5, color: '#0343df', u:6, v:5, onClick:onClickStation}]);
+    //half gravity around the moon
+    dataSource.addItems([{type:'half_gravity', u: 3, v: 7, rotation: 180}]);
+    dataSource.addItems([{type:'half_gravity', u: 2, v: 8, rotation: 240}]);
+    dataSource.addItems([{type:'half_gravity', u: 2, v: 9, rotation: 300}]);
+    dataSource.addItems([{type:'half_gravity', u: 3, v: 9, rotation: 0}]);
+    dataSource.addItems([{type:'half_gravity', u: 4, v: 8, rotation: 60}]);
+    dataSource.addItems([{type:'half_gravity', u: 4, v: 7, rotation: 120}]);
+    
+
+    
+    //A small asteroid field. Double asteroids in the middle
+    var onClickAsteroids = function() {
+        //$rootScope.$broadcast('addAlert',{type:'success', msg:"Asteroids"});
+    };
+    dataSource.addItems([{type:'asteroids', u:-1, v:10, onClick:onClickAsteroids}, {type:'asteroids', u:-2, v:10, onClick:onClickAsteroids},{type:'asteroids', u:-3, v:10, onClick:onClickAsteroids}]);
+    dataSource.addItems([{type:'asteroids', u:-3, v:11, onClick:onClickAsteroids}, {type:'asteroids', u:-2, v:11, onClick:onClickAsteroids},{type:'asteroids', u:-2, v:10, onClick:onClickAsteroids}]);
+    dataSource.addItems([{type:'asteroids', u:-1, v:9, onClick:onClickAsteroids}, {type:'asteroids', u:-2, v:9, onClick:onClickAsteroids}]);
+    
+    //A space station, gives gives the user somethign to interact with to spawn their ship(s)
+    var onClickStation = function() {
+        //$rootScope.$broadcast('addAlert',{type:'success', msg:"Do you believe I'm a space station? Use your imagination"});
+    };
+    dataSource.addItems([{type:'space_station', u:6, v:5, onClick:onClickStation}]);
     
 };
 

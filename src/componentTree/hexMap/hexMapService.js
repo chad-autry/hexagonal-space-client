@@ -19,6 +19,7 @@
     
     this.showMap = false;
     this.board = null;
+    this.mapDataListener = null;
     
     /**
      * Set the HexBoard which is used to control the grid
@@ -28,6 +29,14 @@
         this.board = board;
     };
     
+    /**
+     * Set DataSourceListener which is used to listen for the scenario's map data
+     * @param { external:DataSourceListener } dataSourceListener - The DataSourceListener coupleing the scenario to the map
+     */
+    this.setMapDataListener = function(dataSourceListener) {
+        this.mapDataListener = dataSourceListener;
+    };
+
     this.setShowMap = function(boolean) {
         this.showMap = boolean
     };
