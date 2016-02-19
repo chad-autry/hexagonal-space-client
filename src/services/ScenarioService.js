@@ -63,7 +63,7 @@
        //If we already have the scenario's backing service cached, load it
        if (this.scenarioControllerMap.hasOwnProperty(scenario.controller)) {
            this.activeScenario = scenario;
-           scenarioController = new this.scenarioControllerMap[scenario.controller](this.hexMapService.mapDataListener);
+           scenarioController = new this.scenarioControllerMap[scenario.controller](this.hexMapService.mapDataListener, this.hexMapService);
            this.activeScenario = scenarioController;
            
        } else {
@@ -72,7 +72,7 @@
            System.import(scenario.controller).then(controllerConstructor => {
                //TODO Check if we're still the same user and make sure the async operation wasn't canceled
                this.scenarioControllerMap[scenario.controller] = controllerConstructor;
-               scenarioController = new controllerConstructor(this.hexMapService.mapDataListener);
+               scenarioController = new controllerConstructor(this.hexMapService.mapDataListener, this.hexMapService);
                
                this.activeScenario = scenarioController;
            });

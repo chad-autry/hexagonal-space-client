@@ -21,6 +21,12 @@
     this.board = null;
     this.mapDataListener = null;
     
+    this.showPopover = false;
+    this.popoverTitle = 'Varible';
+    this.popoverContent = 'Variable Content';
+    this.popoverX = 0;
+    this.popoverY = 0;
+    
     /**
      * Set the HexBoard which is used to control the grid
      * @param { external:HexBoard } board - The hex board object from HexBoard
@@ -38,7 +44,20 @@
     };
 
     this.setShowMap = function(boolean) {
-        this.showMap = boolean
+        this.showMap = boolean;
+    };
+    
+    this.setShowPopover = function(boolean) {
+        this.showPopover = boolean;
+    };
+    
+    this.setPopoverTitle = function(text) {
+        this.popoverTitle = text;
+    };
+    
+    this.setPopoverPosition = function(x, y) {
+        this.popoverX = x;
+        this.popoverY = y;
     };
 };
 

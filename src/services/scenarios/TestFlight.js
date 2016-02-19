@@ -17,10 +17,10 @@
  * Click the station to request a new ship
  * @constructor
  */
- module.exports = function TestFlight(dataSourceListener) {
+ module.exports = function TestFlight(dataSourceListener, mapControlService) {
     //Protect the constructor from being called as a normal method
     if (!(this instanceof TestFlight)) {
-        return new TestFlight(dataSourceListener);
+        return new TestFlight(dataSourceListener, mapControlService);
     }
     
     //Create a new StoringDataSource and set it as the source of the provided DataSourceListener
@@ -83,8 +83,10 @@
     dataSource.addItems([{type:'asteroids', u:-1, v:9, onClick:onClickAsteroids}, {type:'asteroids', u:-2, v:9, onClick:onClickAsteroids}]);
     
     //A space station, gives gives the user somethign to interact with to spawn their ship(s)
-    var onClickStation = function() {
-        //$rootScope.$broadcast('addAlert',{type:'success', msg:"Do you believe I'm a space station? Use your imagination"});
+    var onClickStation = function(x, y) {
+        mapControlService.setPopoverTitle('U:6 V:5');
+        mapControlService.setPopoverPosition(x, y);
+        mapControlService.setShowPopover(true);
     };
     dataSource.addItems([{type:'space_station', u:6, v:5, onClick:onClickStation}]);
     
