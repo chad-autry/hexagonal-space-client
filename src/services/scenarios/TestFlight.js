@@ -49,28 +49,28 @@
         
     //Add arrows to represent gravity, rotation represents direction
     //Gravity around the sun
-    dataSource.addItems([{type:'gravity', u: 0, v: -1, rotation: 180}]);
-    dataSource.addItems([{type:'gravity', u: -1, v: 0, rotation: 240}]);
-    dataSource.addItems([{type:'gravity', u: -1, v: 1, rotation: 300}]);
-    dataSource.addItems([{type:'gravity', u: 0, v: 1, rotation: 0}]);
-    dataSource.addItems([{type:'gravity', u: 1, v: 0, rotation: 60}]);
-    dataSource.addItems([{type:'gravity', u: 1, v: -1, rotation: 120}]);
+    dataSource.addItems([{id:'sa1',type:'gravity', u: 0, v: -1, rotation: 180}]);
+    dataSource.addItems([{id:'sa2',type:'gravity', u: -1, v: 0, rotation: 240}]);
+    dataSource.addItems([{id:'sa3',type:'gravity', u: -1, v: 1, rotation: 300}]);
+    dataSource.addItems([{id:'sa4',type:'gravity', u: 0, v: 1, rotation: 0}]);
+    dataSource.addItems([{id:'sa5',type:'gravity', u: 1, v: 0, rotation: 60}]);
+    dataSource.addItems([{id:'sa6',type:'gravity', u: 1, v: -1, rotation: 120}]);
         
     //gravity around the planet
-    dataSource.addItems([{type:'gravity', u: 5, v: 4, rotation: 180}]);
-    dataSource.addItems([{type:'gravity', u: 4, v: 5, rotation: 240}]);
-    dataSource.addItems([{type:'gravity', u: 4, v: 6, rotation: 300}]);
-    dataSource.addItems([{type:'gravity', u: 5, v: 6, rotation: 0}]);
-    dataSource.addItems([{type:'gravity', u: 6, v: 5, rotation: 60}]);
-    dataSource.addItems([{type:'gravity', u: 6, v: 4, rotation: 120}]);
+    dataSource.addItems([{id:'ea1',type:'gravity', u: 5, v: 4, rotation: 180}]);
+    dataSource.addItems([{id:'ea2',type:'gravity', u: 4, v: 5, rotation: 240}]);
+    dataSource.addItems([{id:'ea3',type:'gravity', u: 4, v: 6, rotation: 300}]);
+    dataSource.addItems([{id:'ea4',type:'gravity', u: 5, v: 6, rotation: 0}]);
+    dataSource.addItems([{id:'ea5',type:'gravity', u: 6, v: 5, rotation: 60}]);
+    dataSource.addItems([{id:'ea6',type:'gravity', u: 6, v: 4, rotation: 120}]);
     
     //half gravity around the moon
-    dataSource.addItems([{type:'half_gravity', u: 3, v: 7, rotation: 180}]);
-    dataSource.addItems([{type:'half_gravity', u: 2, v: 8, rotation: 240}]);
-    dataSource.addItems([{type:'half_gravity', u: 2, v: 9, rotation: 300}]);
-    dataSource.addItems([{type:'half_gravity', u: 3, v: 9, rotation: 0}]);
-    dataSource.addItems([{type:'half_gravity', u: 4, v: 8, rotation: 60}]);
-    dataSource.addItems([{type:'half_gravity', u: 4, v: 7, rotation: 120}]);
+    dataSource.addItems([{id:'ma1',type:'half_gravity', u: 3, v: 7, rotation: 180}]);
+    dataSource.addItems([{id:'ma2',type:'half_gravity', u: 2, v: 8, rotation: 240}]);
+    dataSource.addItems([{id:'ma3',type:'half_gravity', u: 2, v: 9, rotation: 300}]);
+    dataSource.addItems([{id:'ma4',type:'half_gravity', u: 3, v: 9, rotation: 0}]);
+    dataSource.addItems([{id:'ma5',type:'half_gravity', u: 4, v: 8, rotation: 60}]);
+    dataSource.addItems([{id:'ma6',type:'half_gravity', u: 4, v: 7, rotation: 120}]);
     
 
     
@@ -78,9 +78,9 @@
     var onClickAsteroids = function() {
         //$rootScope.$broadcast('addAlert',{type:'success', msg:"Asteroids"});
     };
-    dataSource.addItems([{type:'asteroids', u:-1, v:10, onClick:onClickAsteroids}, {type:'asteroids', u:-2, v:10, onClick:onClickAsteroids},{type:'asteroids', u:-3, v:10, onClick:onClickAsteroids}]);
-    dataSource.addItems([{type:'asteroids', u:-3, v:11, onClick:onClickAsteroids}, {type:'asteroids', u:-2, v:11, onClick:onClickAsteroids},{type:'asteroids', u:-2, v:10, onClick:onClickAsteroids}]);
-    dataSource.addItems([{type:'asteroids', u:-1, v:9, onClick:onClickAsteroids}, {type:'asteroids', u:-2, v:9, onClick:onClickAsteroids}]);
+    dataSource.addItems([{id:'asteroids1',type:'asteroids', u:-1, v:10, onClick:onClickAsteroids}, {id:'asteroids2', type:'asteroids', u:-2, v:10, onClick:onClickAsteroids},{id:'asteroids3', type:'asteroids', u:-3, v:10, onClick:onClickAsteroids}]);
+    dataSource.addItems([{id:'asteroids4',type:'asteroids', u:-3, v:11, onClick:onClickAsteroids}, {id:'asteroids5', type:'asteroids', u:-2, v:11, onClick:onClickAsteroids},{id:'asteroids6', type:'asteroids', u:-2, v:10, onClick:onClickAsteroids}]);
+    dataSource.addItems([{id:'asteroids7',type:'asteroids', u:-1, v:9, onClick:onClickAsteroids},  {id:'asteroids8', type:'asteroids', u:-2, v:9, onClick:onClickAsteroids}]);
     
     //A space station, gives gives the user somethign to interact with to spawn their ship(s)
     var onClickStation = function(x, y) {
@@ -88,7 +88,7 @@
         mapControlService.setPopoverPosition(x, y);
         mapControlService.setShowPopover(true);
     };
-    dataSource.addItems([{type:'space_station', u:6, v:5, onClick:onClickStation}]);
+    dataSource.addItems([{id:'spaceStation', type:'space_station', u:6, v:5, onClick:onClickStation}]);
     
 };
 

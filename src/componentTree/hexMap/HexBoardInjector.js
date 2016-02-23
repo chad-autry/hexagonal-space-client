@@ -1,18 +1,24 @@
 var ngCore = require('angular2/core'),
     HexMapService = require('./hexMapService.js'),
     HexBoard = require('hex-grid-map-3d/src/HexBoard.js');
- var GridContext = require('hex-grid-map-3d/src/contexts/GridContext.js');
- var CellContext = require('hex-grid-map-3d/src/contexts/CellContext.js');
- var VectorDrawnItemFactory = require('hex-grid-map-3d/src/drawnItemFactories/VectorDrawnItemFactory.js');
- var PathDrawnItemFactory = require('hex-grid-map-3d/src/drawnItemFactories/PathDrawnItemFactory.js');
- var ArrowDrawnItemFactory = require('hex-grid-map-3d/src/drawnItemFactories/ArrowDrawnItemFactory.js');
- var DelegatingDrawnItemFactory = require('hex-grid-map-3d/src/drawnItemFactories/DelegatingDrawnItemFactory.js');
- var DrawnItemContext = require('hex-grid-map-3d/src/contexts/DrawnItemContext.js');
- var CellDrawnItemFactory = require('hex-grid-map-3d/src/drawnItemFactories/RegularPolygonDrawnItemFactory');
- var SphereDrawnItemFactory = require('hex-grid-map-3d/src/drawnItemFactories/SphereDrawnItemFactory');
- var FieldOfSquaresDrawnItemFactory = require('hex-grid-map-3d/src/drawnItemFactories/FieldOfSquaresDrawnItemFactory');
- var HexDefinition = require('cartesian-hexagonal');
- var makeDataLink = require('data-chains/src/DataLinkMixin');
+var GridContext = require('hex-grid-map-3d/src/contexts/InverseGridContext.js');
+var CellContext = require('hex-grid-map-3d/src/contexts/CellContext.js');
+var VectorDrawnItemFactory = require('hex-grid-map-3d/src/drawnItemFactories/VectorDrawnItemFactory.js');
+var PathDrawnItemFactory = require('hex-grid-map-3d/src/drawnItemFactories/PathDrawnItemFactory.js');
+var ArrowDrawnItemFactory = require('hex-grid-map-3d/src/drawnItemFactories/ArrowDrawnItemFactory.js');
+var DelegatingDrawnItemFactory = require('hex-grid-map-3d/src/drawnItemFactories/DelegatingDrawnItemFactory.js');
+var DrawnItemContext = require('hex-grid-map-3d/src/contexts/DrawnItemContext.js');
+var CellDrawnItemFactory = require('hex-grid-map-3d/src/drawnItemFactories/RegularPolygonDrawnItemFactory');
+var SphereDrawnItemFactory = require('hex-grid-map-3d/src/drawnItemFactories/SphereDrawnItemFactory');
+var FieldOfSquaresDrawnItemFactory = require('hex-grid-map-3d/src/drawnItemFactories/FieldOfSquaresDrawnItemFactory');
+var DrawnItemDataLink = require('hex-grid-map-3d/src/dataLinks/DrawnItemDataLink');
+var PlanarPositioningDataLink = require('hex-grid-map-3d/src/dataLinks/PlanarPositioningDataLink');
+var ZStackingDataLink = require('hex-grid-map-3d/src/dataLinks/ZStackingDataLink');
+var CloningDataLink = require('hex-grid-map-3d/src/dataLinks/CloningDataLink');
+var ConnectingDataLink = require('hex-grid-map-3d/src/dataLinks/ConnectingDataLink');
+var HexDefinition = require('cartesian-hexagonal');
+var makeDataLink = require('data-chains/src/DataLinkMixin');
+var EmittingDataSource = require('data-chains/src/EmittingDataSource.js');
  
 //This directive creates a HexBoard for the decorated canvas element, and injects it back onto the service
 module.exports = ngCore.Directive({
@@ -111,7 +117,8 @@ module.exports = ngCore.Directive({
                 } else if (event.added[i].type === 'space_station') {
                     decoratedAdditions.push(Object.create(event.added[i]));
                     decoratedAdditions[i].type = 'simple';
-                    decoratedAdditions[i].radius = 30;
+                    decoratedAdditions[i].diameter = 40;
+                    decoratedAdditions[i].thickness = 5;
                     decoratedAdditions[i].sides = 5;
                     decoratedAdditions[i].color = '#0343df';
                 }
@@ -127,8 +134,27 @@ module.exports = ngCore.Directive({
         var asteroidFieldDrawnItemFactory = new FieldOfSquaresDrawnItemFactory(hexDimensions, 9, 20, ["#8d8468", "#86775f", "#7a6a4f", "#7f7053"]);
         var cellDrawnItemFactoryMap = {simple: simpleDrawnItemFactory, sphere: sphereDrawnItemFactor, arrow: arrowDrawnItemFactory, asteroids: asteroidFieldDrawnItemFactory, vector:vectorDrawnItemFactory};
         var cellDrawnItemFactory = new DelegatingDrawnItemFactory(cellDrawnItemFactoryMap);
-        var cellContext = new CellContext(cellDrawnItemFactory, 5, hexDimensions);
-        cellContext.setDataSource(decoratingDataLink);
+        
+        
+           var drawnItemDataLink = new DrawnItemDataLink(cellDrawnItemFactory);
+	     drawnItemDataLink.setDataSource(decoratingDataLink);
+	
+	    var cloningDataLink = new CloningDataLink();
+	    cloningDataLink.setDataSource(drawnItemDataLink);
+	
+	    var planarPositioningDataLink = new PlanarPositioningDataLink(hexDimensions);
+	    planarPositioningDataLink.setDataSource(cloningDataLink);
+	    
+	    var zStackingDataLink = new ZStackingDataLink(10);
+	    zStackingDataLink.setDataSource(planarPositioningDataLink);
+	    
+	    var connectingDataLink = new ConnectingDataLink();
+	    connectingDataLink.setDataSource(zStackingDataLink);
+	    
+	    var connectingDataSource = new EmittingDataSource();
+	    connectingDataLink.setDataSource(connectingDataSource);
+
+        var cellContext = new CellContext();
         contexts.push(cellContext);
 
         //Create a DataSourceListener which will intercept the MapMouseClicked item
@@ -136,7 +162,7 @@ module.exports = ngCore.Directive({
         hexBoard.setContexts(contexts);
 
         hexBoard.init();
-        
+        drawnItemDataLink.setScene(hexBoard.scene);
         //Set the board back to the service so it can be accessed
         hexMapService.setBoard(hexBoard);
         
