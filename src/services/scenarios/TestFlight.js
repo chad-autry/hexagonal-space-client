@@ -83,13 +83,37 @@
     dataSource.addItems([{id:'asteroids7',type:'asteroids', u:-1, v:9, onClick:onClickAsteroids},  {id:'asteroids8', type:'asteroids', u:-2, v:9, onClick:onClickAsteroids}]);
     
     //A space station, gives gives the user somethign to interact with to spawn their ship(s)
-    var onClickStation = function(x, y) {
+    var onClickStation = function(screenX, screenY, planarX, planarY) {
         mapControlService.setPopoverTitle('U:6 V:5');
-        mapControlService.setPopoverPosition(x, y);
+        mapControlService.setPopoverPosition(screenX, screenY);
         mapControlService.setShowPopover(true);
     };
-    dataSource.addItems([{id:'spaceStation', type:'space_station', u:6, v:5, onClick:onClickStation}]);
     
+    var showingPopover = false;
+    dataSource.addItems([{id:'spaceStation', type:'space_station', u:6, v:5, onClick:onClickStation}]);
+    mapControlService.board.setMouseClicked(function(screenX, screenY, planarX, planarY, wasClaimed, wasDragged){
+        if (!wasDragged && showingPopover ) {
+            mapControlService.setShowPopover(false);
+            showingPopover = false;
+        } else if (!wasDragged && mapControlService.showPopover) {
+            showingPopover = true;
+        } else if(!wasDragged && !wasClaimed && !mapControlService.showPopover) {
+            var hexagonalCoordinates = mapControlService.board.hexDimensions.getReferencePoint(planarX, planarY);
+            mapControlService.setPopoverTitle('U:'+hexagonalCoordinates.u+' V:'+hexagonalCoordinates.v);
+            mapControlService.setPopoverPosition(screenX, screenY);
+            mapControlService.setShowPopover(true);
+            showingPopover = true;
+        } else if(wasDragged && mapControlService.showPopover) {
+            mapControlService.setShowPopover(false);
+            showingPopover = false;
+        }
+    });
+    var lastPlanarX;
+    var lastPlanarY;
+    mapControlService.board.setMouseDragged(function(screenX, screenY, planarX, planarY, wasClaimed){
+        mapControlService.setShowPopover(false);
+        showingPopover = false;
+    });
 };
 
 /**

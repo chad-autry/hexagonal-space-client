@@ -26,7 +26,7 @@
     }
 
     this.scenarios = [];
-    this.activeScenario;
+    this.activeScenario = null;
     this.hexMapService = hexMapService;
     this.scenarioControllerMap = {};
     this.http = http;

@@ -54,7 +54,7 @@ module.exports = ngCore.Directive({
         var vectorDrawnItemFactory = new VectorDrawnItemFactory(hexDimensions);
         
         //Make the initial decorating data link. Hard coded for now. Likely to move locations, and become user configureable. Add in ability to look up renderings for 'secret' items
-        var decoratingDataLink = {}
+        var decoratingDataLink = {};
         decoratingDataLink.onDataChanged = function(event) {
             var i;
             var decoratedAdditions = [];            
@@ -72,7 +72,7 @@ module.exports = ngCore.Directive({
                     decoratedAdditions[i].lineColor = '#929591';
                     decoratedAdditions[i].scaleLength = 0.75;
                     decoratedAdditions[i].scaleWidth = 0.75;
-                    decoratedAdditions[i].fillColor = '#929591'
+                    decoratedAdditions[i].fillColor = '#929591';
                 } else if (event.added[i].type === 'half_gravity') {
                     decoratedAdditions.push(Object.create(event.added[i]));
                     decoratedAdditions[i].type = 'arrow';
