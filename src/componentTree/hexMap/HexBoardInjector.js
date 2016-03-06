@@ -53,6 +53,11 @@ module.exports = ngCore.Directive({
         var arrowDrawnItemFactory = new ArrowDrawnItemFactory(hexDimensions);
         var vectorDrawnItemFactory = new VectorDrawnItemFactory(hexDimensions);
         
+	var connectingDataLink = new ConnectingDataLink();
+	    
+	var connectingDataSource = new EmittingDataSource();
+	connectingDataLink.setDataSource(connectingDataSource);
+        
         //Make the initial decorating data link. Hard coded for now. Likely to move locations, and become user configureable. Add in ability to look up renderings for 'secret' items
         var decoratingDataLink = {};
         decoratingDataLink.onDataChanged = function(event) {
@@ -121,10 +126,26 @@ module.exports = ngCore.Directive({
                     decoratedAdditions[i].thickness = 5;
                     decoratedAdditions[i].sides = 5;
                     decoratedAdditions[i].color = '#0343df';
+                    
+
                 }
             }
-            
+
             this.emitEvent('dataChanged', [{added:decoratedAdditions, removed:event.removed, updated:{}}]);
+            
+            var clones = [];
+            for (i = 0; i < event.added.length; i++) {
+                    if (!!event.added[i].velocity) {
+                        //make a shrunken transparent clone
+                        //clones.push({id:event.added[i].id+'velHead', type:'clone', clonesId:event.added[i].id, cloneAlpha:0.5, cloneScale: 0.75, dragged:false, 
+                        //u:event.added[i].u + event.added[i].velocity.u, v:event.added[i].v + event.added[i].velocity.v});
+                         clones.push({id:event.added[i].id+'velHead', type:'simple',diameter:20,thickness:5, sides:5, color:'#0343df' , dragged:false, 
+                        u:event.added[i].u + event.added[i].velocity.u, v:event.added[i].v + event.added[i].velocity.v});
+                        this.emitEvent('dataChanged', [{added:clones, removed:[], updated:[]}]);
+                        //Connect that clone to the station with a dotted line
+                        connectingDataSource.addItems([{id:event.added[i].id+'velShaft', distance:17.5, color:'blue', radius:5, sourceGap:10, destGap:10, target:event.added[i].id+'velHead', source: event.added[i].id}]);
+                    }
+            }
         };
         
         
@@ -147,12 +168,10 @@ module.exports = ngCore.Directive({
 	    
 	    var zStackingDataLink = new ZStackingDataLink(10);
 	    zStackingDataLink.setDataSource(planarPositioningDataLink);
-	    
-	    var connectingDataLink = new ConnectingDataLink();
 	    connectingDataLink.setDataSource(zStackingDataLink);
+
 	    
-	    var connectingDataSource = new EmittingDataSource();
-	    connectingDataLink.setDataSource(connectingDataSource);
+	    
 
         var cellContext = new CellContext();
         contexts.push(cellContext);
@@ -163,6 +182,7 @@ module.exports = ngCore.Directive({
 
         hexBoard.init();
         drawnItemDataLink.setScene(hexBoard.scene);
+        connectingDataLink.scene = hexBoard.scene;
         //Set the board back to the service so it can be accessed
         hexMapService.setBoard(hexBoard);
         

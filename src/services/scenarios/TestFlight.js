@@ -90,7 +90,7 @@
     };
     
     var showingPopover = false;
-    dataSource.addItems([{id:'spaceStation', type:'space_station', u:6, v:5, onClick:onClickStation}]);
+    dataSource.addItems([{id:'spaceStation', type:'space_station', u:6, v:5, onClick:onClickStation, velocity:{u:-1, v:1}}]);
     mapControlService.board.setMouseClicked(function(screenX, screenY, planarX, planarY, wasClaimed, wasDragged){
         if (!wasDragged && showingPopover ) {
             mapControlService.setShowPopover(false);
