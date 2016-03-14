@@ -20,9 +20,9 @@ module.exports = ngCore.Directive({
           //Every time the route changes update elements class to add/remove the class provided
           router.subscribe((_) => {
             if (this.isRouteActive()) {
-                renderer.setElementClass(eleRef, this.linkActiveClass, true);
+                renderer.setElementClass(eleRef.nativeElement, this.linkActiveClass, true);
             } else {
-                renderer.setElementClass(eleRef, this.linkActiveClass, false);
+                renderer.setElementClass(eleRef.nativeElement, this.linkActiveClass, false);
             }
           });
       }],

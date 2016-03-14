@@ -34,7 +34,6 @@
     "browserify": "git+https://git@github.com/chad-autry/node-browserify",
     "ng2-ui-auth": "git+https://github.com/chad-autry/ng2-ui-auth#javascript",
     "data-chains": "0.4.0",
-    "browserify-shim": "^3.8.3",
     "copyfiles": "^0.2.1",
     "es6-promise": "3.0.2",
     "es6-shim": "0.33.13",
@@ -53,16 +52,5 @@
       "document"
     ],
     "esversion": 6
-  },
-  "browserify": {
-    "transform": [
-      "browserify-shim"
-    ]
-  },
-  "browser": {
-    "systemjs": "./lib/system.js"
-  },
-  "browserify-shim": {
-    "systemjs": "System"
   }
 }

@@ -9,7 +9,8 @@
 
 
 
- var System = require('systemjs');
+var scriptjs = require('scriptjs');
+var ngCore = require('angular2/core');
 
 /**
  * Pretty much the controller of the platform, 
@@ -30,7 +31,8 @@
     this.hexMapService = hexMapService;
     this.scenarioControllerMap = {};
     this.http = http;
-    this.auth = auth;  
+    this.auth = auth;
+    this.ngCore = ngCore;
     
     this.isShowMap = function() {
         //Delegate to the activated scenario
@@ -54,29 +56,32 @@
     };
 
     this.activateScenario = function(scenario) {
-       var scenarioController;
-       //Clear the current scenario
-       if (!!this.activeScenario) {
-          this.hexMapService.board.clear();
-       }
-       this.activeScenario = null;
-       //If we already have the scenario's backing service cached, load it
-       if (this.scenarioControllerMap.hasOwnProperty(scenario.controller)) {
-           this.activeScenario = scenario;
-           scenarioController = new this.scenarioControllerMap[scenario.controller](this.hexMapService.mapDataListener, this.hexMapService);
-           this.activeScenario = scenarioController;
+        var scenarioController;
+        //Clear the current scenario
+        if (!!this.activeScenario) {
+           this.hexMapService.board.clear();
+        }
+        this.activeScenario = null;
+        var scenarioService = this;
+        //If we already have the scenario's backing service cached, load it
+        if (this.scenarioControllerMap.hasOwnProperty(scenario.controller)) {
+            this.activeScenario = scenario;
+            scenarioController = new this.scenarioControllerMap[scenario.controller](this.hexMapService.mapDataListener, this.hexMapService);
+            this.activeScenario = scenarioController;
            
-       } else {
-           //TODO else set the loading icon, save current user, cancel button, 
-           //and asyncronously load the service
-           System.import(scenario.controller).then(controllerConstructor => {
-               //TODO Check if we're still the same user and make sure the async operation wasn't canceled
-               this.scenarioControllerMap[scenario.controller] = controllerConstructor;
-               scenarioController = new controllerConstructor(this.hexMapService.mapDataListener, this.hexMapService);
-               
-               this.activeScenario = scenarioController;
-           });
-       }
+        } else {
+            //TODO else set the loading icon, save current user, cancel button, 
+            //and asyncronously load the service
+            scriptjs(scenario.controller+'.js', scenario.controller);
+            scriptjs.ready(scenario.controller, function() {
+                //All the scenarios should be exported as standalone AMD modules
+                var controllerConstructor = window[scenario.controller];
+                scenarioService.scenarioControllerMap[scenario.controller] = controllerConstructor;
+                scenarioController = new controllerConstructor(scenarioService.hexMapService.mapDataListener, scenarioService.hexMapService, scenarioService.ngCore);
+                   
+               scenarioService.activeScenario = scenarioController;
+            });
+        }
     };
 
     this.isActive = function(scenario) {

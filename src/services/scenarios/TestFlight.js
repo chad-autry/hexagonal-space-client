@@ -2,10 +2,10 @@
 /**
  * Since only a single constructor is being exported as module.exports this comment isn't documented.
  * The class and module are the same thing, the contructor comment takes precedence.
- * @module ScenarioService
+ * @module TestFlight
  */
  var EmittingDataSource = require('data-chains/src/EmittingDataSource.js');
-
+ var BlankPopover = require('../../common/BlankPopover.js');
 /**
  * This service is the controller for the first 'TestFlight' scenario.
  * Allows the user to request a ship, and gives controls to manually fly it around.
@@ -17,12 +17,12 @@
  * Click the station to request a new ship
  * @constructor
  */
- module.exports = function TestFlight(dataSourceListener, mapControlService) {
+ module.exports = function TestFlight(dataSourceListener, mapControlService, ngCore) {
     //Protect the constructor from being called as a normal method
     if (!(this instanceof TestFlight)) {
         return new TestFlight(dataSourceListener, mapControlService);
     }
-    
+    this.ngCore = ngCore;
     //Create a new StoringDataSource and set it as the source of the provided DataSourceListener
     var dataSource = new EmittingDataSource();
     dataSourceListener.setDataSource(dataSource);
@@ -86,6 +86,7 @@
     var onClickStation = function(screenX, screenY, planarX, planarY) {
         mapControlService.setPopoverTitle('U:6 V:5');
         mapControlService.setPopoverPosition(screenX, screenY);
+        mapControlService.setPopoverContent(BlankPopover(ngCore));
         mapControlService.setShowPopover(true);
     };
     
@@ -102,6 +103,7 @@
             mapControlService.setPopoverTitle('U:'+hexagonalCoordinates.u+' V:'+hexagonalCoordinates.v);
             mapControlService.setPopoverPosition(screenX, screenY);
             mapControlService.setShowPopover(true);
+            mapControlService.setPopoverContent(BlankPopover(ngCore));
             showingPopover = true;
         } else if(wasDragged && mapControlService.showPopover) {
             mapControlService.setShowPopover(false);

@@ -48,16 +48,20 @@
     };
     
     this.setShowPopover = function(boolean) {
-        this.showPopover = boolean;
+        this.popover.showPopover = boolean;
     };
     
     this.setPopoverTitle = function(text) {
-        this.popoverTitle = text;
+        this.popover.popoverTitle = text;
     };
     
     this.setPopoverPosition = function(x, y) {
-        this.popoverX = x;
-        this.popoverY = y;
+        this.popover.popoverX = x;
+        this.popover.popoverY = y;
+    };
+    
+    this.setPopoverContent = function(component) {
+        this.popover.setContentComponent(component);
     };
 };
 

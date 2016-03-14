@@ -3,18 +3,23 @@ var ngCore = require('angular2/core'),
     HexMapActivationService = require('./hexMapService.js'),
     HexMapService = require('./hexMapService.js'),
     HexBoardInjector = require('./HexBoardInjector.js');
+    Popover = require('../../common/DynamicContentPopover.js');
 
 module.exports = ngCore
     .Component({
-        directives: [HexBoardInjector],
+        directives: [HexBoardInjector, Popover],
         selector: 'hex-map',
         template: `
 <canvas hexBoard resize hidpi="off" [style.display]="hexMapService.showMap?'inherit':'none'" style="background-color: black; width:100%; height:100%; position: absolute; left: 0px;top: 0px; z-index: 200;"></canvas>
-<div class="popover top" [style.display]="(hexMapService.showMap && hexMapService.showPopover)?'inherit':'none'" [style.left]="hexMapService.popoverX +'px'" [style.top]="hexMapService.popoverY +'px'" style="position: absolute; z-index: 250; transform: translate(-50%, -100%)"><div class="arrow"></div><h3 class="popover-title">{{hexMapService.popoverTitle}}</h3><div class="popover-content" innerHtml={{hexMapService.popoverContent}}></div>
+<popover></popover>
 `
      })
     .Class({
-        constructor: [HexMapService, function(hexMapService) {
+        constructor: [[new ngCore.ViewChildren(Popover), ngCore.QueryList], HexMapService, function(popovers, hexMapService) {
+            //Get the popover from our query when it is presented. This should be called once
+            popovers.changes.subscribe((_) => {
+                this.hexMapService.popover = popovers.first;
+            });
             this.hexMapService = hexMapService;
         }]
     });
