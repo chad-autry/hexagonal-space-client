@@ -18,6 +18,9 @@ module.exports = ngCore.Component({
           this.showPopover= true;
       }],
   setContentComponent: function(component) {
-      this.dynamicComponentLoader.loadIntoLocation(component, this.eleRef, 'contentComponent')
+      if (!!this.componentRef) {
+          this.componentRefdispose();
+      }
+      this.dynamicComponentLoader.loadIntoLocation(component, this.eleRef, 'contentComponent').then(componentRef => this.componentRef = componentRef);
   }
 });
