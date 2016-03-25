@@ -19,7 +19,7 @@ module.exports = ngCore.Component({
       }],
   setContentComponent: function(component) {
       if (!!this.componentRef) {
-          this.componentRefdispose();
+          this.componentRef.dispose();
       }
       this.dynamicComponentLoader.loadIntoLocation(component, this.eleRef, 'contentComponent').then(componentRef => this.componentRef = componentRef);
   }

@@ -90,31 +90,26 @@
         mapControlService.setShowPopover(true);
     };
     
-    var showingPopover = false;
+
     dataSource.addItems([{id:'spaceStation', type:'space_station', u:6, v:5, onClick:onClickStation, velocity:{u:-1, v:1}}]);
     mapControlService.board.setMouseClicked(function(screenX, screenY, planarX, planarY, wasClaimed, wasDragged){
-        if (!wasDragged && showingPopover ) {
+        if (!wasDragged && mapControlService.popover.showPopover ) {
             mapControlService.setShowPopover(false);
-            showingPopover = false;
-        } else if (!wasDragged && mapControlService.showPopover) {
-            showingPopover = true;
-        } else if(!wasDragged && !wasClaimed && !mapControlService.showPopover) {
+        } else if(!wasDragged && !wasClaimed && !mapControlService.popover.showPopover) {
             var hexagonalCoordinates = mapControlService.board.hexDimensions.getReferencePoint(planarX, planarY);
             mapControlService.setPopoverTitle('U:'+hexagonalCoordinates.u+' V:'+hexagonalCoordinates.v);
             mapControlService.setPopoverPosition(screenX, screenY);
             mapControlService.setShowPopover(true);
             mapControlService.setPopoverContent(BlankPopover(ngCore));
-            showingPopover = true;
-        } else if(wasDragged && mapControlService.showPopover) {
+
+        } else if(wasDragged && mapControlService.popover.showPopover) {
             mapControlService.setShowPopover(false);
-            showingPopover = false;
         }
     });
     var lastPlanarX;
     var lastPlanarY;
     mapControlService.board.setMouseDragged(function(screenX, screenY, planarX, planarY, wasClaimed){
         mapControlService.setShowPopover(false);
-        showingPopover = false;
     });
 };
 

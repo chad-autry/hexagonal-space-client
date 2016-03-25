@@ -21,7 +21,6 @@
     this.board = null;
     this.mapDataListener = null;
     
-    this.showPopover = false;
     this.popoverTitle = 'Varible';
     this.popoverContent = 'Variable Content';
     this.popoverX = 0;
@@ -45,6 +44,7 @@
 
     this.setShowMap = function(boolean) {
         this.showMap = boolean;
+        this.setShowPopover(false);
     };
     
     this.setShowPopover = function(boolean) {
