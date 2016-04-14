@@ -1,70 +1,36 @@
 "use strict";
 //This JS file simply bootstraps the app from the root component when the window loads
-var ng = require('angular2/platform/browser.js'),
-    ngCore = require('angular2/core.js'),
-    ngRouter = require('angular2/router.js'),
-    rootComponent = require('./componentTree/app.js'),
-    ngHttp = require('angular2/http.js'),
-    ngTesting = require('angular2/http/testing.js'),
-    jwt = require('angular2-jwt'),
-    satellizer = require('ng2-ui-auth'),
-    HexMapService = require('./componentTree/hexMap/hexMapService.js'),
-    ScenarioService = require('./services/ScenarioService');
-    
-    //This is the public ID google gave the ng2bp project to authorize with. It will work locally, or from the githib page.
-    //It requires the private key to verify the response on the server and actually access any information. Replace with your own project's key
-    const GOOGLE_CLIENT_ID = '458116224997-15nrlko9rnpqj9pjeln1303u9t514tmn.apps.googleusercontent.com';
-    
-    
-    //Note: This bootStrap sets up an Http service with a mock backend. IF there was a real backened, you'd use ngHttp.HTTP_PROVIDERS, instead of 
-    // ngHttp.BaseRequestOptions, ngTesting.MockBackend, and the Http provider
+var $ = require('jquery'); //Need jquery before GoldenLayout
+var GoldenLayout = require('golden-layout');
+
 
 (function() {
     document.addEventListener('DOMContentLoaded', function() {
-        var backEnd = new ngTesting.MockBackend();
-        backEnd.connections.subscribe((c) => {
-            console.log(c.request.url);
-            if (c.request.url === '/auth/login') {
-                //Our mock backend service returns a JWT token with a payload of {name: "John Doe"}  no matter what the request
-                c.mockRespond({ json: function(){return {token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSm9obiBEb2UifQ.xuEv8qrfXu424LZk8bVgr9MQJUIrp1rHcPyZw_KSsds'};}});
-            } else if (c.request.url === '/scenarios') {
-                c.mockRespond({ json: function(){return {scenarios:[{id:1, title:'Test Flight', description:'A basic local scenario where the user can manually move a single ship for testing', controller:'TestFlight'}]};}});
-            }
+       var config = {
+           content: [{
+               type: 'row',
+               content:[{
+                   type: 'component',
+                   componentName: 'testComponent',
+                   componentState: { label: 'A' }
+               },{
+                   type: 'column',
+                   content:[{
+                       type: 'component',
+                       componentName: 'testComponent',
+                       componentState: { label: 'B' }
+                   },{
+                       type: 'component',
+                       componentName: 'testComponent',
+                       componentState: { label: 'C' }
+                   }]
+               }]
+           }]
+        };
+        var myLayout = new GoldenLayout( config );
+        myLayout.registerComponent( 'testComponent', function( container, componentState ){
+        container.getElement().html( '<h2>' + componentState.label + '</h2>' );
         });
-
-        ng.bootstrap(rootComponent, [ng.Title, ngRouter.ROUTER_PROVIDERS, ngHttp.BaseRequestOptions,
-        ngCore.provide(ngRouter.LocationStrategy, {useClass:ngRouter.HashLocationStrategy}),
-        ngCore.provide(ngHttp.Http, {useFactory:
-            function(defaultOptions) {
-                return new ngHttp.Http(backEnd, defaultOptions);
-            },
-            deps: [ngHttp.BaseRequestOptions]}),
-        ngCore.provide(jwt.JwtHelper, {useFactory:
-            function() {
-                return new jwt.JwtHelper();
-            }}
-        ),
-        ngCore.provide(HexMapService, {useFactory:
-            function() {
-                return new HexMapService();
-            }}
-        ),
-        ngCore.provide(ScenarioService, {useFactory:
-            function(hexMapService, http) {
-                return new ScenarioService(hexMapService, http);
-            },
-            deps: [HexMapService, ngHttp.Http]
-        }),
-        satellizer.SATELLIZER_PROVIDERS({providers: {google: {clientId: GOOGLE_CLIENT_ID}}}),
-        ngCore.provide(jwt.AuthHttp, {
-            useFactory: (auth, config) => {
-                return new jwt.AuthHttp({
-                    tokenName: config.tokenName,
-                    tokenGetter: () => auth.getToken(),
-                });
-            },
-            deps: [satellizer.Auth, satellizer.Config]
-        })
-      ]);
+        myLayout.init();
     });
 })();
