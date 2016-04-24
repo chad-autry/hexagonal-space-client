@@ -21,15 +21,12 @@
     if (!(this instanceof TestScene)) {
         return new TestScene(parentLayout, GoldenLayout);
     }
-    
-    parentLayout.registerComponent( 'example', function( container, state ){
-        container.getElement().html( '<h2>' + state.text + '</h2>');
-    });
+   
     var newItemConfig = {
         title: 'TestScene',
-        type: 'component',
-        componentName: 'example',
-        componentState: { text: 'TestScene' }
+        type: 'react-component',
+        component: 'hex-map',
+        props: { initialState: {id:'TestSceneCanvasID' }}
     };
     
     parentLayout.root.contentItems[ 0 ].addChild( newItemConfig );

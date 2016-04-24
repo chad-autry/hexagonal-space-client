@@ -5,7 +5,7 @@
   "scripts": {
     "build": "mkdirp ./target/webapp && npm run less && npm run copy:HTML && npm run copy:jquery&& browserify ./src/bootStrap.js --debug -o ./target/webapp/bundle.js",
     "jshint": "jshint ./src",
-    "build:scenarios": "browserify ./src/services/scenarios/TestFlight.js --debug --standalone TestFlight -o ./target/webapp/TestFlight.js",
+    "build:scenarios": "browserify ./src/services/scenarios/TestScene.js --debug --standalone TestScene -o ./target/webapp/TestScene.js",
     "clean": "rimraf ./target",
     "copy:HTML": "copyfiles -f ./src/index.html ./target/webapp",
     "copy:jquery": "copyfiles -f ./node_modules/jquery/dist/jquery.min.js ./target/webapp",
@@ -24,13 +24,15 @@
     "url": "http://chad-autry.github.io/"
   },
   "dependencies": {
-    "golden-layout": "^1.5.0",
     "bootstrap": "^3.3.6",
     "cartesian-hexagonal": "0.0.3",
-    "hex-grid-map-3d": "^0.33.0"
+    "golden-layout": "^1.5.0",
+    "hex-grid-map-3d": "^0.33.0",
+    "reactify": "^1.1.1"
   },
   "devDependencies": {
     "browserify": "git+https://git@github.com/chad-autry/node-browserify",
+    "browserify-shim": "^3.8.12",
     "copyfiles": "^0.2.1",
     "data-chains": "0.4.0",
     "jquery": "^2.2.3",
@@ -48,5 +50,15 @@
       "document"
     ],
     "esversion": 6
+  },
+  "browserify": {
+    "transform": [
+      [
+        "reactify",
+        {
+          "es6": true
+        }
+      ]
+    ]
   }
 }

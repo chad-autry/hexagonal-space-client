@@ -8,54 +8,44 @@
   //external project required in constructors
 
 
-
-var scriptjs = require('scriptjs');
-var ngCore = require('angular2/core');
-
 /**
- * Pretty much the controller of the platform, 
+ * Pretty much the controller of the platform,
  * It is used to find what scenarios a user can see,
- * It is used to check what components are currentlly activated for the scenario, 
+ * It is used to check what components are currentlly activated for the scenario,
  * It is used to activate a new scenario (downloading it if required and injecting in the service dependencies)
  * @constructor
  * @example var scenarioService = new (require(ScenarioService))(hexMapService);
  */
- module.exports = function ScenarioService(hexMapService, http, auth) {
+ module.exports = function ScenarioService(jquery, parentLayout, GoldenLayout) {
     //Protect the constructor from being called as a normal method
     if (!(this instanceof ScenarioService)) {
-        return new ScenarioService(hexMapService);
+        return new ScenarioService(jquery);
     }
 
     this.scenarios = [];
     this.activeScenario = null;
-    this.hexMapService = hexMapService;
     this.scenarioControllerMap = {};
-    this.http = http;
-    this.auth = auth;
-    this.ngCore = ngCore;
-    
-    this.isShowMap = function() {
-        //Delegate to the activated scenario
-        return !!this.activeScenario;
-    };
+    this.jquery = jquery;
+    this.parentLayout = parentLayout;
+    this.GoldenLayout = GoldenLayout;
 
-    this.loadScenarios = function() {
-        //Check wether we need to go load the scenarios or if we already have them
-        //save off the current userId
-       // var remoteCallUserId = this.auth.userId;
-        this.http.request('/scenarios').subscribe(
-            res => {
-                //If the user is still the same after the async call, set the scenarios
-                this.scenarios = res.json().scenarios;
+    this.getScenarioList = function() {
+        var getScenarioListDeferred = this.jquery.Deferred();
+        jquery.ajax({
+            url: '/getScenarioList',
+            dataType: 'json',
+            cache: false,
+            success: function(data) {
+                getScenarioListDeferred.resolve(data);
+            },
+            error: function(xhr, status, err) {
+                console.error(this.props.url, status, err.toString());
             }
-        );
+        });
+        return getScenarioListDeferred.promise();
     };
 
-    this.getScenarios = function() {
-       return this.scenarios;
-    };
-
-    this.activateScenario = function(scenario) {
+    this.loadScenario = function(scenario) {
         var scenarioController;
         //Clear the current scenario
         if (!!this.activeScenario) {
@@ -66,25 +56,27 @@ var ngCore = require('angular2/core');
         //If we already have the scenario's backing service cached, load it
         if (this.scenarioControllerMap.hasOwnProperty(scenario.controller)) {
             this.activeScenario = scenario;
-            scenarioController = new this.scenarioControllerMap[scenario.controller](this.hexMapService.mapDataListener, this.hexMapService);
-            this.activeScenario = scenarioController;
-           
+            scenarioController = new this.scenarioControllerMap[scenario.controller](parentLayout, GoldenLayout);
+
         } else {
-            //TODO else set the loading icon, save current user, cancel button, 
-            //and asyncronously load the service
-            scriptjs(scenario.controller+'.js', scenario.controller);
-            scriptjs.ready(scenario.controller, function() {
+            
+            //TODO else set the loading icon, save current user, cancel button,
+            jquery.getScript( scenario.controller+'.js' )
+            .done(function( script, textStatus ) {
                 //All the scenarios should be exported as standalone AMD modules
-                var controllerConstructor = window[scenario.controller];
-                scenarioService.scenarioControllerMap[scenario.controller] = controllerConstructor;
-                scenarioController = new controllerConstructor(scenarioService.hexMapService.mapDataListener, scenarioService.hexMapService, scenarioService.ngCore);
-                   
-               scenarioService.activeScenario = scenarioController;
+                var ControllerConstructor = window[scenario.controller];
+                //Cache our constructor
+                scenarioService.scenarioControllerMap[scenario.controller] = ControllerConstructor;
+                
+                //All the scenarios are injected with the same things on the constructor
+                //The top-level golden-layout (so it can presumablly add itself as a child)
+                //The prepped goden-layout constructor (so it can presumablly create a child golden-layout)
+                //A map of common React components it can register and use with its presumed golden-layout
+                scenarioController = new ControllerConstructor(parentLayout, GoldenLayout);
+            })
+            .fail(function( jqxhr, settings, exception ) {
+                alert('Failed to load script');
             });
         }
-    };
-
-    this.isActive = function(scenario) {
-        return !!scenario && !!this.activeScenario && scenario.id === this.activeScenario.id;
     };
 };
