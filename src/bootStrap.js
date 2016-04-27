@@ -49,10 +49,12 @@ jquery.ajax = function(params) {
         myLayout = new GoldenLayout({
             content: [{
                 type: 'stack',
+                isClosable: false,
                 content:[{
                     title:'Scenarios',
                     type:'react-component',
-                    component: 'scenarios-list'
+                    component: 'scenarios-list',
+                    isClosable: false
                 }]
             }]
         });
@@ -65,6 +67,8 @@ jquery.ajax = function(params) {
         myLayout.registerComponent( 'hex-map', componentMap['mapComponent'] );
         
         myLayout.registerComponent( 'scenarios-list', scenarioListComponent );
+        //TODO We don't want our scenario-list to be closeable. Add a listener in case the user pops it out and closes it.
+        //If they do, re-create it on the main window
         myLayout.init();
     });
 })();

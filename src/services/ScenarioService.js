@@ -47,15 +47,10 @@
 
     this.loadScenario = function(scenario) {
         var scenarioController;
-        //Clear the current scenario
-        if (!!this.activeScenario) {
-           this.hexMapService.board.clear();
-        }
-        this.activeScenario = null;
+
         var scenarioService = this;
         //If we already have the scenario's backing service cached, load it
         if (this.scenarioControllerMap.hasOwnProperty(scenario.controller)) {
-            this.activeScenario = scenario;
             scenarioController = new this.scenarioControllerMap[scenario.controller](parentLayout, GoldenLayout);
 
         } else {
