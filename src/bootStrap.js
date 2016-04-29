@@ -47,6 +47,9 @@ jquery.ajax = function(params) {
         
        //Our config (for now) simply defines a single tab to load the Scenarios component into
         myLayout = new GoldenLayout({
+            settings:{
+                showMaximiseIcon: false
+            },
             content: [{
                 type: 'stack',
                 isClosable: false,
@@ -54,21 +57,27 @@ jquery.ajax = function(params) {
                     title:'Scenarios',
                     type:'react-component',
                     component: 'scenarios-list',
-                    isClosable: false
+                    isClosable: false,
+                    reorderEnabled: false,
+                    showPopoutIcon: false
                 }]
             }]
         });
 
+        //This scenario service is a quasi-singletone, only instantiated here.
         scenarioService = new (require('./services/ScenarioService.js'))(jquery, myLayout, GoldenLayout);
+        
+        //The ScenarioListComponent is preented from closing, or popping out, so it is allowed to directlly interact with the scenario service.
         scenarioListComponent = require('./components/scenarioList.js')(React, scenarioService);
+        
+        //TODO Any component which interacts with the scenario service needs to do so using an event-emitter adapter, which doesn't exist yet
 
         //TODO refactor to provide and register components in another file
         componentMap['mapComponent'] = require('./components/hexMap.js')(React, jquery);
         myLayout.registerComponent( 'hex-map', componentMap['mapComponent'] );
         
         myLayout.registerComponent( 'scenarios-list', scenarioListComponent );
-        //TODO We don't want our scenario-list to be closeable. Add a listener in case the user pops it out and closes it.
-        //If they do, re-create it on the main window
+
         myLayout.init();
     });
 })();
