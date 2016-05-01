@@ -19,19 +19,14 @@ module.exports = function(React, jquery) {
             //React doesn't seem to support the hdpi attribute
             this.canvasRef.hdpi="off";
             
-            //babylon.js is controlling the size, force it to resize using our container size
-            this.props.glContainer.on('open', (event) => {
+            let resizeFunction = (event) => {
                 this.hexBoard.engine.setSize(this.props.glContainer.width, this.props.glContainer.height);
-                //this.setState({width: this.props.glContainer.width});
-                //this.setState({height: this.props.glContainer.height});
-            });
+            };
+            //babylon.js is controlling the size, force it to resize using our container size when opened
+            this.props.glContainer.on('open', resizeFunction);
             
-            //babylon.js is controlling the size, force it to resize using our container size
-            this.props.glContainer.on('resize', (event) => {
-                this.hexBoard.engine.setSize(this.props.glContainer.width, this.props.glContainer.height);
-                //this.setState({width: this.props.glContainer.width});
-                //this.setState({height: this.props.glContainer.height});
-            });
+            //babylon.js is controlling the size, force it to resize using our container size on golden-layout resize
+            this.props.glContainer.on('resize', resizeFunction);
             
             var HexBoard = require('hex-grid-map-3d/src/HexBoard.js');
             var GridContext = require('hex-grid-map-3d/src/contexts/InverseGridContext.js');

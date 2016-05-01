@@ -6,14 +6,8 @@
  */
 
 /**
- * This service is the controller for the first 'TestFlight' scenario.
- * Allows the user to request a ship, and gives controls to manually fly it around.
- * Static map
- * No components/shields/energy/special vision
- * Can change velocity of ship to be 3
- * No history
- * Button to advance the turn
- * Click the station to request a new ship
+ * This service is the controller for the first 'TestScene' scenario.
+ * Displays a simple space scene with no interactivity and only 1 window
  * @constructor
  */
  module.exports = function TestScene(parentLayout, GoldenLayout) {
