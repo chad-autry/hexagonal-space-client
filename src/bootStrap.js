@@ -73,7 +73,7 @@ jquery.ajax = function(params) {
         //TODO Any component which interacts with the scenario service needs to do so using an event-emitter adapter, which doesn't exist yet
 
         //TODO refactor to provide and register components in another file
-        componentMap['mapComponent'] = require('./components/hexMap.js')(React, jquery);
+        componentMap['mapComponent'] = require('./components/hexMap.js');
         myLayout.registerComponent( 'hex-map', componentMap['mapComponent'] );
         
         myLayout.registerComponent( 'scenarios-list', scenarioListComponent );

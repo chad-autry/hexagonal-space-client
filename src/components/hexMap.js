@@ -1,3 +1,7 @@
+var jquery = require('jquery');
+var React = require('react');
+var ReactDom = require('react-dom');
+
 /**
  * Factory function, returns a React component given the required params
  * Injecting all dependencies (instead of just using require) since some modules are dynamically loaded
@@ -5,8 +9,7 @@
  * @param React - React, used to declare the class
  * @param ScenarioService - The scenario service used to for all actions
  */
-module.exports = function(React, jquery) {
-    return React.createClass({
+module.exports = React.createClass({
         getInitialState: function() {
             return this.props.initialState;
         },
@@ -28,16 +31,17 @@ module.exports = function(React, jquery) {
             //babylon.js is controlling the size, force it to resize using our container size on golden-layout resize
             this.props.glContainer.on('resize', resizeFunction);
             
-            var HexBoard = require('hex-grid-map-3d/src/HexBoard.js');
-            var GridContext = require('hex-grid-map-3d/src/contexts/InverseGridContext.js');
+            let HexBoard = require('hex-grid-map-3d/src/HexBoard.js');
+            let GridContext = require('hex-grid-map-3d/src/contexts/InverseGridContext.js');
             //var CellContext = require('hex-grid-map-3d/src/contexts/CellContext.js');
             //Actually init the hex grid map once the canvas is available
-            var HexDefinition = require('cartesian-hexagonal');
+            let HexDefinition = require('cartesian-hexagonal');
             this.hexBoard = new HexBoard(this.canvasRef);
-            var hexDimensions = new HexDefinition(55, 1, 0, 3);
+            //TODO Temp hard coded hexDimensions
+            let hexDimensions = new HexDefinition(55, 1, 0, 3);
             this.hexBoard.setHexDimensions(hexDimensions);
-            var contexts = [];
-             contexts.push(new GridContext(hexDimensions));
+            let contexts = [];
+            contexts.push(new GridContext(hexDimensions));
             //var cellContext = new CellContext();
             //contexts.push(cellContext);
             this.hexBoard.setContexts(contexts);
@@ -45,4 +49,3 @@ module.exports = function(React, jquery) {
             this.hexBoard.init();
         }
     });
-};
