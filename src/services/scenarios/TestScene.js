@@ -24,4 +24,5 @@
     };
     
     parentLayout.root.contentItems[ 0 ].addChild( newItemConfig );
+    parentLayout.eventHub.emit( 'map-state-changed', [{id:'sun', type:'star', size: 100, u:0, v:0}] );
 };
