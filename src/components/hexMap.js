@@ -37,12 +37,29 @@ module.exports = React.createClass({
                 <canvas hdpi="off" ref={(canvasRef) => this.canvasRef = canvasRef} resize hidpi="off" style={{backgroundColor: 'green', width: '100%' , height: '100%', zIndex: 200}}></canvas>
             );
         },
+        resizeCanvas (canvas) {
+            // Lookup the size the browser is displaying the canvas.
+            let displayWidth  = canvas.clientWidth;
+            let displayHeight = canvas.clientHeight;
+            let ctx = canvas.getContext("webgl");
+            let dpr = window.devicePixelRatio || 1;
+            let bsr = ctx.webkitBackingStorePixelRatio ||
+              ctx.mozBackingStorePixelRatio ||
+              ctx.msBackingStorePixelRatio ||
+              ctx.oBackingStorePixelRatio ||
+              ctx.backingStorePixelRatio || 1;
+
+            let ratio = dpr / bsr;
+
+            //Now make the canvas draw at the display size multiplied by the ratio
+            canvas.width  = displayWidth*ratio;
+            canvas.height = displayHeight*ratio;
+        },
         componentDidMount() {
-            //React doesn't seem to support the hdpi attribute
-            this.canvasRef.hdpi="off";
-            
+            this.resizeCanvas(this.canvasRef);
             let resizeFunction = (event) => {
                 this.hexBoard.engine.setSize(this.props.glContainer.width, this.props.glContainer.height);
+                this.resizeCanvas(this.canvasRef);
             };
             //babylon.js is controlling the size, force it to resize using our container size when opened
             this.props.glContainer.on('open', resizeFunction);
