@@ -1,83 +1,50 @@
 "use strict";
 //This JS file simply bootstraps the app from the root component when the window loads
-//It could be considered the equivalent of the main spring context.xml file of an old fashioned java stack
 
-//Require all the things needed which will be injected
-
-var jquery = require('jquery');
+var AppRoot = require('./components/AppRoot.jsx');
+var Home = require('./components/Home.jsx');
+var IndexRedirect = require('react-router').IndexRedirect;
+var Login = require('./components/Login.jsx');
+var UserManagement = require('./components/UserManagement.jsx');
 var React = require('react');
-var ReactDom = require('react-dom');
-//Need these three globals defined before golden-layout
-window.jquery = jquery;
-window.React = React;
-window.ReactDOM = ReactDom;
-var GoldenLayout = require('golden-layout');
+var ReactDOM = require('react-dom');
+var Redirect = require('react-router').Redirect;
+var Router = require('react-router').Router;
+var Route = require('react-router').Route;
+var useRouterHistory = require('react-router').useRouterHistory;
+var createHistory = require('react-router/node_modules/history').createHistory;
+var authjwt = require('client-auth-jwt/src/Auth.js');
+
+
+const history = useRouterHistory(createHistory)({
+  basename: '/react-bp'
+});
 
 //Keep references to these outside of the function
-var myLayout, scenarioService, scenarioListComponent;
-
-var componentMap = {};
-
-
-
-//Mock out the ajax method of jquery for now
-var originalAjax = jquery.ajax;
-jquery.ajax = function(params) {
-    if (params.url && params.url.indexOf('getScenarioList') >= 0) {
-        params.success([{id:1, title:'Test Scene', description:'A simple test scene with no interactivity', controller:'TestScene'}]);
-    } else {
-        return originalAjax(params);
-    }
-    
-};
+var appRootComponent;
 
 //This function executes immediately
 (function() {
-    
-    //Define  Scenario service in our top level scope
-    //It is injected with
-    //jquery for Ajax
-    //The current golden-layout so a scenario can create its top level container
-    //The golden-layout constructor, so a scenario can make its own golden layout
-    //Common components the scenario can use
-    //React and React-dom for custom components
-    
+    let authService = new authjwt();
+    authService.ProviderOAuthConfigs.google.clientId='34478033913-h13qnl7mfako0ean3uv6c9s6f8ujafki.apps.googleusercontent.com';
+    authService.ProviderOAuthConfigs.google.redirectUri= window.location.origin + '/react-bp/googleStaticAuth.html',
+    // Configure the authService
     //This function is attached to execute when the window loads
     document.addEventListener('DOMContentLoaded', function() {
         
-       //Our config (for now) simply defines a single tab to load the Scenarios component into
-        myLayout = new GoldenLayout({
-            settings:{
-                showMaximiseIcon: false
-            },
-            content: [{
-                type: 'stack',
-                isClosable: false,
-                content:[{
-                    title:'Scenarios',
-                    type:'react-component',
-                    component: 'scenarios-list',
-                    isClosable: false,
-                    reorderEnabled: false,
-                    showPopoutIcon: false
-                }]
-            }]
-        });
+        ReactDOM.render(
+            /* jshint ignore:start */
+            <Router history={history}>
+                <Route path="/" authService={authService} component={AppRoot}>
+                    <IndexRedirect to="/home" />
+                    <Route path="/home" component={Home}/>
+                    <Route path="/login" authService={authService} component={Login}/>
+                    <Route path="/userMgmnt" authService={authService} component={UserManagement}/>
+                    <Redirect from="*" to="/home"/>
+                </Route>
+            </Router>, document.getElementById('app')
+            /* jshint ignore:end */
+        );
 
-        //This scenario service is a quasi-singletone, only instantiated here.
-        scenarioService = new (require('./services/ScenarioService.js'))(jquery, myLayout, GoldenLayout);
-        
-        //The ScenarioListComponent is preented from closing, or popping out, so it is allowed to directlly interact with the scenario service.
-        scenarioListComponent = require('./components/scenarioList.js')(React, scenarioService);
-        
-        //TODO Any component which interacts with the scenario service needs to do so using an event-emitter adapter, which doesn't exist yet
-
-        //TODO refactor to provide and register components in another file
-        componentMap['mapComponent'] = require('./components/hexMap.js');
-        myLayout.registerComponent( 'hex-map', componentMap['mapComponent'] );
-        
-        myLayout.registerComponent( 'scenarios-list', scenarioListComponent );
-
-        myLayout.init();
     });
 })();
