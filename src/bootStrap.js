@@ -12,7 +12,7 @@ var Redirect = require('react-router').Redirect;
 var Router = require('react-router').Router;
 var Route = require('react-router').Route;
 var useRouterHistory = require('react-router').useRouterHistory;
-var createHistory = require('react-router/node_modules/history').createHistory;
+var createHistory = require('history').createHistory;
 var authjwt = require('client-auth-jwt/src/Auth.js');
 
 
@@ -26,8 +26,8 @@ var appRootComponent;
 //This function executes immediately
 (function() {
     let authService = new authjwt();
-    authService.ProviderOAuthConfigs.google.clientId='34478033913-h13qnl7mfako0ean3uv6c9s6f8ujafki.apps.googleusercontent.com';
-    authService.ProviderOAuthConfigs.google.redirectUri= window.location.origin + '/react-bp/googleStaticAuth.html',
+    authService.ProviderOAuthConfigs.google.clientId='757972958364-0ohbuao53bjsrf4ur68lui887tk05740.apps.googleusercontent.com';
+    authService.ProviderOAuthConfigs.google.redirectUri= window.location.origin + '/api/googleAuth',
     // Configure the authService
     //This function is attached to execute when the window loads
     document.addEventListener('DOMContentLoaded', function() {

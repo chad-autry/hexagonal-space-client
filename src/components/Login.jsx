@@ -21,26 +21,7 @@ module.exports = React.createClass({
             <div className="container">
                 <div className="center-form panel">
                     <div className="panel-body">
-                        <h2 className="text-center">Log in            </h2>/*
-                            <div className="form-group has-feedback">
-                                <input type="text" className="form-control input-lg" placeholder="Email"/>
-                                <i className="fa form-control-feedback fa-at">            </i>
-                            </div>
-                            <div className="form-group has-feedback">
-                                <input type="password" className="form-control input-lg" placeholder="Password"/>
-                                <i className="fa form-control-feedback fa-key">            </i>
-                            </div>
-                            <button className="btn btn-lg btn-block btn-success">Log in            </button>
-                            <br/>
-                            <p className="text-center text-muted" >
-                                <small>Don&apos;t have an account yet?            </small>
-                                <Link to='signup'>Sign up            </Link>
-                            </p>
-                            <div className="signup-or-separator">
-                                <h6 className="text">or            </h6>
-                                <hr/>
-                            </div>
-*/
+                        <h2 className="text-center">Log in            </h2>
                         <button className="btn btn-block btn-google-plus" onClick={()=>this.props.route.authService.authenticate('google')}>
                             <i className="fa fa-google-plus">            </i>
                 sign in with Google
