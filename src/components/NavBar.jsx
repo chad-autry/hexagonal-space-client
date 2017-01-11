@@ -32,9 +32,18 @@ module.exports = React.createClass({
                     Due to hdpi devices, we're collapsible on both on both xs and sm screens */ }
                 <div className={this.state.menuCollapsed ? 'navbar-collapse hidden-xs hidden-sm' : 'navbar-collapse'}>
                     <ul className="nav navbar-nav">
-                            <NavItem to="/home" activeClassName="active">
-                                 <i className="fa fa-home"></i> Home
+                        <NavItem to="/map" activeClassName="active">
+                            <i className="fa fa-map"></i> Map
+                        </NavItem>
+                        {/*We only show the code NavItem if the user is logged on*/}
+                        {this.props.isAuthenticated ? (
+                            <NavItem to="/code" activeClassName="active">
+                                <i className="fa fa-code"></i> Code
                             </NavItem>
+                        ) : null} 
+                        <NavItem to="/docs" activeClassName="active">
+                            <i className="fa fa-book"></i> Docs
+                        </NavItem>
                         <li>
                             <a href="https://github.com/chad-autry/hexagonal-space-client/issues">
                                 <i className="fa fa-comments"></i> Support

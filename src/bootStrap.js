@@ -2,7 +2,9 @@
 //This JS file simply bootstraps the app from the root component when the window loads
 
 var AppRoot = require('./components/AppRoot.jsx');
-var Home = require('./components/Home.jsx');
+var Map = require('./components/Map.jsx');
+var Code = require('./components/Code.jsx');
+var Docs = require('./components/Docs.jsx');
 var IndexRedirect = require('react-router').IndexRedirect;
 var Login = require('./components/Login.jsx');
 var UserManagement = require('./components/UserManagement.jsx');
@@ -36,11 +38,13 @@ var appRootComponent;
             /* jshint ignore:start */
             <Router history={history}>
                 <Route path="/" authService={authService} component={AppRoot}>
-                    <IndexRedirect to="/home" />
-                    <Route path="/home" component={Home}/>
+                    <IndexRedirect to="/map" />
+                    <Route path="/map" component={Map}/>
+                    <Route path="/code" component={Code}/>
+                    <Route path="/docs" component={Docs}/>
                     <Route path="/login" authService={authService} component={Login}/>
                     <Route path="/userMgmnt" authService={authService} component={UserManagement}/>
-                    <Redirect from="*" to="/home"/>
+                    <Redirect from="*" to="/map"/>
                 </Route>
             </Router>, document.getElementById('app')
             /* jshint ignore:end */
