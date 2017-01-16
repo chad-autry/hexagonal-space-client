@@ -22,9 +22,10 @@ module.exports = React.createClass({
             /* jshint ignore:start */
             <div className="container-fluid">
                 <NavBar authService={this.props.route.authService} isAuthenticated={this.state.isAuthenticated}/>
-                {childrenWithProps}
-                <Footer/>
+                
+                {/*<Footer/>*/}
             </div>
+            {childrenWithProps}
             /* jshint ignore:end */
         );
     }
