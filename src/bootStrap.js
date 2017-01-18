@@ -29,7 +29,7 @@ var appRootComponent;
 (function() {
     let authService = new authjwt();
     authService.ProviderOAuthConfigs.google.clientId='757972958364-0ohbuao53bjsrf4ur68lui887tk05740.apps.googleusercontent.com';
-    authService.ProviderOAuthConfigs.google.redirectUri= window.location.origin + '/api/googleAuth',
+    authService.ProviderOAuthConfigs.google.redirectUri= window.location.origin + '/backend/googleAuth',
     // Configure the authService
     //This function is attached to execute when the window loads
     document.addEventListener('DOMContentLoaded', function() {
