@@ -31,7 +31,7 @@ module.exports = React.createClass({
         render: function() {
             return (
                 /* jshint ignore:start */
-                <canvas hdpi="off" ref={(canvasRef) => this.canvasRef = canvasRef} resize hidpi="off" style={{backgroundColor: 'green', width: '100%' , height: '100%', zIndex: 200}}></canvas>
+                <canvas ref={(canvasRef) => this.canvasRef = canvasRef} style={{position:'absolute', backgroundColor: 'green', width: '100%' , height: '100%', zIndex: 200}}></canvas>
                 /* jshint ignore:end */
             );
         },
@@ -56,9 +56,11 @@ module.exports = React.createClass({
         componentDidMount() {
             this.resizeCanvas(this.canvasRef);
             let resizeFunction = (event) => {
-                this.hexBoard.engine.setSize(this.props.glContainer.width, this.props.glContainer.height);
                 this.resizeCanvas(this.canvasRef);
+                this.hexBoard.engine.setSize(this.canvasRef.width, this.canvasRef.height);
             };
+            this.resizeListener = resizeFunction;
+            window.addEventListener("resize", this.resizeListener);
             //babylon.js is controlling the size, force it to resize using our container size when opened
 //            this.props.glContainer.on('open', resizeFunction);
             
@@ -219,6 +221,7 @@ module.exports = React.createClass({
         },
         componentWillUnmount: function() {
  //            this.props.glEventHub.off( 'map-state-changed', this.setComponentState );
+               window.removeEventListener("resize", this.resizeListener);
         },
         setComponentState: function(mapState) {
             console.log("State Set");
