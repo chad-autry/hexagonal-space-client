@@ -31,7 +31,7 @@ module.exports = React.createClass({
         render: function() {
             return (
                 /* jshint ignore:start */
-                <canvas ref={(canvasRef) => this.canvasRef = canvasRef} style={{position:'absolute', backgroundColor: 'green', width: '100%' , height: '100%', zIndex: 200}}></canvas>
+                <canvas ref={(canvasRef) => this.canvasRef = canvasRef} style={{position:'absolute', top:0, left:0, backgroundColor: 'green', width: '100%' , height: '100%', zIndex: 200}}></canvas>
                 /* jshint ignore:end */
             );
         },

@@ -18,7 +18,7 @@ module.exports = React.createClass({
     render: function() {
         return (
             /* jshint ignore:start */
-            <div className="navbar navbar-default">
+            <div className="navbar navbar-default" style={{zIndex:300}}>
                 <div className="navbar-header" onClick={this.menuClicked}>
                     <div className="navbar-toggle">
                         <span className="sr-only">Toggle navigation</span>
