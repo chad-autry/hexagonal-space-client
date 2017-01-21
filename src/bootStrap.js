@@ -29,8 +29,13 @@ var appRootComponent;
 (function() {
     let authService = new authjwt();
     authService.ProviderOAuthConfigs.google.clientId='757972958364-0ohbuao53bjsrf4ur68lui887tk05740.apps.googleusercontent.com';
-    authService.ProviderOAuthConfigs.google.redirectUri= window.location.origin + '/backend/googleAuth',
-    // Configure the authService
+    authService.ProviderOAuthConfigs.google.redirectUri= window.location.origin + '/backend/googleAuth';
+
+    var rerouteUnauthorized = function(nextState, replaceState) {
+        if (!authService.isAuthenticated()) {
+            replaceState('/login');
+        }
+    };
     //This function is attached to execute when the window loads
     document.addEventListener('DOMContentLoaded', function() {
         
@@ -40,10 +45,11 @@ var appRootComponent;
                 <Route path="/" authService={authService} component={AppRoot}>
                     <IndexRedirect to="/map" />
                     <Route path="/map" component={Map}/>
-                    <Route path="/code" component={Code}/>
+                    <Route path="/code" component={Code} onEnter={rerouteUnauthorized}/>
                     <Route path="/docs" component={Docs}/>
                     <Route path="/login" authService={authService} component={Login}/>
-                    <Route path="/userMgmnt" authService={authService} component={UserManagement}/>
+                    <Route path="/userMgmnt" authService={authService} component={UserManagement} 
+                        onEnter={rerouteUnauthorized}/>
                     <Redirect from="*" to="/map"/>
                 </Route>
             </Router>, document.getElementById('app')

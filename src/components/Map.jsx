@@ -57,7 +57,7 @@ module.exports = React.createClass({
             this.resizeCanvas(this.canvasRef);
             let resizeFunction = (event) => {
                 this.resizeCanvas(this.canvasRef);
-                this.hexBoard.engine.setSize(this.canvasRef.width, this.canvasRef.height);
+            //    this.hexBoard.engine.setSize(this.canvasRef.width, this.canvasRef.height);
             };
             this.resizeListener = resizeFunction;
             window.addEventListener("resize", this.resizeListener);
