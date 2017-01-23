@@ -1,4 +1,3 @@
-var Footer = require('./Footer.jsx');
 var NavBar = require('./NavBar.jsx');
 var React = require('react');
 

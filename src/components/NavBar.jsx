@@ -52,7 +52,7 @@ module.exports = React.createClass({
                     </ul>
                     <ul className="nav navbar-nav navbar-right">
                             <NavItem to={this.props.isAuthenticated ? "/userMgmnt" : "/login"} activeClassName="active">
-                                 <i className={this.props.isAuthenticated ? "fa fa-user" : "fa fa-sign-in"}></i> {this.props.isAuthenticated ? this.props.authService.getPayload().name + ' ': "Logon "}
+                                 <i className={this.props.isAuthenticated ? "fa fa-user" : "fa fa-sign-in"}></i> {this.props.isAuthenticated ? this.props.authService.getPayload().displayName + ' ': "Logon "}
                             </NavItem>
                     </ul>
                 </div>

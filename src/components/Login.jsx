@@ -1,5 +1,6 @@
 var React = require('react');
 var Link = require('react-router').Link;
+var Footer = require('./Footer.jsx');
 
 module.exports = React.createClass({
     
@@ -28,6 +29,7 @@ module.exports = React.createClass({
                         </button>
                     </div>
                 </div>
+            <Footer/>
             </div>
             /* jshint ignore:end */
         );
