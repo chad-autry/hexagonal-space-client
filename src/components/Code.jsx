@@ -17,6 +17,8 @@ module.exports = React.createClass({
             /* jshin ignore:start */
             <AceEditor
                 mode="javascript"
+                height="100%"
+                width="100%"
                 theme="github"
                 onChange={onChange}
                 name="code-editor"
