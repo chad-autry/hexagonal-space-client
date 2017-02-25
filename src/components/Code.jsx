@@ -15,15 +15,17 @@ module.exports = React.createClass({
     render: function () {
         return (
             /* jshin ignore:start */
-            <div style={{width: '100%',position: 'absolute',top: this.props.navbarHeight+'px',bottom: 0}}>
-            <AceEditor
-                mode="javascript"
-                height="100%"
-                width="100%"
-                theme="github"
-                onChange={onChange}
-                name="code-editor"
-                editorProps={{$blockScrolling: true}}/>
+            <div style={{width: '100%',position: 'fixed',left:0,right:0,top: this.props.navbarHeight+'px',bottom: 0}}>
+                <div className="container">
+                    <AceEditor
+                        mode="javascript"
+                        height="100%"
+                        width="100%"
+                        theme="github"
+                        onChange={onChange}
+                        name="code-editor"
+                        editorProps={{$blockScrolling: true}}/>
+                </div>
             </div>
             /* jshint ignore:end */
         );
