@@ -15,6 +15,7 @@ module.exports = React.createClass({
     render: function () {
         return (
             /* jshin ignore:start */
+            <div style={{width: '100%',position: 'absolute',top: this.props.navbarHeight+'px',bottom: 0}}>
             <AceEditor
                 mode="javascript"
                 height="100%"
@@ -23,6 +24,7 @@ module.exports = React.createClass({
                 onChange={onChange}
                 name="code-editor"
                 editorProps={{$blockScrolling: true}}/>
+            </div>
             /* jshint ignore:end */
         );
     }

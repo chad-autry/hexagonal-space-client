@@ -15,12 +15,18 @@ module.exports = React.createClass({
         //Set the initial authentication state
         return {isAuthenticated: this.props.route.authService.isAuthenticated()};
     },
+    setNavHeight: function(navbarHeight) {
+        this.setState({
+           "navbarHeight": navbarHeight
+        });
+    },
     render: function() {
-        var childrenWithProps = React.cloneElement(this.props.children, {isAuthenticated: this.state.isAuthenticated});
+        var childrenWithProps = React.cloneElement(this.props.children, {isAuthenticated: this.state.isAuthenticated,
+            navbarHeight:this.state.navbarHeight});
         return (
             /* jshint ignore:start */
             <div className="container">
-                <NavBar authService={this.props.route.authService} isAuthenticated={this.state.isAuthenticated}/>
+                <NavBar setNavHeight={this.setNavHeight} authService={this.props.route.authService} isAuthenticated={this.state.isAuthenticated}/>
                 {childrenWithProps}
             </div>
             /* jshint ignore:end */

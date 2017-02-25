@@ -1,5 +1,6 @@
 var React = require('react');
 var NavItem = require('./NavItem.jsx');
+var Measure = require('react-measure');
 
 /**
  * Create a React component for the NavBar
@@ -15,9 +16,14 @@ module.exports = React.createClass({
             menuCollapsed: !this.state.menuCollapsed
         });
     },
+    shouldComponentUpdate: function(nextProps, nextState) {
+        // Don't blow the stack out by re-rendering when this components height is set to the parent
+        return this.props.isAuthenticated == nextProps.isAuthenticated;
+    },
     render: function() {
         return (
             /* jshint ignore:start */
+<Measure onMeasure={(dimensions) => this.props.setNavHeight(dimensions.height)}>
             <div className="navbar navbar-default" style={{zIndex:300}}>
                 <div className="navbar-header" onClick={this.menuClicked}>
                     <div className="navbar-toggle">
@@ -57,6 +63,7 @@ module.exports = React.createClass({
                     </ul>
                 </div>
             </div>
+</Measure>
             /* jshint ignore:end */
         );
     }
