@@ -6,12 +6,14 @@ import AceEditor from 'react-ace';
 import 'brace/mode/javascript';
 import 'brace/theme/github';
 
-function onChange(newValue) {
-  console.log('change',newValue);
-}
-
 // Render editor
 module.exports = React.createClass({
+    getInitialState: function() {
+        return {code: ""};
+    },
+    codeChanged: function(value) {
+       this.setState({code:value}); 
+    },
     render: function () {
         return (
             /* jshin ignore:start */
@@ -19,10 +21,11 @@ module.exports = React.createClass({
                 <div className="container">
                     <AceEditor
                         mode="javascript"
+                        value={this.state.code}
                         height="100%"
                         width="100%"
                         theme="github"
-                        onChange={onChange}
+                        onChange={this.codeChanged}
                         name="code-editor"
                         editorProps={{$blockScrolling: true}}/>
                 </div>
