@@ -25,9 +25,9 @@ module.exports = React.createClass({
             <div style={{width: '100%',position: 'fixed',left:0,right:0,top: this.props.navbarHeight+'px',bottom: 0}}>
                 <div className="container">
                     <div className="panel panel-default">
-                    <div className="panel-heading">
-                            <ul className="nav navbar-left">
-                                <li className="dropdown">
+                        <div className="panel-heading">
+                            <div className="button-group">
+                                <div className="dropdown">
                                     <a href="#" className="dropdown-toggle" onClick={this.menuClicked} role="button" aria-haspopup="true" aria-expanded="true">Menu</a>
                                     <ul className="dropdown-menu" style={{display:this.state.menuCollapsed ? 'block' : 'none'}}>
                                         <li><a href="#">Action</a></li>
@@ -36,26 +36,26 @@ module.exports = React.createClass({
                                         <li role="separator" className="divider"></li>
                                         <li><a href="#">Separated link</a></li>
                                     </ul>
-                                </li>
-                            </ul>
-                    </div>
-                    <table className="table" style={{height:'100%'}}>
-                    <tbody style={{height:'100%'}}>
-                    <tr style={{height:'100%'}}>
-                    <td>
-                    <AceEditor
-                        mode="javascript"
-                        value={this.state.code}
-                        height="100%"
-                        width="100%"
-                        theme="github"
-                        onChange={this.codeChanged}
-                        name="code-editor"
-                        editorProps={{$blockScrolling: true}}/>
-                    </td>
-                    </tr>
-                    </tbody>
-                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <table className="table" style={{height:'100%'}}>
+                            <tbody style={{height:'100%'}}>
+                                <tr style={{height:'100%'}}>
+                                    <td>
+                                        <AceEditor
+                                            mode="javascript"
+                                            value={this.state.code}
+                                            height="100%"
+                                            width="100%"
+                                            theme="github"
+                                            onChange={this.codeChanged}
+                                            name="code-editor"
+                                            editorProps={{$blockScrolling: true}}/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
