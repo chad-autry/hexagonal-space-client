@@ -4,12 +4,22 @@ import brace from 'brace';
 import AceEditor from 'react-ace';
 
 import 'brace/mode/javascript';
+import 'brace/theme/monokai';
 import 'brace/theme/github';
+import 'brace/theme/tomorrow';
+import 'brace/theme/kuroir';
+import 'brace/theme/twilight';
+import 'brace/theme/xcode';
+import 'brace/theme/textmate';
+import 'brace/theme/solarized_dark';
+import 'brace/theme/solarized_light';
+import 'brace/theme/terminal';
 
 // Render editor
 module.exports = React.createClass({
     getInitialState: function() {
-        return {code: "", menuCollapded: true};
+        //Get initial style from jwt or local storage
+        return {code: "", menuCollapded: true, editorStyle:"github"};
     },
     codeChanged: function(value) {
        this.setState({code:value}); 
@@ -17,6 +27,12 @@ module.exports = React.createClass({
     menuClicked: function() {
         this.setState({
             menuCollapsed: !this.state.menuCollapsed
+        });
+    },
+    editorStyleChanged: function(event) {
+        this.setState({
+            editorStyle: event.target.value, 
+            menuCollapsed: true
         });
     },
     render: function () {
@@ -30,11 +46,24 @@ module.exports = React.createClass({
                                 <div className="dropdown">
                                     <a href="#" className="dropdown-toggle" onClick={this.menuClicked} role="button" aria-haspopup="true" aria-expanded="true">Menu</a>
                                     <ul className="dropdown-menu" style={{display:this.state.menuCollapsed ? 'block' : 'none'}}>
-                                        <li><a href="#">Action</a></li>
-                                        <li><a href="#">Another action</a></li>
-                                        <li><a href="#">Something else here</a></li>
+                                        <li><a href="#">Show Script List</a></li>
                                         <li role="separator" className="divider"></li>
-                                        <li><a href="#">Separated link</a></li>
+                                        <li>
+                                            <select className="form-control"
+                                             value={this.state.editorStyle}
+                                             onChange={this.editorStyleChanged}>
+                                                <option>monokai</option>
+                                                <option>github</option>
+                                                <option>tomorrow</option>
+                                                <option>kuroir</option>
+                                                <option>twilight</option>
+                                                <option>xcode</option>
+                                                <option>textmate</option>
+                                                <option>solarized dark</option>
+                                                <option>solarized light</option>
+                                                <option>terminal</option>
+                                            </select>
+                                        </li>
                                     </ul>
                                 </div>
                             </div>
@@ -48,7 +77,7 @@ module.exports = React.createClass({
                                             value={this.state.code}
                                             height="100%"
                                             width="100%"
-                                            theme="github"
+                                            theme={this.state.editorStyle}
                                             onChange={this.codeChanged}
                                             name="code-editor"
                                             editorProps={{$blockScrolling: true}}/>
