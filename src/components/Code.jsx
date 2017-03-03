@@ -19,7 +19,7 @@ import 'brace/theme/terminal';
 module.exports = React.createClass({
     getInitialState: function() {
         //Get initial style from jwt or local storage
-        return {code: "", menuCollapded: true, editorStyle:"github"};
+        return {code: "", menuCollapsed: true, editorStyle:"github"};
     },
     codeChanged: function(value) {
        this.setState({code:value}); 
@@ -45,10 +45,10 @@ module.exports = React.createClass({
                             <div className="button-group">
                                 <div className="dropdown">
                                     <a href="#" className="dropdown-toggle" onClick={this.menuClicked} role="button" aria-haspopup="true" aria-expanded="true">Menu</a>
-                                    <ul className="dropdown-menu" style={{display:this.state.menuCollapsed ? 'block' : 'none'}}>
+                                    <ul className="dropdown-menu" style={{display:!this.state.menuCollapsed ? 'block' : 'none'}}>
                                         <li><a href="#">Show Script List</a></li>
                                         <li role="separator" className="divider"></li>
-                                        <li>
+                                        <li style={{marginLeft:'5px',marginRight:'5px'}}>
                                             <select className="form-control"
                                              value={this.state.editorStyle}
                                              onChange={this.editorStyleChanged}>
@@ -59,8 +59,8 @@ module.exports = React.createClass({
                                                 <option>twilight</option>
                                                 <option>xcode</option>
                                                 <option>textmate</option>
-                                                <option>solarized dark</option>
-                                                <option>solarized light</option>
+                                                <option value="solarized_dark">solarized dark</option>
+                                                <option value="solarized_light">solarized light</option>
                                                 <option>terminal</option>
                                             </select>
                                         </li>
