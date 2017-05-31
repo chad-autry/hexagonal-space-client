@@ -1,18 +1,22 @@
 var React = require('react');
 var Link = require('react-router').Link;
 var Footer = require('./Footer.jsx');
+var PropTypes = require('prop-types');
 
-module.exports = React.createClass({
+module.exports = class Login extends React.Component {
+
+    constructor(props) {
+        super(props);
+        // This line is important!
+        this.logout = this.logout.bind(this);
+    } 
     
-    // ask for `router` from context
-    contextTypes: {
-        router: React.PropTypes.object
-    },
-    logout: function() {
+    logout() {
         this.props.route.authService.logout();
         this.context.router.push('/home');
-    },
-    render: function() {
+    }
+
+    render() {
         if (this.props.isAuthenticated) {
             this.context.router.push('/home');
         }
@@ -34,4 +38,9 @@ module.exports = React.createClass({
             /* jshint ignore:end */
         );
     }
-});
+};
+
+// ask for `router` from context
+module.exports.contextTypes = {
+        router: PropTypes.object.isRequired
+};

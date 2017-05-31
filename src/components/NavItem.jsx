@@ -3,7 +3,7 @@ var Link = require('react-router').Link;
 var IndexLink = require('react-router').IndexLink;
 var withRouter = require('react-router').withRouter;
 
-module.exports = withRouter(React.createClass({
+module.exports = withRouter(class NavItem extends React.Component {
     render () {
         const isActive = this.props.router.isActive(this.props.to, this.props.onlyActiveOnIndex);
         const LinkComponent = this.props.index ? Link : IndexLink;
@@ -19,6 +19,6 @@ module.exports = withRouter(React.createClass({
                 <LinkComponent {...linkComponentProps}>{this.props.children}</LinkComponent>
             </li>
            /* jshint ignore:end */
-        )
+        );
     }
-}));
+});

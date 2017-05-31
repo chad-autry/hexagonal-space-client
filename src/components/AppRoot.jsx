@@ -2,25 +2,28 @@ var NavBar = require('./NavBar.jsx');
 var React = require('react');
 
 
-module.exports = React.createClass({
-    
-    getInitialState: function() {
+module.exports = class AppRoot extends React.Component {
+    constructor(props) {
+        super(props);
         //Register for Authentication state changes
         this.props.route.authService.onAuthChange(() => {
             this.setState({
                 isAuthenticated: this.props.route.authService.isAuthenticated()
             });
-            
+
         });
-        //Set the initial authentication state
-        return {isAuthenticated: this.props.route.authService.isAuthenticated()};
-    },
-    setNavHeight: function(navbarHeight) {
+        this.state = {isAuthenticated: this.props.route.authService.isAuthenticated()};
+        // This line is important!
+        this.setNavHeight = this.setNavHeight.bind(this);
+    }    
+
+    setNavHeight(navbarHeight) {
         this.setState({
            "navbarHeight": navbarHeight
         });
-    },
-    render: function() {
+    }
+
+    render() {
         var childrenWithProps = React.cloneElement(this.props.children, {isAuthenticated: this.state.isAuthenticated,
             navbarHeight:this.state.navbarHeight});
         return (
@@ -32,4 +35,4 @@ module.exports = React.createClass({
             /* jshint ignore:end */
         );
     }
-});
+};

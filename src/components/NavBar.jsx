@@ -7,20 +7,27 @@ var Measure = require('react-measure');
  * The only state it contains is if it is collapsed or not
  * It is passed in authentication, and route state for display
  */
-module.exports = React.createClass({
-    getInitialState: function() {
-        return {menuCollapsed: true};
-    },
-    menuClicked: function() {
+module.exports = class NavBar extends React.Component{
+
+    constructor(props) {
+        super(props);
+        this.state = {menuCollapsed: true};
+        // This line is important!
+        this.menuClicked = this.menuClicked.bind(this);
+    }
+
+    menuClicked() {
         this.setState({
             menuCollapsed: !this.state.menuCollapsed
         });
-    },
-    shouldComponentUpdate: function(nextProps, nextState) {
+    }
+
+    shouldComponentUpdate(nextProps, nextState) {
         // Don't blow the stack out by re-rendering when this components height is set to the parent
-        return this.props.isAuthenticated == nextProps.isAuthenticated;
-    },
-    render: function() {
+        return this.props.isAuthenticated != nextProps.isAuthenticated || this.state.menuCollapsed != nextState.menuCollapsed;
+    }
+
+    render() {
         return (
             /* jshint ignore:start */
 <Measure onMeasure={(dimensions) => this.props.setNavHeight(dimensions.height)}>
@@ -67,4 +74,4 @@ module.exports = React.createClass({
             /* jshint ignore:end */
         );
     }
-});
+};

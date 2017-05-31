@@ -27,14 +27,22 @@ var EmittingDataSource = require('data-chains/src/EmittingDataSource.js');
  * @param React - React, used to declare the class
  * @param ScenarioService - The scenario service used to for all actions
  */
-module.exports = React.createClass({
-        render: function() {
+module.exports = class Map extends React.Component {
+
+    constructor(props) {
+        super(props);
+        // This line is important!
+        this.setComponentState = this.setComponentState.bind(this);
+    }
+
+        render() {
             return (
                 /* jshint ignore:start */
                 <canvas ref={(canvasRef) => this.canvasRef = canvasRef} style={{position:'absolute', top:0, left:0, backgroundColor: 'green', width: '100%' , height: '100%', zIndex: 200}}></canvas>
                 /* jshint ignore:end */
             );
-        },
+        }
+
         resizeCanvas (canvas) {
             // Lookup the size the browser is displaying the canvas.
             let displayWidth  = canvas.clientWidth;
@@ -52,7 +60,8 @@ module.exports = React.createClass({
             //Now make the canvas draw at the display size multiplied by the ratio
             canvas.width  = displayWidth*ratio;
             canvas.height = displayHeight*ratio;
-        },
+        }
+
         componentDidMount() {
             this.resizeCanvas(this.canvasRef);
             let resizeFunction = (event) => {
@@ -218,20 +227,22 @@ module.exports = React.createClass({
             decoratingDataLink.setDataSource(this.baseDataLink);
             //this.baseDataLink.addItems([{id:'sun', type:'star', size: 100, u:0, v:0}]);
 //            this.props.glEventHub.on( 'map-state-changed', this.setComponentState );
-        },
-        componentWillUnmount: function() {
+        }
+
+        componentWillUnmount() {
  //            this.props.glEventHub.off( 'map-state-changed', this.setComponentState );
                window.removeEventListener("resize", this.resizeListener);
-        },
-        setComponentState: function(mapState) {
+        }
+
+        setComponentState(mapState) {
             console.log("State Set");
             this.baseDataLink.addItems(mapState);
-        },
-        componentWillUpdate: function(nextProps, nextState) {
+        }
+
+        componentWillUpdate(nextProps, nextState) {
             // When a new state comes in, update the map component's baseDataLink
-            console.log("componentWillUpdate");
             if (!!nextState) {
                 this.baseDataLink.addItems(nextState);
             }
         }
-    });
+    };

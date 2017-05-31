@@ -16,28 +16,36 @@ import 'brace/theme/solarized_light';
 import 'brace/theme/terminal';
 
 // Render editor
-module.exports = React.createClass({
-    getInitialState: function() {
-        //Get initial style from jwt or local storage
-        return {code: "", menuCollapsed: true, editorStyle:"github"};
-    },
-    codeChanged: function(value) {
+module.exports = class Code extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {code: "", menuCollapsed: true, editorStyle:"github"};
+        // This line is important!
+        this.codeChanged = this.codeChanged.bind(this);
+        this.menuClicked = this.menuClicked.bind(this);
+        this.editorStyleChanged = this.editorStyleChanged.bind(this);
+    }
+
+    codeChanged(value) {
        this.setState({code:value}); 
-    },
-    menuClicked: function() {
+    }
+
+    menuClicked() {
         this.setState({
             menuCollapsed: !this.state.menuCollapsed
         });
-    },
-    editorStyleChanged: function(event) {
+    }
+
+    editorStyleChanged(event) {
         this.setState({
             editorStyle: event.target.value, 
             menuCollapsed: true
         });
-    },
-    render: function () {
+    }
+
+    render() {
         return (
-            /* jshin ignore:start */
+            /* jshint ignore:start */
             <div style={{width: '100%',position: 'fixed',left:0,right:0,top: this.props.navbarHeight+'px',bottom: 0}}>
                 <div className="container">
                     <div className="panel panel-default">
@@ -91,4 +99,4 @@ module.exports = React.createClass({
             /* jshint ignore:end */
         );
     }
-});
+};

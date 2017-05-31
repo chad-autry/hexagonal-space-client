@@ -1,5 +1,6 @@
 "use strict";
 //This JS file simply bootstraps the app from the root component when the window loads
+/*global window: false */
 
 var AppRoot = require('./components/AppRoot.jsx');
 var Map = require('./components/Map.jsx');
