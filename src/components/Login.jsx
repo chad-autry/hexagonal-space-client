@@ -16,10 +16,16 @@ module.exports = class Login extends React.Component {
         this.context.router.push('/home');
     }
 
-    render() {
+    shouldComponentUpdate() {
         if (this.props.isAuthenticated) {
             this.context.router.push('/home');
+            return false;
         }
+
+        return true;
+    }
+
+    render() {
         return (
             /* jshint ignore:start */
 
