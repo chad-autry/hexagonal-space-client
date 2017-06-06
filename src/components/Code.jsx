@@ -50,9 +50,9 @@ module.exports = class Code extends React.Component {
                 <div className="container">
                     <div className="panel panel-default">
                         <div className="panel-heading">
-                            <div className="button-group">
-                                <div className="dropdown">
-                                    <a href="#" className="dropdown-toggle" onClick={this.menuClicked} role="button" aria-haspopup="true" aria-expanded="true">Menu</a>
+                            <div className="input-group">
+                                <span className="input-group-btn">
+                                    <button className="btn btn-default dropdown-toggle" onClick={this.menuClicked} aria-haspopup="true" aria-expanded="true">Menu</button>
                                     <ul className="dropdown-menu" style={{display:!this.state.menuCollapsed ? 'block' : 'none'}}>
                                         <li><a href="#">Show Script List</a></li>
                                         <li role="separator" className="divider"></li>
@@ -73,8 +73,9 @@ module.exports = class Code extends React.Component {
                                             </select>
                                         </li>
                                     </ul>
-                                </div>
-                            </div>
+                                </span>
+                                <input type="text" className="form-control" placeholder="Script Title" aria-describedby="title" />
+                            </div> 
                         </div>
                         <table className="table" style={{height:'100%'}}>
                             <tbody style={{height:'100%'}}>
