@@ -19,15 +19,20 @@ import 'brace/theme/terminal';
 module.exports = class Code extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {code: "", menuCollapsed: true, editorStyle:"github"};
-        // This line is important!
+        this.state = {code: "", title: "", menuCollapsed: true, editorStyle:"github", edited: false};
+        // Bind the methods to the object's this 
         this.codeChanged = this.codeChanged.bind(this);
         this.menuClicked = this.menuClicked.bind(this);
+        this.titleChanged = this.titleChanged.bind(this);
         this.editorStyleChanged = this.editorStyleChanged.bind(this);
     }
 
     codeChanged(value) {
-       this.setState({code:value}); 
+       this.setState({code:value, edited:true}); 
+    }
+
+    titleChanged(event) {
+       this.setState({title:event.target.value, edited:true});
     }
 
     menuClicked() {
@@ -74,7 +79,10 @@ module.exports = class Code extends React.Component {
                                         </li>
                                     </ul>
                                 </span>
-                                <input type="text" className="form-control" placeholder="Script Title" aria-describedby="title" />
+                                <input type="text" className="form-control" value={this.state.title} onChange={this.titleChanged} placeholder="Script Title" aria-describedby="title" />
+                                <span className="input-group-btn">
+                                    <button className="btn btn-default" disabled={!this.state.edited}>Save</button>
+                                </span>
                             </div> 
                         </div>
                         <table className="table" style={{height:'100%'}}>
