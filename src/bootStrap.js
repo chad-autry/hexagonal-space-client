@@ -17,7 +17,7 @@ var Route = require('react-router').Route;
 var useRouterHistory = require('react-router').useRouterHistory;
 var createHistory = require('history').createHistory;
 var authjwt = require('client-auth-jwt/src/Auth.js');
-
+var FetchService = require('./FetchService.js');
 
 const history = useRouterHistory(createHistory)({
   basename: '/'
@@ -32,6 +32,9 @@ var appRootComponent;
     authService.ProviderOAuthConfigs.google.clientId='757972958364-0ohbuao53bjsrf4ur68lui887tk05740.apps.googleusercontent.com';
     authService.ProviderOAuthConfigs.google.redirectUri= window.location.origin + '/backend/googleAuth';
 
+    let fetchService = new FetchService();
+    fetchService.setAuthService(authService);
+
     var rerouteUnauthorized = function(nextState, replaceState) {
         if (!authService.isAuthenticated()) {
             replaceState('/login');
@@ -43,7 +46,7 @@ var appRootComponent;
         ReactDOM.render(
             /* jshint ignore:start */
             <Router history={history}>
-                <Route path="/" authService={authService} component={AppRoot}>
+                <Route path="/" authService={authService} fetchService={fetchService} component={AppRoot}>
                     <IndexRedirect to="/map" />
                     <Route path="/map" component={Map}/>
                     <Route path="/code" component={Code} onEnter={rerouteUnauthorized}/>
