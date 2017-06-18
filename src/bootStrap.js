@@ -46,10 +46,10 @@ var appRootComponent;
         ReactDOM.render(
             /* jshint ignore:start */
             <Router history={history}>
-                <Route path="/" authService={authService} fetchService={fetchService} component={AppRoot}>
+                <Route path="/" authService={authService} component={AppRoot}>
                     <IndexRedirect to="/map" />
                     <Route path="/map" component={Map}/>
-                    <Route path="/code" component={Code} onEnter={rerouteUnauthorized}/>
+                    <Route path="/code" fetchService={fetchService} component={Code} onEnter={rerouteUnauthorized}/>
                     <Route path="/docs" component={Docs}/>
                     <Route path="/login" authService={authService} component={Login}/>
                     <Route path="/userMgmnt" authService={authService} component={UserManagement} 

@@ -20,7 +20,7 @@ module.exports = class FetchService {
                      'Authorization': 'JWT ' + this.authService.getToken()
                 }),
 	        'body': new FormData(body)
-            }).then(andThen).error(noAndThen);
+            }).then(andThen).catch(noAndThen);
         } else {
             //TODO Create an error response
             noAndThen();
