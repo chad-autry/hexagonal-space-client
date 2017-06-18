@@ -14,12 +14,12 @@ module.exports = class FetchService {
         //Since JS is single threaded, no need to worry the token can change after checking isAuthenticated
         if (this.authService.isAuthenticated()) {
             fetch(url, {
-	        method: 'post',
-                headers: new Headers({
+	        'method': 'post',
+                'headers': new Headers({
 	             'Content-Type': 'text/plain',
                      'Authorization': 'JWT ' + this.authService.getToken()
-                },
-	        body: new FormData(body))
+                }),
+	        'body': new FormData(body)
             }).then(andThen).error(noAndThen);
         } else {
             //TODO Create an error response

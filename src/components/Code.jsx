@@ -25,6 +25,7 @@ module.exports = class Code extends React.Component {
         this.menuClicked = this.menuClicked.bind(this);
         this.titleChanged = this.titleChanged.bind(this);
         this.editorStyleChanged = this.editorStyleChanged.bind(this);
+        this.saveClicked = this.saveClicked.bind(this);
     }
 
     codeChanged(value) {
@@ -46,6 +47,14 @@ module.exports = class Code extends React.Component {
             editorStyle: event.target.value, 
             menuCollapsed: true
         });
+    }
+
+    saveClicked(event) {
+        //TODO reload the list of scripts once a save finishes
+        //TODO Notify if there was an error saving a script
+        //Set the title as the first line of the text body
+        this.props.route.fetchService.postWithAuth('./saveCode', this.state.title + '\n' +this.state.code, () => {}, () => {});
+        this.setState({edited:false});
     }
 
     render() {
@@ -81,7 +90,7 @@ module.exports = class Code extends React.Component {
                                 </span>
                                 <input type="text" className="form-control" value={this.state.title} onChange={this.titleChanged} placeholder="Script Title" aria-describedby="title" />
                                 <span className="input-group-btn">
-                                    <button className="btn btn-default" disabled={!this.state.edited}>Save</button>
+                                    <button className="btn btn-default" onClick={this.saveClicked} disabled={!this.state.edited}>Save</button>
                                 </span>
                             </div> 
                         </div>
