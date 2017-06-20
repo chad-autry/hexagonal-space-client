@@ -30,7 +30,7 @@ var appRootComponent;
 (function() {
     let authService = new authjwt();
     authService.ProviderOAuthConfigs.google.clientId='757972958364-0ohbuao53bjsrf4ur68lui887tk05740.apps.googleusercontent.com';
-    authService.ProviderOAuthConfigs.google.redirectUri= window.location.origin + '/backend/googleAuth';
+    authService.ProviderOAuthConfigs.google.redirectUri= window.location.origin + '/backend/auth/googleAuth';
 
     let fetchService = new FetchService();
     fetchService.setAuthService(authService);
