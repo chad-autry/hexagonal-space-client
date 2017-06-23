@@ -17,7 +17,7 @@ module.exports = class FetchService {
 	        'method': 'post',
                 'headers': new Headers({
 	             'Content-Type': 'text/plain',
-                     'Authorization': 'JWT ' + this.authService.getToken()
+                     'Authorization': this.authService.getToken()
                 }),
 	        'body': new FormData(body)
             }).then(andThen).catch(noAndThen);
