@@ -53,8 +53,7 @@ module.exports = class Code extends React.Component {
         //TODO reload the list of scripts once a save finishes
         //TODO Notify if there was an error saving a script
         //Set the title as the first line of the text body
-        this.props.route.fetchService.postWithAuth('./backend/code/save', this.state.title + '\n' +this.state.code, () => {}, () => {});
-        this.setState({edited:false});
+        this.props.route.fetchService.postWithAuth('./backend/code/save', 'application/json', JSON.stringify({"title":this.state.title, "code":this.state.code}), () => {}, () => {}); this.setState({edited:false});
     }
 
     render() {
