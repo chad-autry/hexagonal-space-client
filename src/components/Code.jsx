@@ -19,11 +19,12 @@ import 'brace/theme/terminal';
 module.exports = class Code extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {code: "", title: "", menuCollapsed: true, editorStyle:"github", edited: false};
+        this.state = {code: "", title: "", menuCollapsed: true, codeListCollapsed: true, editorStyle:"github", edited: false};
         // Bind the methods to the object's this 
         this.codeChanged = this.codeChanged.bind(this);
         this.menuClicked = this.menuClicked.bind(this);
         this.titleChanged = this.titleChanged.bind(this);
+        this.codeListClicked = this.codeListClicked.bind(this);
         this.editorStyleChanged = this.editorStyleChanged.bind(this);
         this.saveClicked = this.saveClicked.bind(this);
     }
@@ -42,6 +43,10 @@ module.exports = class Code extends React.Component {
         });
     }
 
+    codeListClicked() {
+        this.setState({codeListCollapsed: !this.state.codeListCollapsed});
+    }
+
     editorStyleChanged(event) {
         this.setState({
             editorStyle: event.target.value, 
@@ -52,11 +57,14 @@ module.exports = class Code extends React.Component {
     saveClicked(event) {
         //TODO reload the list of scripts once a save finishes
         //TODO Notify if there was an error saving a script
-        //Set the title as the first line of the text body
         this.props.route.fetchService.postWithAuth('./backend/code/save', 'application/json', JSON.stringify({"title":this.state.title, "code":this.state.code}), () => {}, () => {}); this.setState({edited:false});
     }
 
     render() {
+        let codeList = null;
+        if (!this.state.codeListCollapsed) {
+            codeList =<td> <table className="table table-stripped"></table></td>;
+        }
         return (
             /* jshint ignore:start */
             <div style={{width: '100%',position: 'fixed',left:0,right:0,top: this.props.navbarHeight+'px',bottom: 0}}>
@@ -64,6 +72,11 @@ module.exports = class Code extends React.Component {
                     <div className="panel panel-default">
                         <div className="panel-heading">
                             <div className="input-group">
+                                <span className="input-group-btn">
+                                    <button className="btn btn-default" onClick={this.codeListClicked}>
+                                        &#8203;<i className={this.state.codeListCollapsed ? 'fa fa-chevron-left':'fa fa-chevron-right'}></i>
+                                    </button>
+                                </span>
                                 <span className="input-group-btn">
                                     <button className="btn btn-default dropdown-toggle" onClick={this.menuClicked} aria-haspopup="true" aria-expanded="true">Menu</button>
                                     <ul className="dropdown-menu" style={{display:!this.state.menuCollapsed ? 'block' : 'none'}}>
@@ -96,6 +109,7 @@ module.exports = class Code extends React.Component {
                         <table className="table" style={{height:'100%'}}>
                             <tbody style={{height:'100%'}}>
                                 <tr style={{height:'100%'}}>
+                                   {codeList} 
                                     <td>
                                         <AceEditor
                                             mode="javascript"
