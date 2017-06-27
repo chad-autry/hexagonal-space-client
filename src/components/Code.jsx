@@ -63,7 +63,11 @@ module.exports = class Code extends React.Component {
     render() {
         let codeList = null;
         if (!this.state.codeListCollapsed) {
-            codeList =<td> <table className="table table-stripped"></table></td>;
+            //TODO split into components
+            codeList = [];
+            codeList.push(<td> <table className="table table-stripped">
+            <thead><tr><th>Title</th><th>Hash</th></tr></thead>
+            </table></td>);
         }
         return (
             /* jshint ignore:start */
@@ -77,7 +81,7 @@ module.exports = class Code extends React.Component {
                                         &#8203;<i className={this.state.codeListCollapsed ? 'fa fa-chevron-left':'fa fa-chevron-right'}></i>
                                     </button>
                                 </span>
-                                <span className="input-group-btn">
+                              {/*   <span className="input-group-btn">
                                     <button className="btn btn-default dropdown-toggle" onClick={this.menuClicked} aria-haspopup="true" aria-expanded="true">Menu</button>
                                     <ul className="dropdown-menu" style={{display:!this.state.menuCollapsed ? 'block' : 'none'}}>
                                         <li><a href="#">Show Script List</a></li>
@@ -99,7 +103,7 @@ module.exports = class Code extends React.Component {
                                             </select>
                                         </li>
                                     </ul>
-                                </span>
+                                </span> */}
                                 <input type="text" className="form-control" value={this.state.title} onChange={this.titleChanged} placeholder="Script Title" aria-describedby="title" />
                                 <span className="input-group-btn">
                                     <button className="btn btn-default" onClick={this.saveClicked} disabled={!this.state.edited}>Save</button>
