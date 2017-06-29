@@ -65,7 +65,7 @@ module.exports = class Code extends React.Component {
         if (!this.state.codeListCollapsed) {
             //TODO split into components
             codeList = [];
-            codeList.push(<td> <table className="table table-stripped">
+            codeList.push(<td> <table className="table table-stripped table-bordered table-hover">
             <thead><tr><th>Title</th><th>Hash</th></tr></thead>
             </table></td>);
         }
@@ -110,11 +110,16 @@ module.exports = class Code extends React.Component {
                                 </span>
                             </div> 
                         </div>
-                        <table className="table" style={{height:'100%'}}>
-                            <tbody style={{height:'100%'}}>
-                                <tr style={{height:'100%'}}>
-                                   {codeList} 
-                                    <td>
+                        <div className="container">
+                            <div className="row">
+                                <div className="col-xs-6 no-padding" style={{display:!this.state.codeListCollapsed ? 'block' : 'none'}}>
+                                    <table className="table table-hover">
+                                        <tbody>
+                                            <tr><td>Test</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div className={this.state.codeListCollapsed ? "col-xs-12 no-padding" : "col-xs-6 no-padding"}>
                                         <AceEditor
                                             mode="javascript"
                                             value={this.state.code}
@@ -124,10 +129,9 @@ module.exports = class Code extends React.Component {
                                             onChange={this.codeChanged}
                                             name="code-editor"
                                             editorProps={{$blockScrolling: true}}/>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
