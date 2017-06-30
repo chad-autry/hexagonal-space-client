@@ -19,7 +19,7 @@ import 'brace/theme/terminal';
 module.exports = class Code extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {code: "", title: "", menuCollapsed: true, codeListCollapsed: true, editorStyle:"github", edited: false};
+        this.state = {codeList:[{title:'Test1', children:['Test1A','Test1B']},{title:'Test2', children:['Test2A','Test2B']}], code: "", title: "", menuCollapsed: true, codeListCollapsed: true, editorStyle:"github", edited: false};
         // Bind the methods to the object's this 
         this.codeChanged = this.codeChanged.bind(this);
         this.menuClicked = this.menuClicked.bind(this);
@@ -63,11 +63,10 @@ module.exports = class Code extends React.Component {
     render() {
         let codeList = null;
         if (!this.state.codeListCollapsed) {
-            //TODO split into components
             codeList = [];
-            codeList.push(<td> <table className="table table-stripped table-bordered table-hover">
-            <thead><tr><th>Title</th><th>Hash</th></tr></thead>
-            </table></td>);
+            for (var i = 0; i < this.state.codeList.length; i++) {
+                codeList.push(<ParentRow key={this.state.codeList[i].title} title={this.state.codeList[i].title} children={this.state.codeList[i].children} />);
+            }
         }
         return (
             /* jshint ignore:start */
@@ -113,11 +112,7 @@ module.exports = class Code extends React.Component {
                         <div className="container">
                             <div className="row">
                                 <div className="col-xs-6 no-padding" style={{display:!this.state.codeListCollapsed ? 'block' : 'none'}}>
-                                    <table className="table table-hover">
-                                        <tbody>
-                                            <tr><td>Test</td></tr>
-                                        </tbody>
-                                    </table>
+                                            {codeList}
                                 </div>
                                 <div className={this.state.codeListCollapsed ? "col-xs-12 no-padding" : "col-xs-6 no-padding"}>
                                         <AceEditor
@@ -139,3 +134,35 @@ module.exports = class Code extends React.Component {
         );
     }
 };
+
+class ParentRow extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {collapsed: true};
+        // Bind the methods to the object's this
+        this.rowClicked = this.rowClicked.bind(this);
+    }
+
+    rowClicked() {
+        this.setState({collapsed: !this.state.collapsed});
+    }
+
+    render() {
+        let children = [];
+        if (!this.state.collapsed) {
+            for (let i = 0; i < this.props.children.length; i++) {
+                children.push(<tr key={this.props.children[i]}><td>&nbsp;&nbsp;&nbsp;&nbsp;{this.props.children[i]}</td></tr>);
+            }
+        }
+        return (
+            /* jshint ignore:start */
+            <table className="table table-hover no-margin">
+                <tbody>
+                    <tr onClick={this.rowClicked}><td><i className={this.state.collapsed ? 'fa fa-chevron-up':'fa fa-chevron-down'}></i>&nbsp;{this.props.title}</td></tr>
+                    {children}
+                </tbody>
+            </table>
+            /* jshint ignore:end */
+        );
+    }
+}
