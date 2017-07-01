@@ -46,11 +46,11 @@ module.exports = class AppRoot extends React.Component {
             /* jshint ignore:start */
             <div className="container">
                 <Measure onMeasure={(dimensions) => this.setNavHeight(dimensions.height)}>
-                <div>
-                <NavBar setNavHeight={this.setNavHeight} authService={this.props.route.authService} isAuthenticated={this.state.isAuthenticated}/>
-                {this.state.alerts.length > 0 &&
-                <Alerts removeAlert={this.removeAlert} alerts={this.state.alerts}/>
-                }
+                <div style={{marginBottom:20 + 'px'}}>
+                    <NavBar setNavHeight={this.setNavHeight} authService={this.props.route.authService} isAuthenticated={this.state.isAuthenticated}/>
+                    {this.state.alerts.length > 0 &&
+                    <Alerts removeAlert={this.removeAlert} alerts={this.state.alerts}/>
+                    }
                 </div>
                 </Measure>
                 {childrenWithProps}
