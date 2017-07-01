@@ -66,7 +66,7 @@ module.exports = class Code extends React.Component {
         if (!this.state.codeListCollapsed) {
             codeList = [];
             for (var i = 0; i < this.state.codeList.length; i++) {
-                codeList.push(<ParentRow key={this.state.codeList[i].title} title={this.state.codeList[i].title} children={this.state.codeList[i].children} />);
+                codeList.push(<ParentRow key={this.state.codeList[i].title} addAlert={this.props.addAlert} title={this.state.codeList[i].title} children={this.state.codeList[i].children} />);
             }
         }
         return (
@@ -152,7 +152,11 @@ class ParentRow extends React.Component {
         let children = [];
         if (!this.state.collapsed) {
             for (let i = 0; i < this.props.children.length; i++) {
-                children.push(<tr key={this.props.children[i].time}><td>&nbsp;&nbsp;&nbsp;&nbsp;{moment(this.props.children[i].time*1000).fromNow()}&nbsp;<button type="button" className="btn btn-link text-muted"><i className='fa fa-hashtag'></i></button></td></tr>);
+                children.push(<tr key={this.props.children[i].time}>
+                    <td>&nbsp;&nbsp;&nbsp;&nbsp;{moment(this.props.children[i].time*1000).fromNow()}&nbsp;
+                        <button type="button" className="btn btn-link text-muted" onClick={() => {this.props.addAlert({type:'info', text:this.props.children[i].hash})}}><i className='fa fa-hashtag'></i></button>
+                   </td>
+                </tr>);
             }
         }
         return (
