@@ -42,3 +42,21 @@
     margin-top: 0 !important;
     margin-bottom: 0 !important;
 }
+
+.btn-link {
+    &.text-success {
+        .text-emphasis-variant(@state-success-text);
+    }
+    &.text-info {
+        .text-emphasis-variant(@state-info-text);
+    }
+    &.text-warning {
+        .text-emphasis-variant(@state-warning-text);
+    }
+    &.text-danger {
+        .text-emphasis-variant(@state-danger-text);
+    }
+    &.text-muted {
+        .text-emphasis-variant(@text-muted);
+    }
+}

@@ -2,6 +2,7 @@ import React from 'react';
 import { render } from 'react-dom';
 import brace from 'brace';
 import AceEditor from 'react-ace';
+import moment from 'moment';
 
 import 'brace/mode/javascript';
 import 'brace/theme/monokai';
@@ -19,7 +20,7 @@ import 'brace/theme/terminal';
 module.exports = class Code extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {codeList:[{title:'Test1', children:['Test1A','Test1B']},{title:'Test2', children:['Test2A','Test2B']}], code: "", title: "", menuCollapsed: true, codeListCollapsed: true, editorStyle:"github", edited: false};
+        this.state = {codeList:[{title:'Test1', children:[{time:moment().unix(),hash:'test1'},{time:moment().unix()-3600,hash:'test2'}]},{title:'Test2', children:[{time:moment().unix()-300,hash:'test1'}]}], code: "", title: "", menuCollapsed: true, codeListCollapsed: true, editorStyle:"github", edited: false};
         // Bind the methods to the object's this 
         this.codeChanged = this.codeChanged.bind(this);
         this.menuClicked = this.menuClicked.bind(this);
@@ -151,7 +152,7 @@ class ParentRow extends React.Component {
         let children = [];
         if (!this.state.collapsed) {
             for (let i = 0; i < this.props.children.length; i++) {
-                children.push(<tr key={this.props.children[i]}><td>&nbsp;&nbsp;&nbsp;&nbsp;{this.props.children[i]}</td></tr>);
+                children.push(<tr key={this.props.children[i].time}><td>&nbsp;&nbsp;&nbsp;&nbsp;{moment(this.props.children[i].time*1000).fromNow()}&nbsp;<button type="button" className="btn btn-link text-muted"><i className='fa fa-hashtag'></i></button></td></tr>);
             }
         }
         return (
