@@ -26,4 +26,21 @@ module.exports = class FetchService {
             noAndThen();
         }
     }
+
+    getJsonWithAuth(url, contentType, andThen, noAndThen) {
+        //Since JS is single threaded, no need to worry the token can change after checking isAuthenticated
+        if (this.authService.isAuthenticated()) {
+            fetch(url, {
+                'method': 'get',
+                'headers': new Headers({
+                     'Content-Type': contentType,
+                     'Authorization': this.authService.getToken()
+                })
+            }).then((response) => {return response.json();}).then(andThen).catch(noAndThen);
+        } else {
+            //TODO Create an error response
+            noAndThen();
+        }
+    }
+    
 };

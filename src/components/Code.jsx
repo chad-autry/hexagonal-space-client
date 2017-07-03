@@ -20,7 +20,7 @@ import 'brace/theme/terminal';
 module.exports = class Code extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {codeList:[{title:'Test1', children:[{time:moment().unix(),hash:'test1'},{time:moment().unix()-3600,hash:'test2'}]},{title:'Test2', children:[{time:moment().unix()-300,hash:'test1'}]}], code: "", title: "", menuCollapsed: true, codeListCollapsed: true, editorStyle:"github", edited: false};
+        this.state = {codeList:[], code: "", title: "", menuCollapsed: true, codeListCollapsed: true, editorStyle:"github", edited: false};
         // Bind the methods to the object's this 
         this.codeChanged = this.codeChanged.bind(this);
         this.menuClicked = this.menuClicked.bind(this);
@@ -28,6 +28,8 @@ module.exports = class Code extends React.Component {
         this.codeListClicked = this.codeListClicked.bind(this);
         this.editorStyleChanged = this.editorStyleChanged.bind(this);
         this.saveClicked = this.saveClicked.bind(this);
+        this.getList = this.getList.bind(this);
+        this.getList();
     }
 
     codeChanged(value) {
@@ -35,7 +37,11 @@ module.exports = class Code extends React.Component {
     }
 
     titleChanged(event) {
-       this.setState({title:event.target.value, edited:true});
+       if (!!event.target.value) {
+           this.setState({title:event.target.value, edited:true});
+       } else {
+           this.setState({title:'', edited:false});
+       }
     }
 
     menuClicked() {
@@ -55,10 +61,17 @@ module.exports = class Code extends React.Component {
         });
     }
 
+    getList() {
+        this.props.route.fetchService.getJsonWithAuth('./backend/code/list', 'application/json', (json) => {
+        this.setState({"codeList":json});}, () => {}); 
+    }
+
     saveClicked(event) {
         //TODO reload the list of scripts once a save finishes
         //TODO Notify if there was an error saving a script
-        this.props.route.fetchService.postWithAuth('./backend/code/save', 'application/json', JSON.stringify({"title":this.state.title, "code":this.state.code}), () => {}, () => {}); this.setState({edited:false});
+        this.props.route.fetchService.postWithAuth('./backend/code/save', 'application/json', JSON.stringify({"title":this.state.title, "code":this.state.code}),
+            () => {this.getList()}, () => {});
+        this.setState({edited:false});
     }
 
     render() {
@@ -106,7 +119,7 @@ module.exports = class Code extends React.Component {
                                 </span> */}
                                 <input type="text" className="form-control" value={this.state.title} onChange={this.titleChanged} placeholder="Script Title" aria-describedby="title" />
                                 <span className="input-group-btn">
-                                    <button className="btn btn-default" onClick={this.saveClicked} disabled={!this.state.edited}>Save</button>
+                                    <button className="btn btn-default" onClick={this.saveClicked} disabled={!this.state.title || !this.state.edited}>Save</button>
                                 </span>
                             </div> 
                         </div>
@@ -152,8 +165,8 @@ class ParentRow extends React.Component {
         let children = [];
         if (!this.state.collapsed) {
             for (let i = 0; i < this.props.children.length; i++) {
-                children.push(<tr key={this.props.children[i].time}>
-                    <td>&nbsp;&nbsp;&nbsp;&nbsp;{moment(this.props.children[i].time*1000).fromNow()}&nbsp;
+                children.push(<tr key={this.props.children[i].created}>
+                    <td>&nbsp;&nbsp;&nbsp;&nbsp;{moment(this.props.children[i].created*1000).fromNow()}&nbsp;
                         <button type="button" className="btn btn-link text-muted" onClick={() => {this.props.addAlert({type:'info', text:this.props.children[i].hash})}}><i className='fa fa-hashtag'></i></button>
                    </td>
                 </tr>);
