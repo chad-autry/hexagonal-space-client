@@ -20,11 +20,12 @@ import 'brace/theme/terminal';
 module.exports = class Code extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {codeList:[], code: "", title: "", menuCollapsed: true, codeListCollapsed: true, editorStyle:"github", edited: false};
+        this.state = {codeList:[], code: "", title: "", type:"user", menuCollapsed: true, codeListCollapsed: true, editorStyle:"github", edited: false};
         // Bind the methods to the object's this 
         this.codeChanged = this.codeChanged.bind(this);
         this.menuClicked = this.menuClicked.bind(this);
         this.titleChanged = this.titleChanged.bind(this);
+        this.typeClicked = this.typeClicked.bind(this);
         this.codeListClicked = this.codeListClicked.bind(this);
         this.editorStyleChanged = this.editorStyleChanged.bind(this);
         this.saveClicked = this.saveClicked.bind(this);
@@ -43,6 +44,14 @@ module.exports = class Code extends React.Component {
        } else {
            this.setState({title:'', edited:false});
        }
+    }
+
+    typeClicked() {
+        if (this.state.type === "user") {
+            this.setState({type:"ship", edited:true});
+        } else {
+           this.setState({type:"user", edited:true});
+        }
     }
 
     menuClicked() {
@@ -100,6 +109,9 @@ module.exports = class Code extends React.Component {
                                 <span className="input-group-btn">
                                     <button className="btn btn-default" onClick={this.codeListClicked}>
                                         &#8203;<i className={this.state.codeListCollapsed ? 'fa fa-chevron-left':'fa fa-chevron-right'}></i>
+                                    </button>
+                                    <button className="btn btn-default" onClick={this.typeClicked}>
+                                        &#8203;<i className={this.state.type === "ship" ? 'fa fa-fw fa-rocket':'fa fa-fw fa-user'}></i>
                                     </button>
                                 </span>
                               {/*   <span className="input-group-btn">
