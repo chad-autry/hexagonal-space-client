@@ -80,7 +80,7 @@ module.exports = class Code extends React.Component {
 
     codeClicked(type, title, hash) {
         let then = (json) => {
-            this.setState({"code":json.code, "title":title, "edited":false});
+            this.setState({"type":type, "code":json.code, "title":title, "edited":false});
         }
         this.props.route.fetchService.getJsonWithAuth('./backend/code/view', 'application/json', then, () => {},{"type":type, "title":title, "hash":hash});
     }
