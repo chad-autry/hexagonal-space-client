@@ -20,7 +20,7 @@ import 'brace/theme/terminal';
 module.exports = class Code extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {codeList:[], code: "", title: "", type:"user", menuCollapsed: true, codeListCollapsed: true, editorStyle:"github", edited: false, shipScriptListCollapsed:true, userScriptListCollapsed:true};
+        this.state = {codeList:{userSCripts:[], shpScripts:[]}, code: "", title: "", type:"user", menuCollapsed: true, codeListCollapsed: true, editorStyle:"github", edited: false, shipScriptListCollapsed:true, userScriptListCollapsed:true};
         // Bind the methods to the object's this 
         this.codeChanged = this.codeChanged.bind(this);
         this.menuClicked = this.menuClicked.bind(this);
@@ -78,11 +78,11 @@ module.exports = class Code extends React.Component {
         this.setState({"codeList":json});}, () => {},{}); 
     }
 
-    codeClicked(title, hash) {
+    codeClicked(type, title, hash) {
         let then = (json) => {
             this.setState({"code":json.code, "title":title, "edited":false});
         }
-        this.props.route.fetchService.getJsonWithAuth('./backend/code/view', 'application/json', then, () => {},{"title":title, "hash":hash});
+        this.props.route.fetchService.getJsonWithAuth('./backend/code/view', 'application/json', then, () => {},{"type":type, "title":title, "hash":hash});
     }
 
     saveClicked(event) {
@@ -108,13 +108,13 @@ module.exports = class Code extends React.Component {
             if (!this.state.userScriptListCollapsed) {
                 userScriptList = [];
                 for (var i = 0; i < this.state.codeList.userScripts.length; i++) {
-                    userScriptList.push(<ParentRow key={this.state.codeList.userScripts[i].title} codeClicked={this.codeClicked} addAlert={this.props.addAlert} title={this.state.codeList.userScripts[i].title} children={this.state.codeList.userScripts[i].children} />);
+                    userScriptList.push(<ParentRow key={this.state.codeList.userScripts[i].title} type='user' codeClicked={this.codeClicked} addAlert={this.props.addAlert} title={this.state.codeList.userScripts[i].title} children={this.state.codeList.userScripts[i].children} />);
                 }
             }
             if (!this.state.shipScriptListCollapsed) {
                 shipScriptList = [];
                 for (var i = 0; i < this.state.codeList.shipScripts.length; i++) {
-                    shipScriptList.push(<ParentRow key={this.state.codeList.shipScripts[i].title} codeClicked={this.codeClicked} addAlert={this.props.addAlert} title={this.state.codeList.shipScripts[i].title} children={this.state.codeList.shipScripts[i].children} />);
+                    shipScriptList.push(<ParentRow key={this.state.codeList.shipScripts[i].title} type='ship' codeClicked={this.codeClicked} addAlert={this.props.addAlert} title={this.state.codeList.shipScripts[i].title} children={this.state.codeList.shipScripts[i].children} />);
                 }
             }
         }
@@ -168,10 +168,12 @@ module.exports = class Code extends React.Component {
                                      <table className="table table-hover no-margin">
                                          <tbody>
                                               <tr onClick={this.userScriptRowClicked}><td><i className={this.state.userScriptListCollapsed ? 'fa fa-chevron-up':'fa fa-chevron-down'}></i><i className='fa fa-fw fa-user'></i></td></tr>
-                                              {userScriptList}
-                                              <tr onClick={this.shipScriptRowClicked}><td><i className={this.state.shipScriptListCollapsed ? 'fa fa-chevron-up':'fa fa-chevron-down'}></i><i className='fa fa-fw fa-rocket'></i></td></tr>
-                                              {shipScriptList}
                                          </tbody>
+                                         {userScriptList}
+                                         <tbody>
+                                              <tr onClick={this.shipScriptRowClicked}><td><i className={this.state.shipScriptListCollapsed ? 'fa fa-chevron-up':'fa fa-chevron-down'}></i><i className='fa fa-fw fa-rocket'></i></td></tr>
+                                         </tbody>
+                                         {shipScriptList}
                                     </table>
                                 </div>
                                 <div className={this.state.codeListCollapsed ? "col-xs-12 no-padding" : "col-xs-6 no-padding"}>
@@ -209,11 +211,17 @@ class ParentRow extends React.Component {
 
     render() {
         let children = [];
-        if (!this.state.collapsed) {
+        if (!this.state.collapsed && !!this.props.children) {
             for (let i = 0; i < this.props.children.length; i++) {
-                children.push(<tr key={this.props.children[i].created} onClick={() => {this.props.codeClicked(this.props.title,this.props.children[i].hash)}}>
-                    <td><i className='fa fa-chevron-down' style={{visibility: 'hidden'}}></i><i className='fa fa-chevron-down' style={{visibility: 'hidden'}}></i>{moment(this.props.children[i].created*1000).fromNow()}&nbsp;
-                        <button type="button" className="btn btn-link text-muted" onClick={() => {this.props.addAlert({type:'info', text:this.props.children[i].hash})}}><i className='fa fa-hashtag'></i></button>
+                children.push(<tr key={this.props.children[i].created}>
+                    <td>
+                        <i className='fa fa-chevron-down' aria-hidden="true" style={{visibility: 'hidden'}}></i>
+                        <i className='fa fa-chevron-down' aria-hidden="true" style={{visibility: 'hidden'}}></i>
+                        &nbsp;
+                        <button type="button" className="btn btn-link text-muted" onClick={() => {this.props.codeClicked(this.props.type, this.props.title,this.props.children[i].hash)}}><i className='fa fa-eye fa-fw'></i></button>
+                        <button type="button" className="btn btn-link text-muted" onClick={() => {this.props.addAlert({type:'info', text:this.props.children[i].hash})}}><i className='fa fa-hashtag fa-fw'></i></button>
+                        &nbsp;
+                        {moment(this.props.children[i].created*1000).fromNow()}
                    </td>
                 </tr>);
             }
@@ -221,10 +229,9 @@ class ParentRow extends React.Component {
         return (
             /* jshint ignore:start */
                 <tbody>
-                    <tr onClick={this.rowClicked}><td><i className='fa fa-chevron-down' style={{visibility: 'hidden'}}></i><i className={this.state.collapsed ? 'fa fa-chevron-up':'fa fa-chevron-down'}></i>&nbsp;{this.props.title}</td></tr>
+                    <tr onClick={this.rowClicked}><td><i className='fa fa-chevron-down' aria-hidden="true" style={{visibility: 'hidden'}}></i><i className={this.state.collapsed ? 'fa fa-chevron-up':'fa fa-chevron-down'}></i>&nbsp;{this.props.title}</td></tr>
                     {children}
                 </tbody>
-            </table>
             /* jshint ignore:end */
         );
     }
