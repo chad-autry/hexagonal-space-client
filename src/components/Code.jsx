@@ -218,8 +218,8 @@ class ParentRow extends React.Component {
                         <i className='fa fa-chevron-down' aria-hidden="true" style={{visibility: 'hidden'}}></i>
                         <i className='fa fa-chevron-down' aria-hidden="true" style={{visibility: 'hidden'}}></i>
                         &nbsp;
-                        <button type="button" className="btn btn-link text-muted" onClick={() => {this.props.codeClicked(this.props.type, this.props.title,this.props.children[i].hash)}}><i className='fa fa-eye fa-fw'></i></button>
-                        <button type="button" className="btn btn-link text-muted" onClick={() => {this.props.addAlert({type:'info', text:this.props.children[i].hash})}}><i className='fa fa-hashtag fa-fw'></i></button>
+                        <button type="button" className="btn btn-link text-muted no-padding" onClick={() => {this.props.codeClicked(this.props.type, this.props.title,this.props.children[i].hash)}}><i className='fa fa-eye fa-fw'></i></button>
+                        <button type="button" className="btn btn-link text-muted no-padding" onClick={() => {this.props.addAlert({type:'info', text:this.props.children[i].hash})}}><i className='fa fa-hashtag fa-fw'></i></button>
                         &nbsp;
                         {moment(this.props.children[i].created*1000).fromNow()}
                    </td>
