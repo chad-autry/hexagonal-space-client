@@ -20,7 +20,7 @@ import 'brace/theme/terminal';
 module.exports = class Code extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {codeList:{userSCripts:[], shpScripts:[]}, code: "", title: "", type:"user", menuCollapsed: true, codeListCollapsed: true, editorStyle:"github", edited: false, shipScriptListCollapsed:true, userScriptListCollapsed:true};
+        this.state = {activeTitle:null, activeHash:null, codeList:{userSCripts:[], shpScripts:[]}, code: "", title: "", type:"user", menuCollapsed: true, codeListCollapsed: true, editorStyle:"github", edited: false, shipScriptListCollapsed:true, userScriptListCollapsed:true};
         // Bind the methods to the object's this 
         this.codeChanged = this.codeChanged.bind(this);
         this.menuClicked = this.menuClicked.bind(this);
@@ -33,6 +33,8 @@ module.exports = class Code extends React.Component {
         this.codeClicked = this.codeClicked.bind(this);
         this.shipScriptRowClicked = this.shipScriptRowClicked.bind(this);
         this.userScriptRowClicked = this.userScriptRowClicked.bind(this);
+        this.activateUserScript = this.activateUserScript.bind(this);
+        this.deactivateUserScript = this.deactivateUserScript.bind(this);
         this.getList();
     }
 
@@ -101,6 +103,14 @@ module.exports = class Code extends React.Component {
         this.setState({"shipScriptListCollapsed":!this.state.shipScriptListCollapsed});
     }
 
+    activateUserScript(title, hash) {
+        this.setState({"activeTitle":title, "activeHash":hash}); 
+    }
+
+    deactivateUserScript() {
+        this.setState({"activeTitle":null, "activeHash":null});
+    }
+
     render() {
         let userScriptList = null;
         let shipScriptList = null;
@@ -108,7 +118,7 @@ module.exports = class Code extends React.Component {
             if (!this.state.userScriptListCollapsed) {
                 userScriptList = [];
                 for (var i = 0; i < this.state.codeList.userScripts.length; i++) {
-                    userScriptList.push(<ParentRow key={this.state.codeList.userScripts[i].title} type='user' codeClicked={this.codeClicked} addAlert={this.props.addAlert} title={this.state.codeList.userScripts[i].title} children={this.state.codeList.userScripts[i].children} />);
+                    userScriptList.push(<ParentRow key={this.state.codeList.userScripts[i].title} type='user' activeTitle={this.state.activeTitle} activeHash={this.state.activeHash} deactivateUserScript={this.deactivateUserScript} activateUserScript={this.activateUserScript} codeClicked={this.codeClicked} addAlert={this.props.addAlert} title={this.state.codeList.userScripts[i].title} children={this.state.codeList.userScripts[i].children} />);
                 }
             }
             if (!this.state.shipScriptListCollapsed) {
@@ -213,6 +223,7 @@ class ParentRow extends React.Component {
         let children = [];
         if (!this.state.collapsed && !!this.props.children) {
             for (let i = 0; i < this.props.children.length; i++) {
+                let isActive = this.props.activeTitle == this.props.title && this.props.activeHash == this.props.children[i].hash
                 children.push(<tr key={this.props.children[i].created}>
                     <td>
                         <i className='fa fa-chevron-down' aria-hidden="true" style={{visibility: 'hidden'}}></i>
@@ -220,6 +231,12 @@ class ParentRow extends React.Component {
                         &nbsp;
                         <button type="button" className="btn btn-link text-muted no-padding" onClick={() => {this.props.codeClicked(this.props.type, this.props.title,this.props.children[i].hash)}}><i className='fa fa-eye fa-fw'></i></button>
                         <button type="button" className="btn btn-link text-muted no-padding" onClick={() => {this.props.addAlert({type:'info', text:this.props.children[i].hash})}}><i className='fa fa-hashtag fa-fw'></i></button>
+                        {this.props.type == 'user' && !isActive &&
+                            <button type="button" className="btn btn-link text-muted no-padding" onClick={() => {this.props.activateUserScript(this.props.title,this.props.children[i].hash)}}><i className='fa fa-flag-o fa-fw'></i></button>
+                        }
+                        {this.props.type == 'user' && isActive &&
+                            <button type="button" className="btn btn-link text-muted no-padding" onClick={() => {this.props.deactivateUserScript()}}><i className='fa fa-flag fa-fw'></i></button>
+                        }
                         &nbsp;
                         {moment(this.props.children[i].created*1000).fromNow()}
                    </td>
