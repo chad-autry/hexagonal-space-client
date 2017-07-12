@@ -20,7 +20,7 @@ import 'brace/theme/terminal';
 module.exports = class Code extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {activeTitle:null, activeHash:null, codeList:{userSCripts:[], shpScripts:[]}, code: "", title: "", type:"user", menuCollapsed: true, codeListCollapsed: true, editorStyle:"github", edited: false, shipScriptListCollapsed:true, userScriptListCollapsed:true};
+        this.state = {activeTitle:null, activeHash:null, codeList:{userScripts:[], shipScripts:[]}, code: "", title: "", type:"user", menuCollapsed: true, codeListCollapsed: true, editorStyle:"github", edited: false, shipScriptListCollapsed:true, userScriptListCollapsed:true};
         // Bind the methods to the object's this 
         this.codeChanged = this.codeChanged.bind(this);
         this.menuClicked = this.menuClicked.bind(this);
@@ -77,7 +77,7 @@ module.exports = class Code extends React.Component {
 
     getList() {
         this.props.route.fetchService.getJsonWithAuth('./backend/code/list', 'application/json', (json) => {
-        this.setState({"codeList":json});}, () => {},{}); 
+        this.setState({"activeTitle":json.activeUserScript.title, "activeHash":json.activeUserScript.hash, "codeList":json});}, () => {},{}); 
     }
 
     codeClicked(type, title, hash) {
@@ -104,11 +104,17 @@ module.exports = class Code extends React.Component {
     }
 
     activateUserScript(title, hash) {
-        this.setState({"activeTitle":title, "activeHash":hash}); 
+        let then = (json) => {
+            this.setState({"activeTitle":title, "activeHash":hash});
+        }
+        this.props.route.fetchService.putWithAuth('./backend/code/activateUserScript', 'application/json', then, () => {},{"title":title, "hash":hash});
     }
 
-    deactivateUserScript() {
-        this.setState({"activeTitle":null, "activeHash":null});
+    deactivateUserScript(title, hash) {
+        let then = (json) => {
+            this.setState({"activeTitle":null, "activeHash":null});
+        }
+        this.props.route.fetchService.putWithAuth('./backend/code/deactivateUserScript', 'application/json', then, () => {},{"title":title, "hash":hash});
     }
 
     render() {
@@ -235,7 +241,7 @@ class ParentRow extends React.Component {
                             <button type="button" className="btn btn-link text-muted no-padding" onClick={() => {this.props.activateUserScript(this.props.title,this.props.children[i].hash)}}><i className='fa fa-flag-o fa-fw'></i></button>
                         }
                         {this.props.type == 'user' && isActive &&
-                            <button type="button" className="btn btn-link text-muted no-padding" onClick={() => {this.props.deactivateUserScript()}}><i className='fa fa-flag fa-fw'></i></button>
+                            <button type="button" className="btn btn-link text-muted no-padding" onClick={() => {this.props.deactivateUserScript(this.props.title,this.props.children[i].hash)}}><i className='fa fa-flag fa-fw'></i></button>
                         }
                         &nbsp;
                         {moment(this.props.children[i].created*1000).fromNow()}
