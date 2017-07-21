@@ -6,7 +6,7 @@ module.exports = ({ component: Component, ...rest }) => (
   /* jshint ignore:start */
   <Route {...rest} render={props => (
     rest.authService.isAuthenticated() ? (
-      <Component {...props}/>
+      <Component {...rest}/>
     ) : (
       <Redirect to={{
         pathname: '/login',

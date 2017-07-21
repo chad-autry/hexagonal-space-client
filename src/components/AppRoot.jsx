@@ -62,10 +62,10 @@ module.exports = class AppRoot extends React.Component {
                 </Measure>
                 <Switch>
                     <Route path="/map" component={Map}/>
-                    <AuthorizingRoute path="/code" render={(routeProps) => <Code fetchService={this.props.fetchService} authService={this.props.authService} {...routeProps} />}/>
+                    <AuthorizingRoute path="/code" navbarHeight={this.state.navbarHeight} authService={this.props.authService} fetchService={this.props.fetchService} component={Code}/>
                     <Route path="/docs" component={Docs}/>
-                    <Route path="/login" render={(routeProps) => <Login authService={this.props.authService} {...routeProps} />}/>
-                    <AuthorizingRoute path="/userMgmnt" render={(routeProps) => <UserManagement authService={this.props.authService} {...routeProps} />}/>
+                    <Route path="/login" render={(routeProps) => <Login isAuthenticated={this.state.isAuthenticated} authService={this.props.authService} {...routeProps} />}/>
+                    <AuthorizingRoute path="/userMgmnt" authService={this.props.authService} component={UserManagement}/>
                     <Redirect from="*" to="/map"/>
                </Switch>
             </div>

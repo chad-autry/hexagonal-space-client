@@ -76,7 +76,7 @@ module.exports = class Code extends React.Component {
     }
 
     getList() {
-        this.props.route.fetchService.getJsonWithAuth('./backend/code/list', 'application/json', (json) => {
+        this.props.fetchService.getJsonWithAuth('./backend/code/list', 'application/json', (json) => {
         this.setState({"activeTitle":json.activeUserScript.title, "activeHash":json.activeUserScript.hash, "codeList":json});}, () => {},{}); 
     }
 
@@ -84,13 +84,13 @@ module.exports = class Code extends React.Component {
         let then = (json) => {
             this.setState({"type":type, "code":json.code, "title":title, "edited":false});
         };
-        this.props.route.fetchService.getJsonWithAuth('./backend/code/view', 'application/json', then, () => {},{"type":type, "title":title, "hash":hash});
+        this.props.fetchService.getJsonWithAuth('./backend/code/view', 'application/json', then, () => {},{"type":type, "title":title, "hash":hash});
     }
 
     saveClicked(event) {
         //TODO reload the list of scripts once a save finishes
         //TODO Notify if there was an error saving a script
-        this.props.route.fetchService.postWithAuth('./backend/code/save', 'application/json', JSON.stringify({"title":this.state.title, "code":this.state.code, "type":this.state.type}),
+        this.props.fetchService.postWithAuth('./backend/code/save', 'application/json', JSON.stringify({"title":this.state.title, "code":this.state.code, "type":this.state.type}),
             () => {this.getList();}, () => {});
         this.setState({edited:false});
     }
@@ -107,14 +107,14 @@ module.exports = class Code extends React.Component {
         let then = (json) => {
             this.setState({"activeTitle":title, "activeHash":hash});
         };
-        this.props.route.fetchService.putWithAuth('./backend/code/activateUserScript', 'application/json', then, () => {},{"title":title, "hash":hash});
+        this.props.fetchService.putWithAuth('./backend/code/activateUserScript', 'application/json', then, () => {},{"title":title, "hash":hash});
     }
 
     deactivateUserScript(title, hash) {
         let then = (json) => {
             this.setState({"activeTitle":null, "activeHash":null});
         };
-        this.props.route.fetchService.putWithAuth('./backend/code/deactivateUserScript', 'application/json', then, () => {},{"title":title, "hash":hash});
+        this.props.fetchService.putWithAuth('./backend/code/deactivateUserScript', 'application/json', then, () => {},{"title":title, "hash":hash});
     }
 
     render() {
