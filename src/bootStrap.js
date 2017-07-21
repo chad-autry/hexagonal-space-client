@@ -2,26 +2,14 @@
 //This JS file simply bootstraps the app from the root component when the window loads
 /*global window: false */
 
+var AuthorizingRoute = require('./components/AuthorizingRoute.jsx');
 var AppRoot = require('./components/AppRoot.jsx');
-var Map = require('./components/Map.jsx');
-var Code = require('./components/Code.jsx');
-var Docs = require('./components/Docs.jsx');
-var IndexRedirect = require('react-router').IndexRedirect;
-var Login = require('./components/Login.jsx');
-var UserManagement = require('./components/UserManagement.jsx');
 var React = require('react');
 var ReactDOM = require('react-dom');
-var Redirect = require('react-router').Redirect;
-var Router = require('react-router').Router;
-var Route = require('react-router').Route;
-var useRouterHistory = require('react-router').useRouterHistory;
-var createHistory = require('history').createHistory;
 var authjwt = require('client-auth-jwt/src/Auth.js');
 var FetchService = require('./FetchService.js');
-
-const history = useRouterHistory(createHistory)({
-  basename: '/'
-});
+var Router = require('react-router-dom').BrowserRouter;
+var Route = require('react-router-dom').Route;
 
 //Keep references to these outside of the function
 var appRootComponent;
@@ -35,27 +23,13 @@ var appRootComponent;
     let fetchService = new FetchService();
     fetchService.setAuthService(authService);
 
-    var rerouteUnauthorized = function(nextState, replaceState) {
-        if (!authService.isAuthenticated()) {
-            replaceState('/login');
-        }
-    };
     //This function is attached to execute when the window loads
     document.addEventListener('DOMContentLoaded', function() {
         
         ReactDOM.render(
             /* jshint ignore:start */
-            <Router history={history}>
-                <Route path="/" authService={authService} component={AppRoot}>
-                    <IndexRedirect to="/map" />
-                    <Route path="/map" component={Map}/>
-                    <Route path="/code" fetchService={fetchService} component={Code} onEnter={rerouteUnauthorized}/>
-                    <Route path="/docs" component={Docs}/>
-                    <Route path="/login" authService={authService} component={Login}/>
-                    <Route path="/userMgmnt" authService={authService} component={UserManagement} 
-                        onEnter={rerouteUnauthorized}/>
-                    <Redirect from="*" to="/map"/>
-                </Route>
+            <Router>
+                <Route path="/" render={(routeProps) => <AppRoot fetchService={fetchService} authService={authService} {...routeProps} />}/>
             </Router>, document.getElementById('app')
             /* jshint ignore:end */
         );

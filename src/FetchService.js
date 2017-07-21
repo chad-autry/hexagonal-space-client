@@ -32,11 +32,11 @@ module.exports = class FetchService {
         if (this.authService.isAuthenticated()) {
             let query = Object.keys(params)
                 .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(params[k]))
-                .join('&')
+                .join('&');
             if (query) {
                 query = '?' + query;
             }
-            let urlWithQuery = url + query
+            let urlWithQuery = url + query;
             fetch(urlWithQuery, {
                 'method': 'get',
                 'headers': new Headers({
@@ -57,11 +57,11 @@ module.exports = class FetchService {
         if (this.authService.isAuthenticated()) {
             let query = Object.keys(params)
                 .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(params[k]))
-                .join('&')
+                .join('&');
             if (query) {
                 query = '?' + query;
             }
-            let urlWithQuery = url + query
+            let urlWithQuery = url + query;
             fetch(urlWithQuery, {
                 'method': 'put',
                 'headers': new Headers({

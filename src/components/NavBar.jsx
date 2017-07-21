@@ -43,16 +43,16 @@ module.exports = class NavBar extends React.Component{
                     Due to hdpi devices, we're collapsible on both on both xs and sm screens */ }
                 <div className={this.state.menuCollapsed ? 'navbar-collapse hidden-xs hidden-sm' : 'navbar-collapse'}>
                     <ul className="nav navbar-nav">
-                        <NavItem to="/map" activeClassName="active">
+                        <NavItem to="/map">
                             <i className="fa fa-map"></i> Map
                         </NavItem>
                         {/*We only show the code NavItem if the user is logged on*/}
                         {this.props.isAuthenticated ? (
-                            <NavItem to="/code" activeClassName="active">
+                            <NavItem to="/code">
                                 <i className="fa fa-code"></i> Code
                             </NavItem>
                         ) : null} 
-                        <NavItem to="/docs" activeClassName="active">
+                        <NavItem to="/docs">
                             <i className="fa fa-book"></i> Docs
                         </NavItem>
                         <li>
@@ -62,7 +62,7 @@ module.exports = class NavBar extends React.Component{
                         </li>
                     </ul>
                     <ul className="nav navbar-nav navbar-right">
-                            <NavItem to={this.props.isAuthenticated ? "/userMgmnt" : "/login"} activeClassName="active">
+                            <NavItem to={this.props.isAuthenticated ? "/userMgmnt" : "/login"}>
                                  <i className={this.props.isAuthenticated ? "fa fa-user" : "fa fa-sign-in"}></i> {this.props.isAuthenticated ? this.props.authService.getPayload().displayName + ' ': "Logon "}
                             </NavItem>
                     </ul>

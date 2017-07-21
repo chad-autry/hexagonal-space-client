@@ -2,19 +2,28 @@ var NavBar = require('./NavBar.jsx');
 var Alerts = require('./Alerts.jsx');
 var React = require('react');
 var Measure = require('react-measure');
+var AuthorizingRoute = require('./AuthorizingRoute.jsx');
+var Route = require('react-router-dom').Route;
+var Redirect = require('react-router-dom').Redirect;
+var Switch = require('react-router-dom').Switch;
+var Map = require('./Map.jsx');
+var Code = require('./Code.jsx');
+var Docs = require('./Docs.jsx');
+var Login = require('./Login.jsx');
+var UserManagement = require('./UserManagement.jsx');
 
 
 module.exports = class AppRoot extends React.Component {
     constructor(props) {
         super(props);
         //Register for Authentication state changes
-        this.props.route.authService.onAuthChange(() => {
+        this.props.authService.onAuthChange(() => {
             this.setState({
-                isAuthenticated: this.props.route.authService.isAuthenticated()
+                isAuthenticated: this.props.authService.isAuthenticated()
             });
 
         });
-        this.state = {isAuthenticated: this.props.route.authService.isAuthenticated(), alerts:[]};
+        this.state = {isAuthenticated: this.props.authService.isAuthenticated(), alerts:[]};
         // This line is important!
         this.setNavHeight = this.setNavHeight.bind(this);
         this.removeAlert = this.removeAlert.bind(this);
@@ -40,20 +49,25 @@ module.exports = class AppRoot extends React.Component {
     }
 
     render() {
-        var childrenWithProps = React.cloneElement(this.props.children, {addAlert: this.addAlert, isAuthenticated: this.state.isAuthenticated,
-            navbarHeight:this.state.navbarHeight});
         return (
             /* jshint ignore:start */
             <div className="container">
                 <Measure onMeasure={(dimensions) => this.setNavHeight(dimensions.height)}>
                 <div style={{marginBottom:20 + 'px'}}>
-                    <NavBar setNavHeight={this.setNavHeight} authService={this.props.route.authService} isAuthenticated={this.state.isAuthenticated}/>
+                    <NavBar setNavHeight={this.setNavHeight} authService={this.props.authService} isAuthenticated={this.state.isAuthenticated}/>
                     {this.state.alerts.length > 0 &&
                     <Alerts removeAlert={this.removeAlert} alerts={this.state.alerts}/>
                     }
                 </div>
                 </Measure>
-                {childrenWithProps}
+                <Switch>
+                    <Route path="/map" component={Map}/>
+                    <AuthorizingRoute path="/code" render={(routeProps) => <Code fetchService={this.props.fetchService} authService={this.props.authService} {...routeProps} />}/>
+                    <Route path="/docs" component={Docs}/>
+                    <Route path="/login" render={(routeProps) => <Login authService={this.props.authService} {...routeProps} />}/>
+                    <AuthorizingRoute path="/userMgmnt" render={(routeProps) => <UserManagement authService={this.props.authService} {...routeProps} />}/>
+                    <Redirect from="*" to="/map"/>
+               </Switch>
             </div>
             /* jshint ignore:end */
         );

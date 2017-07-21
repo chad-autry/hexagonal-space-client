@@ -83,7 +83,7 @@ module.exports = class Code extends React.Component {
     codeClicked(type, title, hash) {
         let then = (json) => {
             this.setState({"type":type, "code":json.code, "title":title, "edited":false});
-        }
+        };
         this.props.route.fetchService.getJsonWithAuth('./backend/code/view', 'application/json', then, () => {},{"type":type, "title":title, "hash":hash});
     }
 
@@ -91,7 +91,7 @@ module.exports = class Code extends React.Component {
         //TODO reload the list of scripts once a save finishes
         //TODO Notify if there was an error saving a script
         this.props.route.fetchService.postWithAuth('./backend/code/save', 'application/json', JSON.stringify({"title":this.state.title, "code":this.state.code, "type":this.state.type}),
-            () => {this.getList()}, () => {});
+            () => {this.getList();}, () => {});
         this.setState({edited:false});
     }
 
@@ -106,14 +106,14 @@ module.exports = class Code extends React.Component {
     activateUserScript(title, hash) {
         let then = (json) => {
             this.setState({"activeTitle":title, "activeHash":hash});
-        }
+        };
         this.props.route.fetchService.putWithAuth('./backend/code/activateUserScript', 'application/json', then, () => {},{"title":title, "hash":hash});
     }
 
     deactivateUserScript(title, hash) {
         let then = (json) => {
             this.setState({"activeTitle":null, "activeHash":null});
-        }
+        };
         this.props.route.fetchService.putWithAuth('./backend/code/deactivateUserScript', 'application/json', then, () => {},{"title":title, "hash":hash});
     }
 
@@ -123,14 +123,18 @@ module.exports = class Code extends React.Component {
         if (!this.state.codeListCollapsed) {
             if (!this.state.userScriptListCollapsed) {
                 userScriptList = [];
-                for (var i = 0; i < this.state.codeList.userScripts.length; i++) {
+                for (let i = 0; i < this.state.codeList.userScripts.length; i++) {
+                    /* jshint ignore:start */
                     userScriptList.push(<ParentRow key={this.state.codeList.userScripts[i].title} type='user' activeTitle={this.state.activeTitle} activeHash={this.state.activeHash} deactivateUserScript={this.deactivateUserScript} activateUserScript={this.activateUserScript} codeClicked={this.codeClicked} addAlert={this.props.addAlert} title={this.state.codeList.userScripts[i].title} children={this.state.codeList.userScripts[i].children} />);
+                    /* jshint ignore:end */
                 }
             }
             if (!this.state.shipScriptListCollapsed) {
                 shipScriptList = [];
-                for (var i = 0; i < this.state.codeList.shipScripts.length; i++) {
+                for (let i = 0; i < this.state.codeList.shipScripts.length; i++) {
+                    /* jshint ignore:start */
                     shipScriptList.push(<ParentRow key={this.state.codeList.shipScripts[i].title} type='ship' codeClicked={this.codeClicked} addAlert={this.props.addAlert} title={this.state.codeList.shipScripts[i].title} children={this.state.codeList.shipScripts[i].children} />);
+                    /* jshint ignore:end */
                 }
             }
         }
@@ -229,7 +233,8 @@ class ParentRow extends React.Component {
         let children = [];
         if (!this.state.collapsed && !!this.props.children) {
             for (let i = 0; i < this.props.children.length; i++) {
-                let isActive = this.props.activeTitle == this.props.title && this.props.activeHash == this.props.children[i].hash
+                let isActive = this.props.activeTitle == this.props.title && this.props.activeHash == this.props.children[i].hash;
+                /* jshint ignore:start */
                 children.push(<tr key={this.props.children[i].created}>
                     <td>
                         <i className='fa fa-chevron-down' aria-hidden="true" style={{visibility: 'hidden'}}></i>
@@ -247,6 +252,7 @@ class ParentRow extends React.Component {
                         {moment(this.props.children[i].created*1000).fromNow()}
                    </td>
                 </tr>);
+               /* jshint ignore:end */
             }
         }
         return (
