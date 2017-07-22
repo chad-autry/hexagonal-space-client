@@ -11,9 +11,6 @@ var FetchService = require('./FetchService.js');
 var Router = require('react-router-dom').BrowserRouter;
 var Route = require('react-router-dom').Route;
 
-//Keep references to these outside of the function
-var appRootComponent;
-
 //This function executes immediately
 (function() {
     let authService = new authjwt();
@@ -29,7 +26,7 @@ var appRootComponent;
         ReactDOM.render(
             /* jshint ignore:start */
             <Router>
-                <Route path="/" render={(routeProps) => <AppRoot fetchService={fetchService} authService={authService} {...routeProps} />}/>
+                <Route path="/" render={(routeProps) => <AppRoot location={routeProps.location} fetchService={fetchService} authService={authService} {...routeProps} />}/>
             </Router>, document.getElementById('app')
             /* jshint ignore:end */
         );

@@ -54,7 +54,7 @@ module.exports = class AppRoot extends React.Component {
             <div className="container">
                 <Measure onMeasure={(dimensions) => this.setNavHeight(dimensions.height)}>
                 <div style={{marginBottom:20 + 'px'}}>
-                    <NavBar setNavHeight={this.setNavHeight} authService={this.props.authService} isAuthenticated={this.state.isAuthenticated}/>
+                    <NavBar setNavHeight={this.setNavHeight} authService={this.props.authService} isAuthenticated={this.state.isAuthenticated} location={this.props.location}/>
                     {this.state.alerts.length > 0 &&
                     <Alerts removeAlert={this.removeAlert} alerts={this.state.alerts}/>
                     }

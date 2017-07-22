@@ -23,7 +23,9 @@ module.exports = class NavBar extends React.Component{
 
     shouldComponentUpdate(nextProps, nextState) {
         // Don't blow the stack out by re-rendering when this components height is set to the parent
-        return this.props.isAuthenticated != nextProps.isAuthenticated || this.state.menuCollapsed != nextState.menuCollapsed;
+        return this.props.isAuthenticated != nextProps.isAuthenticated || 
+        this.state.menuCollapsed != nextState.menuCollapsed ||
+        this.props.location.pathname != nextProps.location.pathname;
     }
 
     render() {
@@ -43,16 +45,16 @@ module.exports = class NavBar extends React.Component{
                     Due to hdpi devices, we're collapsible on both on both xs and sm screens */ }
                 <div className={this.state.menuCollapsed ? 'navbar-collapse hidden-xs hidden-sm' : 'navbar-collapse'}>
                     <ul className="nav navbar-nav">
-                        <NavItem to="/map">
+                        <NavItem to="/map" location={this.props.location}>
                             <i className="fa fa-map"></i> Map
                         </NavItem>
                         {/*We only show the code NavItem if the user is logged on*/}
                         {this.props.isAuthenticated ? (
-                            <NavItem to="/code">
+                            <NavItem to="/code" location={this.props.location}>
                                 <i className="fa fa-code"></i> Code
                             </NavItem>
                         ) : null} 
-                        <NavItem to="/docs">
+                        <NavItem to="/docs" location={this.props.location}>
                             <i className="fa fa-book"></i> Docs
                         </NavItem>
                         <li>
@@ -62,7 +64,7 @@ module.exports = class NavBar extends React.Component{
                         </li>
                     </ul>
                     <ul className="nav navbar-nav navbar-right">
-                            <NavItem to={this.props.isAuthenticated ? "/userMgmnt" : "/login"}>
+                            <NavItem to={this.props.isAuthenticated ? "/userMgmnt" : "/login"} location={this.props.location}>
                                  <i className={this.props.isAuthenticated ? "fa fa-user" : "fa fa-sign-in"}></i> {this.props.isAuthenticated ? this.props.authService.getPayload().displayName + ' ': "Logon "}
                             </NavItem>
                     </ul>
