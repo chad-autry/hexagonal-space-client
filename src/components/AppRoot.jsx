@@ -6,7 +6,7 @@ var AuthorizingRoute = require('./AuthorizingRoute.jsx');
 var Route = require('react-router-dom').Route;
 var Redirect = require('react-router-dom').Redirect;
 var Switch = require('react-router-dom').Switch;
-var Map = require('./Map.jsx');
+var View = require('./View.jsx');
 var Code = require('./Code.jsx');
 var Docs = require('./Docs.jsx');
 var Login = require('./Login.jsx');
@@ -61,12 +61,12 @@ module.exports = class AppRoot extends React.Component {
                 </div>
                 </Measure>
                 <Switch>
-                    <Route path="/map" component={Map}/>
+                    <Route path="/view" component={View}/>
                     <AuthorizingRoute path="/code" navbarHeight={this.state.navbarHeight} authService={this.props.authService} fetchService={this.props.fetchService} component={Code}/>
                     <Route path="/docs" component={Docs}/>
                     <Route path="/login" render={(routeProps) => <Login isAuthenticated={this.state.isAuthenticated} authService={this.props.authService} {...routeProps} />}/>
                     <AuthorizingRoute path="/userMgmnt" authService={this.props.authService} component={UserManagement}/>
-                    <Redirect from="*" to="/map"/>
+                    <Redirect from="*" to="/view/map"/>
                </Switch>
             </div>
             /* jshint ignore:end */

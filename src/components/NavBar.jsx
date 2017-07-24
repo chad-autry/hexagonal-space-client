@@ -45,7 +45,7 @@ module.exports = class NavBar extends React.Component{
                     Due to hdpi devices, we're collapsible on both on both xs and sm screens */ }
                 <div className={this.state.menuCollapsed ? 'navbar-collapse hidden-xs hidden-sm' : 'navbar-collapse'}>
                     <ul className="nav navbar-nav">
-                        <NavItem to="/map" location={this.props.location}>
+                        <NavItem to="/view/map" location={this.props.location}>
                             <i className="fa fa-map"></i> Map
                         </NavItem>
                         {/*We only show the code NavItem if the user is logged on*/}
