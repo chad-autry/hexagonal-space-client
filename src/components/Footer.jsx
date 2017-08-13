@@ -1,6 +1,6 @@
-var React = require('react');
+import React from 'react';
 
-module.exports = class Footer extends React.Component {
+const Footer = class Footer extends React.Component {
     render() {
         return (
             /* jshint ignore:start */
@@ -15,3 +15,5 @@ module.exports = class Footer extends React.Component {
         );
     }
 };
+
+export default Footer;

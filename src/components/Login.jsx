@@ -1,8 +1,8 @@
-var React = require('react');
-var Footer = require('./Footer.jsx');
-var Redirect = require('react-router-dom').Redirect;
+import React from 'react';
+import Footer from './Footer.jsx';
+import Redirect from 'react-router-dom';
 
-module.exports = class Login extends React.Component {
+const Login = class Login extends React.Component {
 
     constructor(props) {
         super(props);
@@ -11,15 +11,11 @@ module.exports = class Login extends React.Component {
     render() {
         if (this.props.isAuthenticated) {
             return (
-                /* jshint ignore:start */
                 <Redirect to='/home'/>
-                /* jshint ignore:end */
             );
         }
 
         return (
-            /* jshint ignore:start */
-
             <div className="container">
                 <div className="center-form panel">
                     <div className="panel-body">
@@ -32,7 +28,8 @@ module.exports = class Login extends React.Component {
                 </div>
             <Footer/>
             </div>
-            /* jshint ignore:end */
         );
     }
 };
+
+export default Login;

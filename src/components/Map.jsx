@@ -1,24 +1,24 @@
-var HexBoard = require('hex-grid-map-3d/src/HexBoard.js');
-var React = require('react');
-var ReactDom = require('react-dom');
-var GridContext = require('hex-grid-map-3d/src/contexts/InverseGridContext.js');
-var CellContext = require('hex-grid-map-3d/src/contexts/CellContext.js');
-var VectorDrawnItemFactory = require('hex-grid-map-3d/src/drawnItemFactories/VectorDrawnItemFactory.js');
-var PathDrawnItemFactory = require('hex-grid-map-3d/src/drawnItemFactories/PathDrawnItemFactory.js');
-var ArrowDrawnItemFactory = require('hex-grid-map-3d/src/drawnItemFactories/ArrowDrawnItemFactory.js');
-var DelegatingDrawnItemFactory = require('hex-grid-map-3d/src/drawnItemFactories/DelegatingDrawnItemFactory.js');
-var DrawnItemContext = require('hex-grid-map-3d/src/contexts/DrawnItemContext.js');
-var CellDrawnItemFactory = require('hex-grid-map-3d/src/drawnItemFactories/RegularPolygonDrawnItemFactory');
-var SphereDrawnItemFactory = require('hex-grid-map-3d/src/drawnItemFactories/SphereDrawnItemFactory');
-var FieldOfSquaresDrawnItemFactory = require('hex-grid-map-3d/src/drawnItemFactories/FieldOfSquaresDrawnItemFactory');
-var DrawnItemDataLink = require('hex-grid-map-3d/src/dataLinks/DrawnItemDataLink');
-var PlanarPositioningDataLink = require('hex-grid-map-3d/src/dataLinks/PlanarPositioningDataLink');
-var ZStackingDataLink = require('hex-grid-map-3d/src/dataLinks/ZStackingDataLink');
-var CloningDataLink = require('hex-grid-map-3d/src/dataLinks/CloningDataLink');
-var ConnectingDataLink = require('hex-grid-map-3d/src/dataLinks/ConnectingDataLink');
-var HexDefinition = require('cartesian-hexagonal');
-var makeDataLink = require('data-chains/src/DataLinkMixin');
-var EmittingDataSource = require('data-chains/src/EmittingDataSource.js');
+import HexBoard from 'hex-grid-map-3d/src/HexBoard.js';
+import React from 'react';
+import ReactDom from 'react-dom';
+import GridContext from 'hex-grid-map-3d/src/contexts/InverseGridContext.js';
+import CellContext from 'hex-grid-map-3d/src/contexts/CellContext.js';
+import VectorDrawnItemFactory from 'hex-grid-map-3d/src/drawnItemFactories/VectorDrawnItemFactory.js';
+import PathDrawnItemFactory from 'hex-grid-map-3d/src/drawnItemFactories/PathDrawnItemFactory.js';
+import ArrowDrawnItemFactory from 'hex-grid-map-3d/src/drawnItemFactories/ArrowDrawnItemFactory.js';
+import DelegatingDrawnItemFactory from 'hex-grid-map-3d/src/drawnItemFactories/DelegatingDrawnItemFactory.js';
+import DrawnItemContext from 'hex-grid-map-3d/src/contexts/DrawnItemContext.js';
+import CellDrawnItemFactory from 'hex-grid-map-3d/src/drawnItemFactories/RegularPolygonDrawnItemFactory';
+import SphereDrawnItemFactory from 'hex-grid-map-3d/src/drawnItemFactories/SphereDrawnItemFactory';
+import FieldOfSquaresDrawnItemFactory from 'hex-grid-map-3d/src/drawnItemFactories/FieldOfSquaresDrawnItemFactory';
+import DrawnItemDataLink from 'hex-grid-map-3d/src/dataLinks/DrawnItemDataLink';
+import PlanarPositioningDataLink from 'hex-grid-map-3d/src/dataLinks/PlanarPositioningDataLink';
+import ZStackingDataLink from 'hex-grid-map-3d/src/dataLinks/ZStackingDataLink';
+import CloningDataLink from 'hex-grid-map-3d/src/dataLinks/CloningDataLink';
+import ConnectingDataLink from 'hex-grid-map-3d/src/dataLinks/ConnectingDataLink';
+import HexDefinition from 'cartesian-hexagonal';
+import makeDataLink from 'data-chains/src/DataLinkMixin';
+import EmittingDataSource from 'data-chains/src/EmittingDataSource.js';
 
 /**
  * Factory function, returns a React component given the required params
@@ -27,7 +27,7 @@ var EmittingDataSource = require('data-chains/src/EmittingDataSource.js');
  * @param React - React, used to declare the class
  * @param ScenarioService - The scenario service used to for all actions
  */
-module.exports = class Map extends React.Component {
+const Map = class Map extends React.Component {
 
     constructor(props) {
         super(props);
@@ -37,9 +37,8 @@ module.exports = class Map extends React.Component {
 
         render() {
             return (
-                /* jshint ignore:start */
                 <canvas ref={(canvasRef) => this.canvasRef = canvasRef} style={{position:'absolute', top:0, left:0, backgroundColor: 'green', width: '100%' , height: '100%', zIndex: 200}}></canvas>
-                /* jshint ignore:end */
+   
             );
         }
 
@@ -246,3 +245,5 @@ module.exports = class Map extends React.Component {
             }
         }
     };
+
+export default Map;

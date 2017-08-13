@@ -1,19 +1,17 @@
-var NavBar = require('./NavBar.jsx');
-var Alerts = require('./Alerts.jsx');
-var React = require('react');
-var Measure = require('react-measure');
-var AuthorizingRoute = require('./AuthorizingRoute.jsx');
-var Route = require('react-router-dom').Route;
-var Redirect = require('react-router-dom').Redirect;
-var Switch = require('react-router-dom').Switch;
-var View = require('./View.jsx');
-var Code = require('./Code.jsx');
-var Docs = require('./Docs.jsx');
-var Login = require('./Login.jsx');
-var UserManagement = require('./UserManagement.jsx');
+import NavBar from './NavBar.jsx';
+import Alerts from './Alerts.jsx';
+import React from 'react';
+import Measure from 'react-measure';
+import AuthorizingRoute from './AuthorizingRoute.jsx';
+import { Route, Redirect, Switch } from 'react-router-dom';
+import View from './View.jsx';
+import Code from './Code.jsx';
+import Docs from './Docs.jsx';
+import Login from './Login.jsx';
+import UserManagement from './UserManagement.jsx';
 
 
-module.exports = class AppRoot extends React.Component {
+const AppRoot = class AppRoot extends React.Component {
     constructor(props) {
         super(props);
         //Register for Authentication state changes
@@ -50,7 +48,6 @@ module.exports = class AppRoot extends React.Component {
 
     render() {
         return (
-            /* jshint ignore:start */
             <div className="container">
                 <Measure onMeasure={(dimensions) => this.setNavHeight(dimensions.height)}>
                 <div style={{marginBottom:20 + 'px'}}>
@@ -69,7 +66,8 @@ module.exports = class AppRoot extends React.Component {
                     <Redirect from="*" to="/view/map"/>
                </Switch>
             </div>
-            /* jshint ignore:end */
         );
     }
 };
+
+export default AppRoot;

@@ -1,12 +1,12 @@
-var React = require('react');
-var NavItem = require('./NavItem.jsx');
+import React from 'react';
+import NavItem from './NavItem.jsx';
 
 /**
  * Create a React component for the NavBar
  * The only state it contains is if it is collapsed or not
  * It is passed in authentication, and route state for display
  */
-module.exports = class NavBar extends React.Component{
+const NavBar = class NavBar extends React.Component{
 
     constructor(props) {
         super(props);
@@ -30,7 +30,6 @@ module.exports = class NavBar extends React.Component{
 
     render() {
         return (
-            /* jshint ignore:start */
             <div className="navbar navbar-default" style={{zIndex:300}}>
                 <div className="navbar-header" onClick={this.menuClicked}>
                     <div className="navbar-toggle">
@@ -70,7 +69,8 @@ module.exports = class NavBar extends React.Component{
                     </ul>
                 </div>
             </div>
-            /* jshint ignore:end */
         );
     }
 };
+
+export default NavBar;

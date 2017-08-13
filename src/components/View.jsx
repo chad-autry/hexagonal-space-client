@@ -1,13 +1,13 @@
-var React = require('react');
-var ReactDom = require('react-dom');
-var EmittingDataSource = require('data-chains/src/EmittingDataSource.js');
-var Map = require('./Map.jsx');
-var Route = require('react-router-dom').Route;
+import React from 'react';
+import ReactDom from 'react-dom';
+import EmittingDataSource from 'data-chains/src/EmittingDataSource.js';
+import Map from './Map.jsx';
+import { Route } from 'react-router-dom';
 
 /**
  * The view component is responsible for making requests and populating the datasource for the Map and Table child components
  */
-module.exports = class View extends React.Component {
+const View = class View extends React.Component {
 
     constructor(props) {
         super(props);
@@ -17,9 +17,9 @@ module.exports = class View extends React.Component {
 
     render() {
         return (
-            /* jshint ignore:start */
             <Route path="/view/map" component={Map}/>
-            /* jshint ignore:end */
         );
     }
 };
+
+export default View;

@@ -1,9 +1,8 @@
-var React = require('react');
+import React from 'react';
 
-module.exports = class Docs extends React.Component {
+const Docs = class Docs extends React.Component {
     render() {
         return (
-            /* jshint ignore:start */
             <div>
                 <div className="jumbotron">
                   <h1 className="text-center">Notice</h1>
@@ -76,7 +75,8 @@ module.exports = class Docs extends React.Component {
                   </div>
                 </div>
             </div>
-            /* jshint ignore:end */
         );
     }
 };
+
+export default Docs;

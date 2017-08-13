@@ -1,8 +1,8 @@
-var React = require('react');
-var Redirect = require('react-router-dom').Redirect;
-var PropTypes = require('prop-types');
+import React from 'react';
+import Redirect from 'react-router-dom';
+import PropTypes from 'prop-types';
 
-module.exports = class UserManagement extends React.Component {
+const UserManagement = class UserManagement extends React.Component {
 
     constructor(props) {
         super(props);
@@ -19,15 +19,11 @@ module.exports = class UserManagement extends React.Component {
     render() {
         if (this.state.redirectToLogin) {
             return (
-                /* jshint ignore:start */
                 <Redirect to='/login'/>
-                /* jshint ignore:end */
             );
         }
 
         return (
-            /* jshint ignore:start */
-
             <div className="container">
                 <div className="center-form panel">
                     <div className="jumbotron" onClick={this.logout}>
@@ -35,7 +31,8 @@ module.exports = class UserManagement extends React.Component {
                     </div>
                 </div>
             </div>
-            /* jshint ignore:end */
         );
     }
 };
+
+export default UserManagement;

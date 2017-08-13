@@ -17,7 +17,7 @@ import 'brace/theme/solarized_light';
 import 'brace/theme/terminal';
 
 // Render editor
-module.exports = class Code extends React.Component {
+const Code = class Code extends React.Component {
     constructor(props) {
         super(props);
         this.state = {activeTitle:null, activeHash:null, codeList:{userScripts:[], shipScripts:[]}, code: "", title: "", type:"user", menuCollapsed: true, codeListCollapsed: true, editorStyle:"github", edited: false, shipScriptListCollapsed:true, userScriptListCollapsed:true};
@@ -132,14 +132,11 @@ module.exports = class Code extends React.Component {
             if (!this.state.shipScriptListCollapsed) {
                 shipScriptList = [];
                 for (let i = 0; i < this.state.codeList.shipScripts.length; i++) {
-                    /* jshint ignore:start */
                     shipScriptList.push(<ParentRow key={this.state.codeList.shipScripts[i].title} type='ship' codeClicked={this.codeClicked} addAlert={this.props.addAlert} title={this.state.codeList.shipScripts[i].title} children={this.state.codeList.shipScripts[i].children} />);
-                    /* jshint ignore:end */
                 }
             }
         }
         return (
-            /* jshint ignore:start */
             <div style={{width: '100%',position: 'fixed',left:0,right:0,top: this.props.navbarHeight+'px',bottom: 0}}>
                 <div className="container">
                     <div className="panel panel-default">
@@ -212,7 +209,6 @@ module.exports = class Code extends React.Component {
                     </div>
                 </div>
             </div>
-            /* jshint ignore:end */
         );
     }
 };
@@ -234,7 +230,6 @@ class ParentRow extends React.Component {
         if (!this.state.collapsed && !!this.props.children) {
             for (let i = 0; i < this.props.children.length; i++) {
                 let isActive = this.props.activeTitle == this.props.title && this.props.activeHash == this.props.children[i].hash;
-                /* jshint ignore:start */
                 children.push(<tr key={this.props.children[i].created}>
                     <td>
                         <i className='fa fa-chevron-down' aria-hidden="true" style={{visibility: 'hidden'}}></i>
@@ -252,16 +247,15 @@ class ParentRow extends React.Component {
                         {moment(this.props.children[i].created*1000).fromNow()}
                    </td>
                 </tr>);
-               /* jshint ignore:end */
             }
         }
         return (
-            /* jshint ignore:start */
                 <tbody>
                     <tr onClick={this.rowClicked}><td><i className='fa fa-chevron-down' aria-hidden="true" style={{visibility: 'hidden'}}></i><i className={this.state.collapsed ? 'fa fa-chevron-up':'fa fa-chevron-down'}></i>&nbsp;{this.props.title}</td></tr>
                     {children}
                 </tbody>
-            /* jshint ignore:end */
         );
     }
 }
+
+export default Code;
