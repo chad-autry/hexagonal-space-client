@@ -28,6 +28,28 @@ const FetchService = class FetchService {
     }
   }
 
+  getJson(url, contentType, andThen, noAndThen, params) {
+    //Since JS is single threaded, no need to worry the token can change after checking isAuthenticated
+      let query = Object.keys(params)
+        .map(k => encodeURIComponent(k) + "=" + encodeURIComponent(params[k]))
+        .join("&");
+      if (query) {
+        query = "?" + query;
+      }
+      let urlWithQuery = url + query;
+      fetch(urlWithQuery, {
+        method: "get",
+        headers: new Headers({
+          "Content-Type": contentType
+        })
+      })
+        .then(response => {
+          return response.json();
+        })
+        .then(andThen)
+        .catch(noAndThen);
+  }
+
   getJsonWithAuth(url, contentType, andThen, noAndThen, params) {
     //Since JS is single threaded, no need to worry the token can change after checking isAuthenticated
     if (this.authService.isAuthenticated()) {

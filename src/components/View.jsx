@@ -17,8 +17,16 @@ const View = class View extends React.Component {
 
     render() {
         return (
-            <Route path="/view/map" component={Map}/>
+            <Route path="/view/map" render={(routeProps) => <Map dataLink={this.baseDataLink} {...routeProps} />}/>
         );
+    }
+    
+    componentDidMount() {
+    	// Fetch the latest turn
+    	this.props.fetchService.getJson('/backend/view/system', 'application/json', (json) => {
+        this.baseDataLink.addItems(json.items);}
+, () => {},{"turn":'latest', "system":'0:0'}); 
+
     }
 };
 

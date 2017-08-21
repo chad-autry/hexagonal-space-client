@@ -33,6 +33,7 @@ const Map = class Map extends React.Component {
         super(props);
         // This line is important!
         this.setComponentState = this.setComponentState.bind(this);
+        this.baseDataLink = props.dataLink;
     }
 
         render() {
@@ -222,7 +223,6 @@ const Map = class Map extends React.Component {
             drawnItemDataLink.setScene(this.hexBoard.scene);
             connectingDataLink.scene = this.hexBoard.scene;
             
-            this.baseDataLink =  new EmittingDataSource();
             decoratingDataLink.setDataSource(this.baseDataLink);
             //this.baseDataLink.addItems([{id:'sun', type:'star', size: 100, u:0, v:0}]);
 //            this.props.glEventHub.on( 'map-state-changed', this.setComponentState );
