@@ -59,7 +59,7 @@ const AppRoot = class AppRoot extends React.Component {
                 </Measure>
                 <Switch>
                     <Route path="/view" render={(routeProps) => <View fetchService={this.props.fetchService} {...routeProps} />}/>
-                    <AuthorizingRoute path="/code" navbarHeight={this.state.navbarHeight} authService={this.props.authService} fetchService={this.props.fetchService} component={Code}/>
+                    <AuthorizingRoute path="/code" addAlert={this.addAlert} navbarHeight={this.state.navbarHeight} authService={this.props.authService} fetchService={this.props.fetchService} component={Code}/>
                     <Route path="/docs" component={Docs}/>
                     <Route path="/login" render={(routeProps) => <Login isAuthenticated={this.state.isAuthenticated} authService={this.props.authService} {...routeProps} />}/>
                     <AuthorizingRoute path="/userMgmnt" authService={this.props.authService} component={UserManagement}/>
