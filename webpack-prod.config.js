@@ -24,15 +24,20 @@ module.exports = {
   './src/bootStrap.js'
   ],
   output: {
-    path: './target/webapp',
+    path: __dirname + '/target/webapp',
     filename: 'bundle.js',
     publicPath: "/"
   },
   devtool:'source-map',
   module: {
-    loaders: prodLoaders
+    rules: [
+      {
+        test: /\.(js|jsx)$/,
+        exclude: /node_modules(?!\/client-auth-jwt)/,
+        use: ['babel-loader']
+      }
+    ]
   },
   plugins: [
-  new webpack.optimize.DedupePlugin()
   ],
 };
