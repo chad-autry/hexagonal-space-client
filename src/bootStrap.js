@@ -25,13 +25,14 @@ import { BrowserRouter as Router, Route } from "react-router-dom";
       <Router>
         <Route
           path="/"
-          render={routeProps =>
+          render={routeProps => (
             <AppRoot
               location={routeProps.location}
               fetchService={fetchService}
               authService={authService}
               {...routeProps}
-            />}
+            />
+          )}
         />
       </Router>,
       document.getElementById("app")
