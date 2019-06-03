@@ -10,14 +10,14 @@ const policies = [
     version: "1.0",
     checked: false,
     text:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam sagittis dictum libero in efficitur. Ut mattis pharetra sem, id ornare metus iaculis sit amet. Pellentesque et mi a diam viverra varius nec ac magna. In dapibus odio non venenatis blandit. Aenean lacinia vulputate nunc, eget vestibulum justo mattis id. Aliquam eu arcu ut sem varius tristique id sed felis. Curabitur sed libero id nulla cursus volutpat eu eu nulla. Morbi pulvinar, mauris quis mattis porta, metus leo luctus nulla, luctus blandit eros lorem non enim. Duis tristique ornare mi in rhoncus. Praesent non justo varius dolor placerat tincidunt aliquam sit amet ligula. Cras at nulla finibus, mattis dolor non, condimentum orci. Sed blandit tristique pretium. Suspendisse sit amet nunc vestibulum, condimentum lectus a, auctor urna."
+      "This is alpha I can cancel your account at any time, for any reason. All data (scripts, game actions) submitted to the application outside of private data is considered application data and may be retained independent of your account."
   },
   {
     name: "Privacy Policy",
-    version: "2.0",
+    version: "1.0",
     checked: false,
     text:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam sagittis dictum libero in efficitur. Ut mattis pharetra sem, id ornare metus iaculis sit amet. Pellentesque et mi a diam viverra varius nec ac magna. In dapibus odio non venenatis blandit. Aenean lacinia vulputate nunc, eget vestibulum justo mattis id. Aliquam eu arcu ut sem varius tristique id sed felis. Curabitur sed libero id nulla cursus volutpat eu eu nulla. Morbi pulvinar, mauris quis mattis porta, metus leo luctus nulla, luctus blandit eros lorem non enim. Duis tristique ornare mi in rhoncus. Praesent non justo varius dolor placerat tincidunt aliquam sit amet ligula. Cras at nulla finibus, mattis dolor non, condimentum orci. Sed blandit tristique pretium. Suspendisse sit amet nunc vestibulum, condimentum lectus a, auctor urna."
+      "Your private data will not be sold or given away. It will be treated with care. Minimal data will be collected."
   }
 ];
 const Policy = class Policy extends React.Component {
