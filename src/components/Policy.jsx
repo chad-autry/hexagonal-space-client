@@ -1,4 +1,4 @@
-import Redirect from "react-router-dom";
+import { Redirect } from "react-router-dom";
 import React from "react";
 import LoadingSpinner from "./LoadingSpinner.jsx";
 import LoadingOverlay from "react-loading-overlay";
@@ -129,7 +129,7 @@ const ButtonsDiv = class ButtonsDiv extends React.Component {
                 }, true)
               ) {
                 this.props.fetchService.getJsonWithAuth(
-                  "/backend/policyAccepted",
+                  "/newUser",
                   "application/json",
                   json => {
                     //Success
@@ -140,7 +140,14 @@ const ButtonsDiv = class ButtonsDiv extends React.Component {
                     // eslint-disable-next-line no-console
                     console.log(JSON.parse(json));
                   },
-                  { acceptedPolicy: this.props.policies }
+                  {
+                    acceptedPolicy: this.props.policies
+                      .filter(policy => policy.checked)
+                      .reduce((accumulator, currentValue) => {
+                        accumulator[currentValue.name] = currentValue.version;
+                        return accumulator;
+                      }, {})
+                  }
                 );
               }
             }}>

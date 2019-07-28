@@ -22,6 +22,7 @@ module.exports = {
     ],
     "rules": {
         "prettier/prettier": ["error", {"jsxBracketSameLine": true}],
-        "react/prop-types": "off"
+        "react/prop-types": "off",
+	    "react/no-children-prop": "off"
     }
 };

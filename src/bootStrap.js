@@ -1,12 +1,11 @@
 //This JS file simply bootstraps the app from the root component when the window loads
-/*global window: false */
-
-import AppRoot from "./components/AppRoot.jsx";
 import React from "react";
 import ReactDOM from "react-dom";
+import { BrowserRouter as Router, Route } from "react-router-dom";
+
+import AppRoot from "./components/AppRoot.jsx";
 import authjwt from "client-auth-jwt/src/Auth.js";
 import FetchService from "./FetchService.js";
-import { BrowserRouter as Router, Route } from "react-router-dom";
 
 //This function executes immediately
 (function() {
@@ -14,7 +13,7 @@ import { BrowserRouter as Router, Route } from "react-router-dom";
   authService.ProviderOAuthConfigs.google.clientId =
     "757972958364-0ohbuao53bjsrf4ur68lui887tk05740.apps.googleusercontent.com";
   authService.ProviderOAuthConfigs.google.redirectUri =
-    window.location.origin + "/backend/auth/googleAuth";
+    window.location.origin + + "/auth";
 
   let fetchService = new FetchService();
   fetchService.setAuthService(authService);
@@ -22,9 +21,8 @@ import { BrowserRouter as Router, Route } from "react-router-dom";
   //This function is attached to execute when the window loads
   document.addEventListener("DOMContentLoaded", function() {
     ReactDOM.render(
-      <Router>
+      <Router basename="/">
         <Route
-          path="/"
           render={routeProps => (
             <AppRoot
               location={routeProps.location}

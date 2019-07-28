@@ -4,6 +4,12 @@ const FetchService = class FetchService {
     this.setAuthService = this.setAuthService.bind(this);
     this.postWithAuth = this.postWithAuth.bind(this);
     this.requestListener = {};
+    this.handleErrors = response => {
+      if (!response.ok) {
+        throw Error(response.statusText);
+      }
+      return response;
+    };
   }
 
   setAuthService(authService) {
@@ -30,6 +36,7 @@ const FetchService = class FetchService {
           }),
           body: body
         })
+          .then(this.handleErrors)
           .then(andThen)
           .catch(noAndThen())
           .finally(() => {
@@ -57,11 +64,19 @@ const FetchService = class FetchService {
     }
     try {
       //Since JS is single threaded, no need to worry the token can change after checking isAuthenticated
-      let query = Object.keys(params)
-        .map(k => encodeURIComponent(k) + "=" + encodeURIComponent(params[k]))
-        .join("&");
-      if (query) {
-        query = "?" + query;
+      let query = "";
+      if (params) {
+        query = Object.keys(params)
+          .map(
+            k =>
+              encodeURIComponent(k) +
+              "=" +
+              encodeURIComponent(JSON.stringify(params[k]))
+          )
+          .join("&");
+        if (query) {
+          query = "?" + query;
+        }
       }
       let urlWithQuery = url + query;
       fetch(urlWithQuery, {
@@ -70,9 +85,11 @@ const FetchService = class FetchService {
           "Content-Type": contentType
         })
       })
+        .then(this.handleErrors)
         .then(response => {
           return response.json();
         })
+
         .then(andThen)
         .catch(noAndThen())
         .finally(() => {
@@ -94,11 +111,19 @@ const FetchService = class FetchService {
     try {
       //Since JS is single threaded, no need to worry the token can change after checking isAuthenticated
       if (this.authService.isAuthenticated()) {
-        let query = Object.keys(params)
-          .map(k => encodeURIComponent(k) + "=" + encodeURIComponent(params[k]))
-          .join("&");
-        if (query) {
-          query = "?" + query;
+        let query = "";
+        if (params) {
+          query = Object.keys(params)
+            .map(
+              k =>
+                encodeURIComponent(k) +
+                "=" +
+                encodeURIComponent(JSON.stringify(params[k]))
+            )
+            .join("&");
+          if (query) {
+            query = "?" + query;
+          }
         }
         let urlWithQuery = url + query;
         fetch(urlWithQuery, {
@@ -108,6 +133,7 @@ const FetchService = class FetchService {
             Authorization: this.authService.getToken()
           })
         })
+          .then(this.handleErrors)
           .then(response => {
             return response.json();
           })
@@ -139,11 +165,19 @@ const FetchService = class FetchService {
     try {
       //Since JS is single threaded, no need to worry the token can change after checking isAuthenticated
       if (this.authService.isAuthenticated()) {
-        let query = Object.keys(params)
-          .map(k => encodeURIComponent(k) + "=" + encodeURIComponent(params[k]))
-          .join("&");
-        if (query) {
-          query = "?" + query;
+        let query = "";
+        if (params) {
+          Object.keys(params)
+            .map(
+              k =>
+                encodeURIComponent(k) +
+                "=" +
+                encodeURIComponent(JSON.stringify(params[k]))
+            )
+            .join("&");
+          if (query) {
+            query = "?" + query;
+          }
         }
         let urlWithQuery = url + query;
         fetch(urlWithQuery, {
@@ -153,6 +187,7 @@ const FetchService = class FetchService {
             Authorization: this.authService.getToken()
           })
         })
+          .then(this.handleErrors)
           .then(response => {
             return response.json();
           })

@@ -1,14 +1,15 @@
-import { Link, Route } from "react-router-dom";
 import React from "react";
-/* eslint-disable react/no-children-prop */
-const NavItem = ({ to, ...rest }) => (
+import { Link, Route } from "react-router-dom";
+
+const NavItem = ({ to, children, ...rest }) => (
   <Route
     path={to}
     children={({ match }) => (
       <li className={match ? "active" : ""}>
-        <Link to={to} children={rest.children} />
+        <Link to={to} children={children} />
       </li>
     )}
+    {...rest}
   />
 );
 

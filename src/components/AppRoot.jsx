@@ -16,16 +16,15 @@ const AppRoot = class AppRoot extends React.Component {
     super(props);
     //Register for Authentication state changes
     this.props.authService.onAuthChange(() => {
+      let isAuthenticated = this.props.authService.isAuthenticated();
+      let pendingUserCreation = !!this.props.authService.getPayload()
+        .pendingUserCreation;
       this.setState({
-        pendingUserCreation:
-          this.props.authService.isAuthenticated() &&
-          !!this.props.authService.getPayload().pendingUserCreation,
-        isAuthenticated:
-          this.props.authService.isAuthenticated() &&
-          !this.props.authService.getPayload().pendingUserCreation
+        pendingUserCreation: isAuthenticated && pendingUserCreation,
+        isAuthenticated: isAuthenticated && !pendingUserCreation
       });
     });
-    this.props.fetchService.listen("/backend/policyAccepted", beginRequest => {
+    this.props.fetchService.listen("/newUser", beginRequest => {
       this.setState({
         fetchingPolicyAccepted: beginRequest
       });
@@ -36,8 +35,13 @@ const AppRoot = class AppRoot extends React.Component {
       });
     });
     this.state = {
-      isAuthenticated: this.props.authService.isAuthenticated(),
-      alerts: []
+      fetchingPolicyAccepted: false,
+      pendingUserCreation:
+        this.props.authService.isAuthenticated() &&
+        !!this.props.authService.getPayload().pendingUserCreation,
+      isAuthenticated:
+        this.props.authService.isAuthenticated() &&
+        !this.props.authService.getPayload().pendingUserCreation
     };
     // This line is important!
     this.setNavHeight = this.setNavHeight.bind(this);
@@ -127,6 +131,7 @@ const AppRoot = class AppRoot extends React.Component {
           <AuthorizingRoute
             path="/userMgmnt"
             authService={this.props.authService}
+            fetchService={this.props.fetchService}
             component={UserManagement}
           />
           <Redirect from="*" to="/view/map" />
