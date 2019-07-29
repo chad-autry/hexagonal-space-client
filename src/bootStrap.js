@@ -13,7 +13,7 @@ import FetchService from "./FetchService.js";
   authService.ProviderOAuthConfigs.google.clientId =
     "757972958364-0ohbuao53bjsrf4ur68lui887tk05740.apps.googleusercontent.com";
   authService.ProviderOAuthConfigs.google.redirectUri =
-    window.location.origin + + "/auth";
+    window.location.origin + +"/auth";
 
   let fetchService = new FetchService();
   fetchService.setAuthService(authService);

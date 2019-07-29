@@ -41,7 +41,8 @@ const AppRoot = class AppRoot extends React.Component {
         !!this.props.authService.getPayload().pendingUserCreation,
       isAuthenticated:
         this.props.authService.isAuthenticated() &&
-        !this.props.authService.getPayload().pendingUserCreation
+        !this.props.authService.getPayload().pendingUserCreation,
+      alerts: []
     };
     // This line is important!
     this.setNavHeight = this.setNavHeight.bind(this);
