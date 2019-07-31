@@ -76,6 +76,7 @@ const AppRoot = class AppRoot extends React.Component {
             <NavBar
               setNavHeight={this.setNavHeight}
               authService={this.props.authService}
+              pendingUserCreation={this.state.pendingUserCreation}
               isAuthenticated={this.state.isAuthenticated}
               location={this.props.location}
             />
