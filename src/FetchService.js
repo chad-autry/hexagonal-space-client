@@ -10,6 +10,11 @@ const FetchService = class FetchService {
       }
       return response;
     };
+
+    this.defaultNoAndThen = err => {
+      // eslint-disable-next-line no-console
+      console.error(err);
+    };
   }
 
   setAuthService(authService) {
@@ -20,7 +25,13 @@ const FetchService = class FetchService {
     this.requestListener[url] = callback;
   }
 
-  postWithAuth(url, contentType, body, andThen, noAndThen) {
+  postWithAuth(
+    url,
+    contentType,
+    body,
+    andThen,
+    noAndThen = this.defaultNoAndThen
+  ) {
     if (this.requestListener[url]) {
       this.requestListener[url](true);
     }
@@ -38,7 +49,7 @@ const FetchService = class FetchService {
         })
           .then(this.handleErrors)
           .then(andThen)
-          .catch(noAndThen())
+          .catch(noAndThen)
           .finally(() => {
             if (this.requestListener[url]) {
               this.requestListener[url](false);
@@ -58,7 +69,13 @@ const FetchService = class FetchService {
     }
   }
 
-  getJson(url, contentType, andThen, noAndThen, params) {
+  getJson(
+    url,
+    contentType,
+    andThen,
+    noAndThen = this.defaultNoAndThen,
+    params
+  ) {
     if (this.requestListener[url]) {
       this.requestListener[url](true);
     }
@@ -91,7 +108,7 @@ const FetchService = class FetchService {
         })
 
         .then(andThen)
-        .catch(noAndThen())
+        .catch(noAndThen)
         .finally(() => {
           if (this.requestListener[url]) {
             this.requestListener[url](false);
@@ -104,7 +121,13 @@ const FetchService = class FetchService {
     }
   }
 
-  getJsonWithAuth(url, contentType, andThen, noAndThen, params) {
+  getJsonWithAuth(
+    url,
+    contentType,
+    andThen,
+    noAndThen = this.defaultNoAndThen,
+    params
+  ) {
     if (this.requestListener[url]) {
       this.requestListener[url](true);
     }
@@ -138,7 +161,7 @@ const FetchService = class FetchService {
             return response.json();
           })
           .then(andThen)
-          .catch(noAndThen())
+          .catch(noAndThen)
           .finally(() => {
             if (this.requestListener[url]) {
               this.requestListener[url](false);
@@ -158,7 +181,13 @@ const FetchService = class FetchService {
     }
   }
 
-  putWithAuth(url, contentType, andThen, noAndThen, params) {
+  putWithAuth(
+    url,
+    contentType,
+    andThen,
+    noAndThen = this.defaultNoAndThen,
+    params
+  ) {
     if (this.requestListener[url]) {
       this.requestListener[url](true);
     }
@@ -192,7 +221,7 @@ const FetchService = class FetchService {
             return response.json();
           })
           .then(andThen)
-          .catch(noAndThen())
+          .catch(noAndThen)
           .finally(() => {
             if (this.requestListener[url]) {
               this.requestListener[url](false);
