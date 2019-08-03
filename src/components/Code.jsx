@@ -21,7 +21,7 @@ const Code = class Code extends React.Component {
     this.state = {
       activeTitle: null,
       activeHash: null,
-      codeList: { userScripts: [], shipScripts: [] },
+      codeList: { shipScripts: [] },
       code: "",
       title: "",
       type: "user",
@@ -29,23 +29,17 @@ const Code = class Code extends React.Component {
       codeListCollapsed: true,
       editorStyle: "github",
       edited: false,
-      shipScriptListCollapsed: true,
-      userScriptListCollapsed: true
+      shipScriptListCollapsed: true
     };
     // Bind the methods to the object's this
     this.codeChanged = this.codeChanged.bind(this);
     this.menuClicked = this.menuClicked.bind(this);
     this.titleChanged = this.titleChanged.bind(this);
-    this.typeClicked = this.typeClicked.bind(this);
     this.codeListClicked = this.codeListClicked.bind(this);
     this.editorStyleChanged = this.editorStyleChanged.bind(this);
     this.saveClicked = this.saveClicked.bind(this);
     this.getList = this.getList.bind(this);
     this.codeClicked = this.codeClicked.bind(this);
-    this.shipScriptRowClicked = this.shipScriptRowClicked.bind(this);
-    this.userScriptRowClicked = this.userScriptRowClicked.bind(this);
-    this.activateUserScript = this.activateUserScript.bind(this);
-    this.deactivateUserScript = this.deactivateUserScript.bind(this);
     this.getList();
   }
 
@@ -58,14 +52,6 @@ const Code = class Code extends React.Component {
       this.setState({ title: event.target.value, edited: true });
     } else {
       this.setState({ title: "", edited: false });
-    }
-  }
-
-  typeClicked() {
-    if (this.state.type === "user") {
-      this.setState({ type: "ship", edited: true });
-    } else {
-      this.setState({ type: "user", edited: true });
     }
   }
 
@@ -88,12 +74,10 @@ const Code = class Code extends React.Component {
 
   getList() {
     this.props.fetchService.getJsonWithAuth(
-      "./backend/code/list",
+      "/listCode",
       "application/json",
       json => {
         this.setState({
-          activeTitle: json.activeUserScript.title,
-          activeHash: json.activeUserScript.hash,
           codeList: json
         });
       },
@@ -124,12 +108,11 @@ const Code = class Code extends React.Component {
     //TODO reload the list of scripts once a save finishes
     //TODO Notify if there was an error saving a script
     this.props.fetchService.postWithAuth(
-      "./backend/code/save",
+      "/saveCode",
       "application/json",
       JSON.stringify({
         title: this.state.title,
-        code: this.state.code,
-        type: this.state.type
+        code: this.state.code
       }),
       () => {
         this.getList();
@@ -139,83 +122,26 @@ const Code = class Code extends React.Component {
     this.setState({ edited: false });
   }
 
-  userScriptRowClicked() {
-    this.setState({
-      userScriptListCollapsed: !this.state.userScriptListCollapsed
-    });
-  }
-
-  shipScriptRowClicked() {
-    this.setState({
-      shipScriptListCollapsed: !this.state.shipScriptListCollapsed
-    });
-  }
-
-  activateUserScript(title, hash) {
-    let then = () => {
-      this.setState({ activeTitle: title, activeHash: hash });
-    };
-    this.props.fetchService.putWithAuth(
-      "./backend/code/activateUserScript",
-      "application/json",
-      then,
-      () => {},
-      { title: title, hash: hash }
-    );
-  }
-
-  deactivateUserScript(title, hash) {
-    let then = () => {
-      this.setState({ activeTitle: null, activeHash: null });
-    };
-    this.props.fetchService.putWithAuth(
-      "./backend/code/deactivateUserScript",
-      "application/json",
-      then,
-      () => {},
-      { title: title, hash: hash }
-    );
-  }
-
   render() {
-    let userScriptList = null;
-    let shipScriptList = null;
+    let scriptList = null;
     if (!this.state.codeListCollapsed) {
-      if (!this.state.userScriptListCollapsed) {
-        userScriptList = [];
-        for (let i = 0; i < this.state.codeList.userScripts.length; i++) {
-          /* eslint-disable react/no-children-prop */
-          userScriptList.push(
-            <ParentRow
-              key={this.state.codeList.userScripts[i].title}
-              type="user"
-              activeTitle={this.state.activeTitle}
-              activeHash={this.state.activeHash}
-              deactivateUserScript={this.deactivateUserScript}
-              activateUserScript={this.activateUserScript}
-              codeClicked={this.codeClicked}
-              addAlert={this.props.addAlert}
-              title={this.state.codeList.userScripts[i].title}
-              children={this.state.codeList.userScripts[i].children}
-            />
-          );
-        }
-      }
-      if (!this.state.shipScriptListCollapsed) {
-        shipScriptList = [];
-        for (let i = 0; i < this.state.codeList.shipScripts.length; i++) {
-          shipScriptList.push(
-            <ParentRow
-              key={this.state.codeList.shipScripts[i].title}
-              type="ship"
-              codeClicked={this.codeClicked}
-              addAlert={this.props.addAlert}
-              title={this.state.codeList.shipScripts[i].title}
-              children={this.state.codeList.shipScripts[i].children}
-            />
-          );
-          /* eslint-enable react/no-children-prop */
-        }
+      scriptList = [];
+      for (let i = 0; i < this.state.codeList.userScripts.length; i++) {
+        /* eslint-disable react/no-children-prop */
+        scriptList.push(
+          <ParentRow
+            key={this.state.codeList.shipScripts[i].title}
+            activeTitle={this.state.activeTitle}
+            activeHash={this.state.activeHash}
+            latestCreateTs={this.state.codeList.shipScripts[i].latestCreateTs}
+            deactivateUserScript={this.deactivateUserScript}
+            activateUserScript={this.activateUserScript}
+            codeClicked={this.codeClicked}
+            addAlert={this.props.addAlert}
+            title={this.state.codeList.userScripts[i].title}
+            latestHash={this.state.codeList.userScripts[i].latestHash}
+          />
+        );
       }
     }
     return (
@@ -236,7 +162,6 @@ const Code = class Code extends React.Component {
                   <button
                     className="btn btn-default"
                     onClick={this.codeListClicked}>
-                    &#8203;
                     <i
                       className={
                         this.state.codeListCollapsed
@@ -244,11 +169,11 @@ const Code = class Code extends React.Component {
                           : "fa fa-chevron-right"
                       }
                     />
+                    {""}
                   </button>
-                  <button
+                  {/*   <button
                     className="btn btn-default"
                     onClick={this.typeClicked}>
-                    &#8203;
                     <i
                       className={
                         this.state.type === "ship"
@@ -256,7 +181,7 @@ const Code = class Code extends React.Component {
                           : "fa fa-fw fa-user"
                       }
                     />
-                  </button>
+                  </button>*/}
                 </span>
                 {/*   <span className="input-group-btn">
                                     <button className="btn btn-default dropdown-toggle" onClick={this.menuClicked} aria-haspopup="true" aria-expanded="true">Menu</button>
@@ -321,22 +246,7 @@ const Code = class Code extends React.Component {
                         </td>
                       </tr>
                     </tbody>
-                    {userScriptList}
-                    <tbody>
-                      <tr onClick={this.shipScriptRowClicked}>
-                        <td>
-                          <i
-                            className={
-                              this.state.shipScriptListCollapsed
-                                ? "fa fa-chevron-up"
-                                : "fa fa-chevron-down"
-                            }
-                          />
-                          <i className="fa fa-fw fa-rocket" />
-                        </td>
-                      </tr>
-                    </tbody>
-                    {shipScriptList}
+                    {scriptList}
                   </table>
                 </div>
                 <div
@@ -381,9 +291,6 @@ class ParentRow extends React.Component {
     let children = [];
     if (!this.state.collapsed && !!this.props.children) {
       for (let i = 0; i < this.props.children.length; i++) {
-        let isActive =
-          this.props.activeTitle == this.props.title &&
-          this.props.activeHash == this.props.children[i].hash;
         children.push(
           <tr key={this.props.children[i].created}>
             <td>
@@ -391,13 +298,7 @@ class ParentRow extends React.Component {
                 className="fa fa-chevron-down"
                 aria-hidden="true"
                 style={{ visibility: "hidden" }}
-              />
-              <i
-                className="fa fa-chevron-down"
-                aria-hidden="true"
-                style={{ visibility: "hidden" }}
-              />
-              &nbsp;
+              />{" "}
               <button
                 type="button"
                 className="btn btn-link text-muted no-padding"
@@ -421,34 +322,7 @@ class ParentRow extends React.Component {
                 }}>
                 <i className="fa fa-hashtag fa-fw" />
               </button>
-              {this.props.type == "user" && !isActive && (
-                <button
-                  type="button"
-                  className="btn btn-link text-muted no-padding"
-                  onClick={() => {
-                    this.props.activateUserScript(
-                      this.props.title,
-                      this.props.children[i].hash
-                    );
-                  }}>
-                  <i className="fa fa-flag-o fa-fw" />
-                </button>
-              )}
-              {this.props.type == "user" && isActive && (
-                <button
-                  type="button"
-                  className="btn btn-link text-muted no-padding"
-                  onClick={() => {
-                    this.props.deactivateUserScript(
-                      this.props.title,
-                      this.props.children[i].hash
-                    );
-                  }}>
-                  <i className="fa fa-flag fa-fw" />
-                </button>
-              )}
-              &nbsp;
-              {moment(this.props.children[i].created * 1000).fromNow()}
+              {" " + moment(this.props.children[i].created * 1000).fromNow()}
             </td>
           </tr>
         );
@@ -459,16 +333,35 @@ class ParentRow extends React.Component {
         <tr onClick={this.rowClicked}>
           <td>
             <i
-              className="fa fa-chevron-down"
-              aria-hidden="true"
-              style={{ visibility: "hidden" }}
-            />
-            <i
               className={
                 this.state.collapsed ? "fa fa-chevron-up" : "fa fa-chevron-down"
               }
             />
-            &nbsp;{this.props.title}
+            {" " + this.props.title}{" "}
+            <button
+              type="button"
+              className="btn btn-link text-muted no-padding"
+              onClick={() => {
+                this.props.codeClicked(
+                  this.props.type,
+                  this.props.title,
+                  this.props.latestHash
+                );
+              }}>
+              <i className="fa fa-eye fa-fw" />
+            </button>
+            <button
+              type="button"
+              className="btn btn-link text-muted no-padding"
+              onClick={() => {
+                this.props.addAlert({
+                  type: "info",
+                  text: this.props.latestHash
+                });
+              }}>
+              <i className="fa fa-hashtag fa-fw" />
+            </button>
+            {" " + moment(this.props.latestCreateTs * 1000).fromNow()}
           </td>
         </tr>
         {children}
