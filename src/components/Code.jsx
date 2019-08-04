@@ -1,6 +1,8 @@
 import React from "react";
 import AceEditor from "react-ace";
 import moment from "moment";
+import LoadingSpinner from "./LoadingSpinner.jsx";
+import LoadingOverlay from "react-loading-overlay";
 
 import "brace/mode/javascript";
 import "brace/theme/monokai";
@@ -25,24 +27,30 @@ const Code = class Code extends React.Component {
       code: "",
       title: "",
       type: "user",
+      titleFilter: "",
       menuCollapsed: true,
       codeListCollapsed: true,
       editorStyle: "github",
       edited: false,
+      hasMore: false,
+      loadingCode: false,
       shipScriptListCollapsed: true
     };
     // Bind the methods to the object's this
     this.codeChanged = this.codeChanged.bind(this);
     this.menuClicked = this.menuClicked.bind(this);
     this.titleChanged = this.titleChanged.bind(this);
+    this.titleFilterChanged = this.titleFilterChanged.bind(this);
     this.codeListClicked = this.codeListClicked.bind(this);
     this.editorStyleChanged = this.editorStyleChanged.bind(this);
     this.saveClicked = this.saveClicked.bind(this);
     this.getList = this.getList.bind(this);
     this.codeClicked = this.codeClicked.bind(this);
-    this.getList();
   }
 
+  componentDidMount() {
+    this.getList();
+  }
   codeChanged(value) {
     this.setState({ code: value, edited: true });
   }
@@ -52,6 +60,14 @@ const Code = class Code extends React.Component {
       this.setState({ title: event.target.value, edited: true });
     } else {
       this.setState({ title: "", edited: false });
+    }
+  }
+
+  titleFilterChanged(event) {
+    if (event.target.value) {
+      this.setState({ titleFilter: event.target.value });
+    } else {
+      this.setState({ titleFilter: "" });
     }
   }
 
@@ -72,17 +88,22 @@ const Code = class Code extends React.Component {
     });
   }
 
-  getList() {
+  getList(titleFilter) {
+    this.setState({
+      loadingCode: true
+    });
     this.props.fetchService.getJsonWithAuth(
       "/listCode",
       "application/json",
       json => {
         this.setState({
-          codeList: json
+          hasMore: json.hasMore,
+          codeList: json,
+          loadingCode: false
         });
       },
       () => {},
-      {}
+      { titleFilter: titleFilter ? titleFilter : this.state.titleFilter }
     );
   }
 
@@ -126,22 +147,44 @@ const Code = class Code extends React.Component {
     let scriptList = null;
     if (!this.state.codeListCollapsed) {
       scriptList = [];
-      for (let i = 0; i < this.state.codeList.userScripts.length; i++) {
-        /* eslint-disable react/no-children-prop */
+      if (this.state.loadingCode) {
         scriptList.push(
-          <ParentRow
-            key={this.state.codeList.shipScripts[i].title}
-            activeTitle={this.state.activeTitle}
-            activeHash={this.state.activeHash}
-            latestCreateTs={this.state.codeList.shipScripts[i].latestCreateTs}
-            deactivateUserScript={this.deactivateUserScript}
-            activateUserScript={this.activateUserScript}
-            codeClicked={this.codeClicked}
-            addAlert={this.props.addAlert}
-            title={this.state.codeList.userScripts[i].title}
-            latestHash={this.state.codeList.userScripts[i].latestHash}
-          />
+          <tbody key="iamauniquesnowflake">
+            <tr>
+              <td>
+                <LoadingOverlay
+                  active={true}
+                  styles={{
+                    overlay: base => ({
+                      ...base,
+                      background: "rgba(0, 0, 0, 0.5)"
+                    })
+                  }}
+                  spinner={<LoadingSpinner />}
+                  text="Loading..."
+                />
+              </td>
+            </tr>
+          </tbody>
         );
+      } else if (this.state.codeList.shipScripts) {
+        for (let i = 0; i < this.state.codeList.shipScripts.length; i++) {
+          /* eslint-disable react/no-children-prop */
+          scriptList.push(
+            <ParentRow
+              key={this.state.codeList.shipScripts[i].title}
+              activeTitle={this.state.activeTitle}
+              activeHash={this.state.activeHash}
+              latestCreateTs={this.state.codeList.shipScripts[i].latestCreateTs}
+              deactivateUserScript={this.deactivateUserScript}
+              activateUserScript={this.activateUserScript}
+              codeClicked={this.codeClicked}
+              addAlert={this.props.addAlert}
+              title={this.state.codeList.shipScripts[i].title}
+              latestHash={this.state.codeList.shipScripts[i].latestHash}
+            />
+          );
+        }
       }
     }
     return (
@@ -233,16 +276,41 @@ const Code = class Code extends React.Component {
                   }}>
                   <table className="table table-hover no-margin">
                     <tbody>
-                      <tr onClick={this.userScriptRowClicked}>
+                      <tr>
                         <td>
-                          <i
-                            className={
-                              this.state.userScriptListCollapsed
-                                ? "fa fa-chevron-up"
-                                : "fa fa-chevron-down"
-                            }
-                          />
-                          <i className="fa fa-fw fa-user" />
+                          <div className="input-group">
+                            <input
+                              type="text"
+                              className="form-control"
+                              value={this.state.titleFilter}
+                              onChange={this.titleFilterChanged}
+                              placeholder="Show titles beggining at..."
+                              aria-describedby="title start"
+                            />
+                              <span className="input-group-btn">
+                                <button
+                                  className="btn btn-default"
+                                  onClick={() => {this.getList(this.state.titleFilter)}}>
+                                  <i className={"fa fa-search"} />
+                                </button>
+                              </span>
+                              <span className="input-group-btn">
+                                <button
+                                  className="btn btn-default"
+                                  onClick={() => {
+                                    this.getList(
+                                      this.state.codeList.shipScripts[
+                                        this.state.codeList.shipScripts.length -
+                                          1
+                                      ].title + " "
+                                    );
+                                  }}
+                                  disabled={!this.state.hasMore}>
+                                  <i className={"fa fa-mail-forward"} />
+                                  T
+                                </button>
+                              </span>
+                          </div>
                         </td>
                       </tr>
                     </tbody>

@@ -1,4 +1,5 @@
 var webpack = require('webpack');
+const TerserPlugin = require('terser-webpack-plugin');
 
 const common = {
   // Important! Do not remove ''. If you do, imports without
@@ -23,6 +24,9 @@ module.exports = {
   // our entry file
   './src/bootStrap.js'
   ],
+  optimization: {
+    minimizer: [new TerserPlugin()]
+  },
   output: {
     path: __dirname + '/target/webapp',
     filename: 'bundle.js',
