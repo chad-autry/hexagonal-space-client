@@ -107,27 +107,25 @@ const Code = class Code extends React.Component {
     );
   }
 
-  codeClicked(type, title, hash) {
+  codeClicked(title, bodyId) {
     let then = json => {
       this.setState({
-        type: type,
         code: json.code,
         title: title,
         edited: false
       });
     };
     this.props.fetchService.getJsonWithAuth(
-      "./backend/code/view",
+      "/viewCode",
       "application/json",
       then,
       () => {},
-      { type: type, title: title, hash: hash }
+      { bodyId: bodyId }
     );
   }
 
   saveClicked() {
-    //TODO reload the list of scripts once a save finishes
-    //TODO Notify if there was an error saving a script
+
     this.props.fetchService.postWithAuth(
       "/saveCode",
       "application/json",
@@ -161,8 +159,9 @@ const Code = class Code extends React.Component {
                     })
                   }}
                   spinner={<LoadingSpinner />}
-                  text="Loading..."
-                />
+                  text="Loading...">
+            <p>{" "}</p>
+          </LoadingOverlay>
               </td>
             </tr>
           </tbody>
@@ -203,7 +202,7 @@ const Code = class Code extends React.Component {
               <div className="input-group">
                 <span className="input-group-btn">
                   <button
-                    className="btn btn-default"
+                    className="btn icon-btn btn-default"
                     onClick={this.codeListClicked}>
                     <i
                       className={
@@ -267,7 +266,7 @@ const Code = class Code extends React.Component {
                 </span>
               </div>
             </div>
-            <div className="container">
+            <div className="panel-body code-panel-body">
               <div className="row">
                 <div
                   className="col-xs-6 no-padding"
@@ -287,29 +286,29 @@ const Code = class Code extends React.Component {
                               placeholder="Show titles beggining at..."
                               aria-describedby="title start"
                             />
-                              <span className="input-group-btn">
-                                <button
-                                  className="btn btn-default"
-                                  onClick={() => {this.getList(this.state.titleFilter)}}>
-                                  <i className={"fa fa-search"} />
-                                </button>
-                              </span>
-                              <span className="input-group-btn">
-                                <button
-                                  className="btn btn-default"
-                                  onClick={() => {
-                                    this.getList(
-                                      this.state.codeList.shipScripts[
-                                        this.state.codeList.shipScripts.length -
-                                          1
-                                      ].title + " "
-                                    );
-                                  }}
-                                  disabled={!this.state.hasMore}>
-                                  <i className={"fa fa-mail-forward"} />
-                                  T
-                                </button>
-                              </span>
+                            <span className="input-group-btn">
+                              <button
+                                className="btn icon-btn input-grp-middle btn-default"
+                                onClick={() => {
+                                  this.getList(this.state.titleFilter);
+                                }}>
+                                <i className={"fa fa-search"} />
+                              </button>
+                            </span>
+                            <span className="input-group-btn">
+                              <button
+                                className="btn icon-btn btn-default"
+                                onClick={() => {
+                                  this.getList(
+                                    this.state.codeList.shipScripts[
+                                      this.state.codeList.shipScripts.length - 1
+                                    ].title + " "
+                                  );
+                                }}
+                                disabled={!this.state.hasMore}>
+                                <i className={"fa fa-mail-forward"} />
+                              </button>
+                            </span>
                           </div>
                         </td>
                       </tr>
@@ -377,7 +376,7 @@ class ParentRow extends React.Component {
                     this.props.children[i].hash
                   );
                 }}>
-                <i className="fa fa-eye fa-fw" />
+                <i className="fa fa-code fa-fw" />
               </button>
               <button
                 type="button"
@@ -398,25 +397,28 @@ class ParentRow extends React.Component {
     }
     return (
       <tbody>
-        <tr onClick={this.rowClicked}>
+        <tr>
           <td>
-            <i
-              className={
-                this.state.collapsed ? "fa fa-chevron-up" : "fa fa-chevron-down"
-              }
-            />
+            <button
+              type="button"
+              className="btn btn-link text-muted no-padding"
+              onClick={this.rowClicked}>
+              <i
+                className={
+                  this.state.collapsed
+                    ? "fa fa-chevron-up"
+                    : "fa fa-chevron-down"
+                }
+              />
+            </button>
             {" " + this.props.title}{" "}
             <button
               type="button"
               className="btn btn-link text-muted no-padding"
               onClick={() => {
-                this.props.codeClicked(
-                  this.props.type,
-                  this.props.title,
-                  this.props.latestHash
-                );
+                this.props.codeClicked(this.props.title, this.props.latestHash);
               }}>
-              <i className="fa fa-eye fa-fw" />
+              <i className="fa fa-code fa-fw" />
             </button>
             <button
               type="button"
