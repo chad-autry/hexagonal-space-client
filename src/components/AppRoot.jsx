@@ -70,7 +70,7 @@ const AppRoot = class AppRoot extends React.Component {
 
   render() {
     return (
-      <div className="container">
+      <div>
         <Measure onMeasure={dimensions => this.setNavHeight(dimensions.height)}>
           <div style={{ marginBottom: 20 + "px" }}>
             <NavBar

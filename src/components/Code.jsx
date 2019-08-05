@@ -34,6 +34,7 @@ const Code = class Code extends React.Component {
       edited: false,
       hasMore: false,
       loadingCode: false,
+      listingCode: false,
       shipScriptListCollapsed: true
     };
     // Bind the methods to the object's this
@@ -90,7 +91,7 @@ const Code = class Code extends React.Component {
 
   getList(titleFilter) {
     this.setState({
-      loadingCode: true
+      listingCode: true
     });
     this.props.fetchService.getJsonWithAuth(
       "/listCode",
@@ -99,7 +100,7 @@ const Code = class Code extends React.Component {
         this.setState({
           hasMore: json.hasMore,
           codeList: json,
-          loadingCode: false
+          listingCode: false
         });
       },
       () => {},
@@ -108,11 +109,15 @@ const Code = class Code extends React.Component {
   }
 
   codeClicked(title, bodyId) {
+    this.setState({
+      loadingCode: true
+    });
     let then = json => {
       this.setState({
         code: json.code,
         title: title,
-        edited: false
+        edited: false,
+        loadingCode: false
       });
     };
     this.props.fetchService.getJsonWithAuth(
@@ -125,7 +130,6 @@ const Code = class Code extends React.Component {
   }
 
   saveClicked() {
-
     this.props.fetchService.postWithAuth(
       "/saveCode",
       "application/json",
@@ -145,7 +149,7 @@ const Code = class Code extends React.Component {
     let scriptList = null;
     if (!this.state.codeListCollapsed) {
       scriptList = [];
-      if (this.state.loadingCode) {
+      if (this.state.listingCode) {
         scriptList.push(
           <tbody key="iamauniquesnowflake">
             <tr>
@@ -160,8 +164,8 @@ const Code = class Code extends React.Component {
                   }}
                   spinner={<LoadingSpinner />}
                   text="Loading...">
-            <p>{" "}</p>
-          </LoadingOverlay>
+                  <p> </p>
+                </LoadingOverlay>
               </td>
             </tr>
           </tbody>
@@ -180,7 +184,9 @@ const Code = class Code extends React.Component {
               codeClicked={this.codeClicked}
               addAlert={this.props.addAlert}
               title={this.state.codeList.shipScripts[i].title}
+              titleHash={this.state.codeList.shipScripts[i].titleHash}
               latestHash={this.state.codeList.shipScripts[i].latestHash}
+              fetchService={this.props.fetchService}
             />
           );
         }
@@ -248,14 +254,25 @@ const Code = class Code extends React.Component {
                                         </li>
                                     </ul>
                                 </span> */}
-                <input
-                  type="text"
-                  className="form-control"
-                  value={this.state.title}
-                  onChange={this.titleChanged}
-                  placeholder="Script Title"
-                  aria-describedby="title"
-                />
+                <LoadingOverlay
+                  active={this.state.loadingCode}
+                  styles={{
+                    overlay: base => ({
+                      ...base,
+                      background: "rgba(0, 0, 0, 0.5)"
+                    })
+                  }}
+                  spinner={<LoadingSpinner />}
+                  text="Loading...">
+                  <input
+                    type="text"
+                    className="form-control"
+                    value={this.state.title}
+                    onChange={this.titleChanged}
+                    placeholder="Script Title"
+                    aria-describedby="title"
+                  />
+                </LoadingOverlay>
                 <span className="input-group-btn">
                   <button
                     className="btn btn-default"
@@ -322,16 +339,27 @@ const Code = class Code extends React.Component {
                       ? "col-xs-12 no-padding"
                       : "col-xs-6 no-padding"
                   }>
-                  <AceEditor
-                    mode="javascript"
-                    value={this.state.code}
-                    height="100%"
-                    width="100%"
-                    theme={this.state.editorStyle}
-                    onChange={this.codeChanged}
-                    name="code-editor"
-                    editorProps={{ $blockScrolling: true }}
-                  />
+                  <LoadingOverlay
+                    active={this.state.loadingCode}
+                    styles={{
+                      overlay: base => ({
+                        ...base,
+                        background: "rgba(0, 0, 0, 0.5)"
+                      })
+                    }}
+                    spinner={<LoadingSpinner />}
+                    text="Loading...">
+                    <AceEditor
+                      mode="javascript"
+                      value={this.state.code}
+                      height="100%"
+                      width="100%"
+                      theme={this.state.editorStyle}
+                      onChange={this.codeChanged}
+                      name="code-editor"
+                      editorProps={{ $blockScrolling: true }}
+                    />
+                  </LoadingOverlay>
                 </div>
               </div>
             </div>
@@ -345,21 +373,45 @@ const Code = class Code extends React.Component {
 class ParentRow extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { collapsed: true };
+    this.state = {
+      collapsed: true,
+      listingCodeBodies: false,
+      hasMore: false,
+      hasMoreClicked: false
+    };
     // Bind the methods to the object's this
-    this.rowClicked = this.rowClicked.bind(this);
+    this.listCodeBodies = this.listCodeBodies.bind(this);
   }
 
-  rowClicked() {
-    this.setState({ collapsed: !this.state.collapsed });
+  listCodeBodies(createdEarlierThan) {
+    this.setState({
+      listingCodeBodies: true,
+      hasMoreClicked: createdEarlierThan !== Number.MAX_SAFE_INTEGER
+    });
+    this.props.fetchService.getJsonWithAuth(
+      "/listCodeBodies",
+      "application/json",
+      json => {
+        this.setState({
+          hasMore: json.hasMore,
+          codeBodies: json.bodies,
+          listingCodeBodies: false
+        });
+      },
+      () => {},
+      {
+        titleHash: this.props.titleHash,
+        createdEarlierThan: createdEarlierThan
+      }
+    );
   }
 
   render() {
-    let children = [];
-    if (!this.state.collapsed && !!this.props.children) {
-      for (let i = 0; i < this.props.children.length; i++) {
-        children.push(
-          <tr key={this.props.children[i].created}>
+    let codeBodies = [];
+    if (!this.state.collapsed && !!this.state.codeBodies) {
+      for (let i = 0; i < this.state.codeBodies.length; i++) {
+        codeBodies.push(
+          <tr key={this.state.codeBodies[i].hash}>
             <td>
               <i
                 className="fa fa-chevron-down"
@@ -371,9 +423,8 @@ class ParentRow extends React.Component {
                 className="btn btn-link text-muted no-padding"
                 onClick={() => {
                   this.props.codeClicked(
-                    this.props.type,
-                    this.props.title,
-                    this.props.children[i].hash
+                    this.state.codeBodies[i].title,
+                    this.state.codeBodies[i].hash
                   );
                 }}>
                 <i className="fa fa-code fa-fw" />
@@ -384,12 +435,12 @@ class ParentRow extends React.Component {
                 onClick={() => {
                   this.props.addAlert({
                     type: "info",
-                    text: this.props.children[i].hash
+                    text: this.state.codeBodies[i].hash
                   });
                 }}>
                 <i className="fa fa-hashtag fa-fw" />
               </button>
-              {" " + moment(this.props.children[i].created * 1000).fromNow()}
+              {" " + moment(this.state.codeBodies[i].createTs * 1000).fromNow()}
             </td>
           </tr>
         );
@@ -402,7 +453,18 @@ class ParentRow extends React.Component {
             <button
               type="button"
               className="btn btn-link text-muted no-padding"
-              onClick={this.rowClicked}>
+              onClick={() => {
+                if (this.state.collapsed) {
+                  this.setState({
+                    collapsed: false
+                  });
+                  this.listCodeBodies(Number.MAX_SAFE_INTEGER);
+                } else {
+                  this.setState({
+                    collapsed: true
+                  });
+                }
+              }}>
               <i
                 className={
                   this.state.collapsed
@@ -431,10 +493,31 @@ class ParentRow extends React.Component {
               }}>
               <i className="fa fa-hashtag fa-fw" />
             </button>
+            <button
+              type="button"
+              className="btn btn-link text-muted no-padding"
+              onClick={() => {
+                this.listCodeBodies(Number.MAX_SAFE_INTEGER);
+              }}
+              disabled={!this.state.hasMoreClicked}>
+              <i className="fa fa-refresh fa-fw" />
+            </button>
+            <button
+              type="button"
+              className="btn btn-link text-muted no-padding"
+              onClick={() => {
+                this.listCodeBodies(
+                  this.state.codeBodies[this.state.codeBodies.length - 1]
+                    .createTs
+                );
+              }}
+              disabled={!this.state.hasMore}>
+              <i className="fa fa-mail-forward fa-fw" />
+            </button>
             {" " + moment(this.props.latestCreateTs * 1000).fromNow()}
           </td>
         </tr>
-        {children}
+        {codeBodies}
       </tbody>
     );
   }
