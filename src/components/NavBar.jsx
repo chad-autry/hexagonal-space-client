@@ -44,7 +44,7 @@ const NavBar = class NavBar extends React.Component {
             />
           </div>
           <div className="navbar-brand">
-            <i className="fa fa-rocket" />
+            <img src="icon.svg" />
           </div>
         </div>
         {/*Programatically controll hiding the collapse using react.

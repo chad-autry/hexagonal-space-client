@@ -7,7 +7,7 @@
     "buildDev": "mkdirp ./target/webapp && npm run less && npm run copy:HTML && webpack --mode development --config ./webpack-prod.config.js",
     "eslint:fix": "eslint --fix './src/**/*.js' './src/**/*.jsx'",
     "clean": "rimraf ./target",
-    "copy:HTML": "copyfiles -f ./src/index.html ./target/webapp",
+    "copy:HTML": "copyfiles -f ./src/index.html ./target/webapp && copyfiles -f ./src/icon.svg ./target/webapp",
     "less": "lessc ./src/less/main.less > ./target/webapp/styles.css",
     "start": "webpack-dev-server  --config ./webpack-prod.config.js --mode development --content-base ./target/webapp --port 8080"
   },
