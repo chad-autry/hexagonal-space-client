@@ -26,6 +26,27 @@ const Docs = class Docs extends React.Component {
           </div>
           <div className="panel-body" />
         </div>
+        <div className="panel panel-default">
+          <div className="panel-heading">
+            <h3 className="panel-title">Future Features</h3>
+          </div>
+          <div className="panel-body">
+          In no particular order a variety of features planned for the future
+          <ul>
+          <li>FTL</li>
+          <li>Client Side Script Simulator</li>
+          <li>Agent Scripts</li>
+          <li>Ship to Ship Comms</li>
+          <li>Ship to Ship Trade API</li>
+          <li>Mining</li>
+          <li>Auction House</li>
+          <li>Maps</li>
+          <li>Space Stations</li>
+          <li>Factories</li>
+          <li>Icon Builder</li>
+          </ul>
+          </div>
+        </div>
       </div>
     );
   }
