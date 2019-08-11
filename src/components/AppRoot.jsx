@@ -6,6 +6,7 @@ import AuthorizingRoute from "./AuthorizingRoute.jsx";
 import { Route, Redirect, Switch } from "react-router-dom";
 import View from "./View.jsx";
 import Code from "./Code.jsx";
+import Ships from "./Ships.jsx";
 import Docs from "./Docs.jsx";
 import Login from "./Login.jsx";
 import UserManagement from "./UserManagement.jsx";
@@ -94,6 +95,14 @@ const AppRoot = class AppRoot extends React.Component {
             render={routeProps => (
               <View fetchService={this.props.fetchService} {...routeProps} />
             )}
+          />
+          <AuthorizingRoute
+            path="/ships"
+            addAlert={this.addAlert}
+            navbarHeight={this.state.navbarHeight}
+            authService={this.props.authService}
+            fetchService={this.props.fetchService}
+            component={Ships}
           />
           <AuthorizingRoute
             path="/code"
