@@ -42,7 +42,10 @@ const Docs = class Docs extends React.Component {
               <li>Auction House</li>
               <li>Maps</li>
               <li>Space Stations</li>
-              <li>Factories</li>
+              <li>Bounties</li>
+              <li>Component Builder</li>
+              <li>Ship Builder</li>
+              <li>Component Factories</li>
               <li>Icon Builder</li>
             </ul>
           </div>

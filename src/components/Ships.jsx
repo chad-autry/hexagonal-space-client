@@ -9,7 +9,8 @@ const Ships = class Ships extends React.Component {
     this.state = {
       shipList: { ships: [] },
       hasMoreShips: false,
-      listingShips: false
+      listingShips: false,
+      type: "ships"
     };
     // Bind the methods to the object's this
     this.nameFilterChanged = this.nameFilterChanged.bind(this);
@@ -33,7 +34,7 @@ const Ships = class Ships extends React.Component {
       listingShips: true
     });
     this.props.fetchService.getJsonWithAuth(
-      "/listShips",
+      "/shipsList",
       "application/json",
       json => {
         this.setState({
@@ -47,63 +48,27 @@ const Ships = class Ships extends React.Component {
     );
   }
 
-  codeClicked(title, bodyId) {
-    this.setState({
-      loadingCode: true
-    });
-    let then = json => {
-      this.setState({
-        code: json.code,
-        title: title,
-        edited: false,
-        loadingCode: false
-      });
-    };
-    this.props.fetchService.getJsonWithAuth(
-      "/viewCode",
-      "application/json",
-      then,
-      () => {},
-      { bodyId: bodyId }
-    );
-  }
-
   addShipClicked() {
-    this.props.fetchService.postWithAuth(
-      "/saveCode",
+    this.props.fetchService.getJsonWithAuth(
+      "/shipsAdd",
       "application/json",
-      JSON.stringify({
-        title: this.state.title,
-        code: this.state.code
-      }),
+      {},
       () => {
         this.getList();
       },
       () => {}
     );
-    this.setState({ edited: false });
   }
 
   render() {
     let shipList = [];
     if (this.state.listingShips) {
       shipList.push(
-          <tr key="iamauniquesnowflake">
-            <td>
-              <LoadingOverlay
-                active={true}
-                styles={{
-                  overlay: base => ({
-                    ...base,
-                    background: "rgba(0, 0, 0, 0.5)"
-                  })
-                }}
-                spinner={<LoadingSpinner />}
-                text="Loading...">
-                <p> </p>
-              </LoadingOverlay>
-            </td>
-          </tr>
+        <tr key="iamauniquesnowflake">
+          <td>
+            <p> </p>
+          </td>
+        </tr>
       );
     } else if (this.state.shipList.ships) {
       for (let i = 0; i < this.state.shipList.ships.length; i++) {
@@ -127,14 +92,48 @@ const Ships = class Ships extends React.Component {
           bottom: 0
         }}>
         <div className="container">
-          <div className="panel panel-default">
-            <div className="panel-heading">Ships</div>
-            <div className="panel-body code-panel-body">
-              <table className="table table-hover no-margin">
-                <tbody>{shipList}</tbody>
-              </table>
+          
+            <div className="panel panel-default">
+              <div className="input-group">
+                <span className="input-group-btn">
+                  <button
+                    className="btn btn-default"
+                    onClick={this.typeClicked}>
+                    &#8203;
+                    <i
+                      className={
+                        this.state.type === "ships"
+                          ? "fa fa-fw fa-rocket"
+                          : "fa fa-fw fa-cogs"
+                      }
+                    />
+                  </button>
+                  <button
+                    className="btn btn-default"
+                    onClick={this.addShipClicked}>
+                    &#8203;
+                    <i className="fa fa-fw fa-plus" />
+                  </button>
+                </span>
+              </div>
+              <LoadingOverlay
+            active={true}
+            styles={{
+              overlay: base => ({
+                ...base,
+                background: "rgba(0, 0, 0, 0.5)"
+              })
+            }}
+            spinner={<LoadingSpinner />}
+            text="Loading...">
+              <div className="panel-body code-panel-body">
+                <table className="table table-hover no-margin">
+                  <tbody>{shipList}</tbody>
+                </table>
+              </div>
+              </LoadingOverlay>
             </div>
-          </div>
+          
         </div>
       </div>
     );
