@@ -10,17 +10,23 @@ const Ships = class Ships extends React.Component {
       shipList: { ships: [] },
       hasMoreShips: false,
       listingShips: false,
-      type: "ships"
+      type: "ships",
+      nameFilter: "",
+      scriptId: ""
     };
     // Bind the methods to the object's this
     this.nameFilterChanged = this.nameFilterChanged.bind(this);
+    this.scriptIdChanged = this.scriptIdChanged.bind(this);
     this.getList = this.getList.bind(this);
+    this.addShipClicked = this.addShipClicked.bind(this);
+    this.launchShipClicked = this.launchShipClicked.bind(this);
   }
 
+/*
   componentDidMount() {
     this.getList();
   }
-
+*/
   nameFilterChanged(event) {
     if (event.target.value) {
       this.setState({ nameFilter: event.target.value });
@@ -29,6 +35,14 @@ const Ships = class Ships extends React.Component {
     }
   }
 
+  scriptIdChanged(event) {
+    if (event.target.value) {
+      this.setState({ scriptId: event.target.value });
+    } else {
+      this.setState({ scriptId: "" });
+    }
+  }
+  
   getList(nameFilter) {
     this.setState({
       listingShips: true
@@ -60,7 +74,21 @@ const Ships = class Ships extends React.Component {
     );
   }
 
+  launchShipClicked() {
+    this.props.fetchService.getJsonWithAuth(
+      "/shipsAdd",
+      "application/json",
+      {},
+      () => {
+
+      },
+      () => {},
+      {scriptId: this.state.scriptId}
+    );
+  }
+
   render() {
+      /*
     let shipList = [];
     if (this.state.listingShips) {
       shipList.push(
@@ -73,6 +101,7 @@ const Ships = class Ships extends React.Component {
     } else if (this.state.shipList.ships) {
       for (let i = 0; i < this.state.shipList.ships.length; i++) {
         /* eslint-disable react/no-children-prop */
+        /*
         shipList.push(
           <ShipRow
             key={this.state.shipList.ships[i].id}
@@ -81,7 +110,48 @@ const Ships = class Ships extends React.Component {
         );
       }
     }
+    */
     return (
+
+      <div className="center-form panel">
+        <div className="panel-body">
+        <div className="jumbotron">
+          Eventually this page will be ship, component, and fleet management. Very snazzy.
+          For now, you can just request the launch (or script change) of a single ship.
+        </div>
+                                    <input
+                              type="text"
+                              className="form-control"
+                              value={this.state.scriptId}
+                              onChange={this.scriptIdChanged}
+                              placeholder="Script Id"
+                              aria-describedby="script id"
+                            />
+          <button
+            className="btn btn-lg btn-block btn-success"
+            onClick={this.launchShipClicked}>
+            Launch or Set Script
+          </button>
+        </div>
+        </div>
+
+    );
+  }
+};
+
+class ShipRow extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      launched: false
+    };
+    // Bind the methods to the object's this
+    this.launchShip = this.launchShip.bind(this);
+  }
+
+  launchShip() {
+
+              {/* In the future want more functionallity...started workin on it. But not now
       <div
         style={{
           width: "100%",
@@ -110,14 +180,16 @@ const Ships = class Ships extends React.Component {
                   </button>
                   <button
                     className="btn btn-default"
-                    onClick={this.addShipClicked}>
+                    onClick={() => {
+                                  this.getList(this.state.nameFilter);
+                                }}>
                     &#8203;
                     <i className="fa fa-fw fa-plus" />
                   </button>
                 </span>
               </div>
               <LoadingOverlay
-            active={true}
+            active={this.state.listingShips}
             styles={{
               overlay: base => ({
                 ...base,
@@ -135,22 +207,8 @@ const Ships = class Ships extends React.Component {
             </div>
           
         </div>
-      </div>
-    );
+      </div>*/}
   }
-};
-
-class ShipRow extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      launched: false
-    };
-    // Bind the methods to the object's this
-    this.launchShip = this.launchShip.bind(this);
-  }
-
-  launchShip() {}
 
   render() {
     return (
