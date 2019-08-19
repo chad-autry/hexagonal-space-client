@@ -22,7 +22,7 @@ const Ships = class Ships extends React.Component {
     this.launchShipClicked = this.launchShipClicked.bind(this);
   }
 
-/*
+  /*
   componentDidMount() {
     this.getList();
   }
@@ -42,7 +42,7 @@ const Ships = class Ships extends React.Component {
       this.setState({ scriptId: "" });
     }
   }
-  
+
   getList(nameFilter) {
     this.setState({
       listingShips: true
@@ -76,19 +76,16 @@ const Ships = class Ships extends React.Component {
 
   launchShipClicked() {
     this.props.fetchService.getJsonWithAuth(
-      "/shipsAdd",
+      "/shipsLaunch",
       "application/json",
-      {},
-      () => {
-
-      },
       () => {},
-      {scriptId: this.state.scriptId}
+      () => {},
+      { scriptId: this.state.scriptId }
     );
   }
 
   render() {
-      /*
+    /*
     let shipList = [];
     if (this.state.listingShips) {
       shipList.push(
@@ -101,7 +98,7 @@ const Ships = class Ships extends React.Component {
     } else if (this.state.shipList.ships) {
       for (let i = 0; i < this.state.shipList.ships.length; i++) {
         /* eslint-disable react/no-children-prop */
-        /*
+    /*
         shipList.push(
           <ShipRow
             key={this.state.shipList.ships[i].id}
@@ -112,29 +109,38 @@ const Ships = class Ships extends React.Component {
     }
     */
     return (
-
       <div className="center-form panel">
         <div className="panel-body">
-        <div className="jumbotron">
-          Eventually this page will be ship, component, and fleet management. Very snazzy.
-          For now, you can just request the launch (or script change) of a single ship.
-        </div>
-                                    <input
-                              type="text"
-                              className="form-control"
-                              value={this.state.scriptId}
-                              onChange={this.scriptIdChanged}
-                              placeholder="Script Id"
-                              aria-describedby="script id"
-                            />
+          <div className="jumbotron">
+            <h1 className="text-center">Under Construction</h1>
+            <ul className="lead">
+              <li>
+                <i className="fa fa-exclamation-triangle" />
+                &nbsp;Eventually this page will be ship, component, and fleet
+                management. Very snazzy.
+              </li>
+              <li>
+                <i className="fa fa-exclamation-triangle" />
+                &nbsp;For now, you can just request the launch (or script
+                change) of a single ship.
+              </li>
+            </ul>
+          </div>
+          <input
+            type="text"
+            className="form-control"
+            value={this.state.scriptId}
+            onChange={this.scriptIdChanged}
+            placeholder="Script Id"
+            aria-describedby="script id"
+          />
           <button
             className="btn btn-lg btn-block btn-success"
             onClick={this.launchShipClicked}>
             Launch or Set Script
           </button>
         </div>
-        </div>
-
+      </div>
     );
   }
 };
@@ -150,8 +156,8 @@ class ShipRow extends React.Component {
   }
 
   launchShip() {
-
-              {/* In the future want more functionallity...started workin on it. But not now
+    {
+      /* In the future want more functionallity...started workin on it. But not now
       <div
         style={{
           width: "100%",
@@ -207,7 +213,8 @@ class ShipRow extends React.Component {
             </div>
           
         </div>
-      </div>*/}
+      </div>*/
+    }
   }
 
   render() {
