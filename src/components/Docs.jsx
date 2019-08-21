@@ -18,7 +18,51 @@ const Docs = class Docs extends React.Component {
           <div className="panel-heading">
             <h3 className="panel-title">Turn Sequence</h3>
           </div>
-          <div className="panel-body" />
+          <div className="panel-body">
+            <ul className="list-group">
+              <li className="list-group-item">
+                <h4 className="list-group-item-heading">Pre-turn</h4>
+                <p className="list-group-item-text">
+                  Ships leave FTL in this phase.
+                </p>
+              </li>
+              <li className="list-group-item">
+                <h4 className="list-group-item-heading">Script Execution</h4>
+                <p className="list-group-item-text">
+                  The script of each ship in a system is executed
+                </p>
+              </li>
+              <li className="list-group-item">
+                <h4 className="list-group-item-heading">Reconciliation</h4>
+                <p className="list-group-item-text">
+                  Ship actions are resolved (trades and weapons fired)
+                </p>
+              </li>
+              <li className="list-group-item">
+                <h4 className="list-group-item-heading">Ship Movement</h4>
+                <p className="list-group-item-text">
+                  Each ship is moved according to its velocity vector. Collions
+                  and velocity changes according to gravity are taken into
+                  account.
+                </p>
+              </li>
+              <li className="list-group-item">
+                <h4 className="list-group-item-heading">Celestial Movement</h4>
+                <p className="list-group-item-text">
+                  Each celestial entity (planets asteroids) is moved along its
+                  path. Ships within gravity hexes are moved along. If a ship
+                  enters a gravity hex its velocity is changed. (It is not
+                  possible to crash in this phase)
+                </p>
+              </li>
+              <li className="list-group-item">
+                <h4 className="list-group-item-heading">User Interaction</h4>
+                <p className="list-group-item-text">
+                  User actions such as ship launch or script update take effect.
+                </p>
+              </li>
+            </ul>
+          </div>
         </div>
         <div className="panel panel-default">
           <div className="panel-heading">
