@@ -23,7 +23,7 @@ const Docs = class Docs extends React.Component {
               <li className="list-group-item">
                 <h4 className="list-group-item-heading">Pre-turn</h4>
                 <p className="list-group-item-text">
-                  Ships leave FTL in this phase.
+                  Ships complete launches from stations and leave FTL in this phase.
                 </p>
               </li>
               <li className="list-group-item">
@@ -56,9 +56,15 @@ const Docs = class Docs extends React.Component {
                 </p>
               </li>
               <li className="list-group-item">
+                <h4 className="list-group-item-heading">Vision</h4>
+                <p className="list-group-item-text">
+                  Which ships can see what is calculated
+                </p>
+              </li>
+              <li className="list-group-item">
                 <h4 className="list-group-item-heading">User Interaction</h4>
                 <p className="list-group-item-text">
-                  User actions such as ship launch or script update take effect.
+                  Ships begin the launch process and script updates occur.
                 </p>
               </li>
             </ul>
