@@ -72,6 +72,12 @@ const Docs = class Docs extends React.Component {
         </div>
         <div className="panel panel-default">
           <div className="panel-heading">
+            <h3 className="panel-title">Ship Scripts</h3>
+          </div>
+          <div className="panel-body" />
+        </div>
+        <div className="panel panel-default">
+          <div className="panel-heading">
             <h3 className="panel-title">Ship Components</h3>
           </div>
           <div className="panel-body" />
@@ -97,6 +103,7 @@ const Docs = class Docs extends React.Component {
               <li>Ship Builder</li>
               <li>Component Factories</li>
               <li>Icon Builder</li>
+              <li>Cross browser compatabillity (Known issues with the map on non-Chrome)</li>
             </ul>
           </div>
         </div>
