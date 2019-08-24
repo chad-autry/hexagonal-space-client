@@ -95,7 +95,26 @@ const Docs = class Docs extends React.Component {
           <div className="panel-heading">
             <h3 className="panel-title">Ship Components</h3>
           </div>
-          <div className="panel-body" />
+          <div className="panel-body">
+            <div className="panel panel-default">
+              <div className="panel-heading">
+                <h3 className="panel-title">Capacitors</h3>
+              </div>
+              <div className="panel-body">
+                A capacitor lets unused energey be carried over from turn to
+                turn.
+              </div>
+            </div>
+            <div className="panel panel-default">
+              <div className="panel-heading">
+                <h3 className="panel-title">Generators</h3>
+              </div>
+              <div className="panel-body">
+                A generator is used to generate energy.
+              </div>
+            </div>
+            
+          </div>
         </div>
         <div className="panel panel-default">
           <div className="panel-heading">
