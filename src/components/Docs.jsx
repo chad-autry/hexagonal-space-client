@@ -73,6 +73,13 @@ const Docs = class Docs extends React.Component {
         <div className="panel panel-default">
           <div className="panel-heading">
             <h3 className="panel-title">Ship Scripts</h3>
+            <ul>
+              <li>Ship scripts are evaluated in a Node.js sandbox</li>
+              <li>Ship scripts have 15 seconds to execute</li>
+              <li>Ship scripts have a 20 mb limit (requested sensor readings count)</li>
+              <li>Ship scripts have no network connectivity</li>
+              <li>Ship scripts have a context object to interact with the ship itself</li>
+            </ul>
           </div>
           <div className="panel-body" />
         </div>
