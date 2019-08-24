@@ -23,7 +23,8 @@ const Docs = class Docs extends React.Component {
               <li className="list-group-item">
                 <h4 className="list-group-item-heading">Pre-turn</h4>
                 <p className="list-group-item-text">
-                  Ships complete launches from stations and leave FTL in this phase.
+                  Ships complete launches from stations and leave FTL in this
+                  phase.
                 </p>
               </li>
               <li className="list-group-item">
@@ -73,15 +74,22 @@ const Docs = class Docs extends React.Component {
         <div className="panel panel-default">
           <div className="panel-heading">
             <h3 className="panel-title">Ship Scripts</h3>
+          </div>
+          <div className="panel-body">
             <ul>
               <li>Ship scripts are evaluated in a Node.js sandbox</li>
               <li>Ship scripts have 15 seconds to execute</li>
-              <li>Ship scripts have a 20 mb limit (requested sensor readings count)</li>
+              <li>
+                Ship scripts have a 20 mb limit (requested sensor readings
+                count)
+              </li>
               <li>Ship scripts have no network connectivity</li>
-              <li>Ship scripts have a context object to interact with the ship itself</li>
+              <li>
+                Ship scripts have a context object to interact with the ship
+                itself
+              </li>
             </ul>
           </div>
-          <div className="panel-body" />
         </div>
         <div className="panel panel-default">
           <div className="panel-heading">
@@ -110,7 +118,10 @@ const Docs = class Docs extends React.Component {
               <li>Ship Builder</li>
               <li>Component Factories</li>
               <li>Icon Builder</li>
-              <li>Cross browser compatabillity (Known issues with the map on non-Chrome)</li>
+              <li>
+                Cross browser compatabillity (Known issues with the map on
+                non-Chrome)
+              </li>
             </ul>
           </div>
         </div>
