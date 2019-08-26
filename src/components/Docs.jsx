@@ -113,7 +113,14 @@ const Docs = class Docs extends React.Component {
                 A generator is used to generate energy.
               </div>
             </div>
-            
+            <div className="panel panel-default">
+              <div className="panel-heading">
+                <h3 className="panel-title">Engines</h3>
+              </div>
+              <div className="panel-body">
+                An engine is used to change the ships velocity.
+              </div>
+            </div>
           </div>
         </div>
         <div className="panel panel-default">
