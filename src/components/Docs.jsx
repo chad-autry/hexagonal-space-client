@@ -96,7 +96,7 @@ const Docs = class Docs extends React.Component {
               <div className="panel-body">
                 <div className="panel panel-default">
                   <div className="panel-heading">
-                    <h3 className="panel-title">Parameters</h3>
+                    <h3 className="panel-title">Fields</h3>
                   </div>
                   <table className="table" />
                 </div>
