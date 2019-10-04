@@ -104,7 +104,20 @@ const Docs = class Docs extends React.Component {
                   <div className="panel-heading">
                     <h3 className="panel-title">Methods</h3>
                   </div>
-                  <table className="table" />
+                  <table className="table">
+                    <tr>
+                      <td>
+                        <h4>
+                          exit()
+                        </h4>
+                        <div>
+                          <blockquote>
+                            Called to exit the users script. Will return results of script execution back to the game server for evaluation. If not called within the processing time limit, the ship script will time out. A ship script which times out 3 times in a row will be disabled.
+                          </blockquote>
+                        </div>
+                      </td>
+                    </tr>
+                  </table>
                 </div>
               </div>
             </div>
