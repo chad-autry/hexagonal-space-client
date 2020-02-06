@@ -90,7 +90,6 @@ const AppRoot = class AppRoot extends React.Component {
         </Measure>
         <Switch>
           <Route path="/news" component={Home} />
-          />
           <Route
             path="/view"
             render={routeProps => (

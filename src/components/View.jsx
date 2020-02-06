@@ -15,12 +15,36 @@ const View = class View extends React.Component {
 
   render() {
     return (
-      <Route
-        path="/view/map"
-        render={routeProps => (
-          <Map dataLink={this.baseDataLink} {...routeProps} />
-        )}
-      />
+      <div>
+        <div
+          className="btn-toolbar"
+          role="toolbar"
+          style={{ zIndex: 300, position: "relative" }}>
+          <div className="btn-group" role="group">
+            <button type="button" className="btn btn-default">
+              Table
+            </button>
+            <button type="button" className="btn btn-default">
+              Map
+            </button>
+          </div>
+          <div className="btn-group" role="group">
+            <button type="button" className="btn btn-default">
+              Solar System
+            </button>
+            <button type="button" className="btn btn-default">
+              Galaxy
+            </button>
+          </div>
+        </div>
+
+        <Route
+          path="/view/map"
+          render={routeProps => (
+            <Map dataLink={this.baseDataLink} {...routeProps} />
+          )}
+        />
+      </div>
     );
   }
 
