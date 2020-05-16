@@ -9,9 +9,9 @@ const Docs = class Docs extends React.Component {
             <h3 className="panel-title">Intro</h3>
           </div>
           <div className="panel-body">
-            hexagonal.space is a persistent shared universe sandbox grand
-            strategy game. Concurrent turns are executed every 24 hours. Players
-            have the time between to view the game state and issue orders.
+            hexagonal.space is a persistent shared world sandbox programming
+            game. In it you and others submit scripts which control your fleet
+            of ships to explore the galaxy. Each game turn is 15 minutes long
           </div>
         </div>
         <div className="panel panel-default">
@@ -21,9 +21,16 @@ const Docs = class Docs extends React.Component {
           <div className="panel-body">
             <ul className="list-group">
               <li className="list-group-item">
-                <h4 className="list-group-item-heading">Order Execution</h4>
+                <h4 className="list-group-item-heading">Pre-turn</h4>
                 <p className="list-group-item-text">
-                  The players queued orders are executed.
+                  Ships complete launches from stations and leave FTL in this
+                  phase.
+                </p>
+              </li>
+              <li className="list-group-item">
+                <h4 className="list-group-item-heading">Script Execution</h4>
+                <p className="list-group-item-text">
+                  The script of each ship in a system is executed
                 </p>
               </li>
               <li className="list-group-item">
@@ -55,7 +62,52 @@ const Docs = class Docs extends React.Component {
                   Which ships can see what is calculated
                 </p>
               </li>
+              <li className="list-group-item">
+                <h4 className="list-group-item-heading">User Interaction</h4>
+                <p className="list-group-item-text">
+                  Ships begin the launch process and script updates occur.
+                </p>
+              </li>
             </ul>
+          </div>
+        </div>
+        <div className="panel panel-default">
+          <div className="panel-heading">
+            <h3 className="panel-title">Ship Scripts</h3>
+          </div>
+          <div className="panel-body">
+            <ul>
+              <li>Ship scripts are evaluated in a Node.js sandbox</li>
+              <li>Ship scripts have 15 seconds to execute</li>
+              <li>
+                Ship scripts have a 20 mb limit (requested sensor readings
+                count)
+              </li>
+              <li>Ship scripts have no network connectivity</li>
+              <li>
+                Ship scripts have a context object to interact with the ship
+                itself
+              </li>
+            </ul>
+            <div className="panel panel-default">
+              <div className="panel-heading">
+                <h3 className="panel-title">Conext</h3>
+              </div>
+              <div className="panel-body">
+                <div className="panel panel-default">
+                  <div className="panel-heading">
+                    <h3 className="panel-title">Fields</h3>
+                  </div>
+                  <table className="table" />
+                </div>
+                <div className="panel panel-default">
+                  <div className="panel-heading">
+                    <h3 className="panel-title">Methods</h3>
+                  </div>
+                  <table className="table" />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
         <div className="panel panel-default">
@@ -98,6 +150,8 @@ const Docs = class Docs extends React.Component {
             In no particular order a variety of features planned for the future
             <ul>
               <li>FTL</li>
+              <li>Client Side Script Simulator</li>
+              <li>Agent Scripts</li>
               <li>Ship to Ship Comms</li>
               <li>Ship to Ship Trade API</li>
               <li>Mining</li>
