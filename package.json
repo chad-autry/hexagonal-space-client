@@ -24,16 +24,16 @@
     "url": "http://chad-autry.github.io/"
   },
   "dependencies": {
-    "cartesian-hexagonal": "0.0.3",
-    "data-chains": "^0.4.0",
-    "hex-grid-map-3d": "^0.33.0",
-    "moment": "^2.18.1",
-    "react-ace": "^4.1.1",
-    "react-measure": "^1.4.5",
     "bootstrap": "^3.4.1",
+    "cartesian-hexagonal": "0.0.3",
     "client-auth-jwt": "^0.7.3",
+    "data-chains": "^0.4.0",
+    "hex-grid-map": "^0.9.0",
+    "moment": "^2.18.1",
     "prop-types": "^15.5.10",
+    "react-ace": "^4.1.1",
     "react-loading-overlay": "^1.0.1",
+    "react-measure": "^1.4.5",
     "react-router-dom": "^4.0.0"
   },
   "devDependencies": {
