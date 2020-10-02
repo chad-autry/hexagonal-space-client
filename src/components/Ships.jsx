@@ -1,4 +1,5 @@
 import React from "react";
+import moment from "moment";
 import LoadingSpinner from "./LoadingSpinner.jsx";
 import LoadingOverlay from "react-loading-overlay";
 
@@ -7,26 +8,20 @@ const Ships = class Ships extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      shipList: { ships: [] },
-      hasMoreShips: false,
-      listingShips: false,
-      type: "ships",
-      nameFilter: "",
-      scriptId: ""
+      nameFilter: null,
+      codeList: { shipScripts: [] },
+      listingShips: true,
+      allowNew: false
     };
     // Bind the methods to the object's this
     this.nameFilterChanged = this.nameFilterChanged.bind(this);
-    this.scriptIdChanged = this.scriptIdChanged.bind(this);
-    this.getList = this.getList.bind(this);
-    this.addShipClicked = this.addShipClicked.bind(this);
-    this.launchShipClicked = this.launchShipClicked.bind(this);
+    this.getShips = this.getShips.bind(this);
   }
 
-  /*
   componentDidMount() {
-    this.getList();
+    this.getShips();
   }
-*/
+
   nameFilterChanged(event) {
     if (event.target.value) {
       this.setState({ nameFilter: event.target.value });
@@ -35,26 +30,19 @@ const Ships = class Ships extends React.Component {
     }
   }
 
-  scriptIdChanged(event) {
-    if (event.target.value) {
-      this.setState({ scriptId: event.target.value });
-    } else {
-      this.setState({ scriptId: "" });
-    }
-  }
-
-  getList(nameFilter) {
+  getShips(nameFilter) {
     this.setState({
-      listingShips: true
+      listingCode: true
     });
     this.props.fetchService.getJsonWithAuth(
-      "/shipsList",
+      "/listShips",
       "application/json",
       json => {
         this.setState({
-          hasMoreShips: json.hasMore,
+          hasMore: json.hasMore,
           shipList: json,
-          listingShips: false
+          listingShips: false,
+          allowNew: json.allowNew
         });
       },
       () => {},
@@ -62,83 +50,89 @@ const Ships = class Ships extends React.Component {
     );
   }
 
-  addShipClicked() {
-    this.props.fetchService.getJsonWithAuth(
-      "/shipsAdd",
-      "application/json",
-      {},
-      () => {
-        this.getList();
-      },
-      () => {}
-    );
-  }
-
-  launchShipClicked() {
-    this.props.fetchService.getJsonWithAuth(
-      "/shipsLaunch",
-      "application/json",
-      () => {},
-      () => {},
-      { scriptId: this.state.scriptId }
-    );
-  }
-
   render() {
-    /*
     let shipList = [];
     if (this.state.listingShips) {
       shipList.push(
-        <tr key="iamauniquesnowflake">
-          <td>
+        <li className="list-group-item" key="iamauniquesnowflake">
+          <LoadingOverlay
+            active={true}
+            styles={{
+              overlay: base => ({
+                ...base,
+                background: "rgba(0, 0, 0, 0.5)"
+              })
+            }}
+            spinner={<LoadingSpinner />}
+            text="Loading...">
             <p> </p>
-          </td>
-        </tr>
+          </LoadingOverlay>
+        </li>
       );
     } else if (this.state.shipList.ships) {
       for (let i = 0; i < this.state.shipList.ships.length; i++) {
         /* eslint-disable react/no-children-prop */
-    /*
         shipList.push(
           <ShipRow
             key={this.state.shipList.ships[i].id}
+            name={this.state.shipList.ships[i].name}
             fetchService={this.props.fetchService}
+            shipId={this.state.shipList.ships[i].id}
           />
         );
       }
     }
-    */
+
     return (
-      <div className="center-form panel">
-        <div className="panel-body">
-          <div className="jumbotron">
-            <h1 className="text-center">Under Construction</h1>
-            <ul className="lead">
-              <li>
-                <i className="fa fa-exclamation-triangle" />
-                &nbsp;Eventually this page will be ship, component, and fleet
-                management. Very snazzy.
-              </li>
-              <li>
-                <i className="fa fa-exclamation-triangle" />
-                &nbsp;For now, you can just request the launch (or script
-                change) of a single ship.
-              </li>
-            </ul>
+      <div>
+        <form
+          className="form-inline"
+          style={{ zIndex: 300, position: "relative" }}>
+          <div className="form-group">
+            <div className="input-group">
+              <input
+                type="text"
+                className="form-control"
+                value={this.state.nameFilter}
+                onChange={this.nameFilterChanged}
+                placeholder="Show ship names beggining at..."
+                aria-describedby="names start"
+              />
+              <span className="input-group-btn">
+                <button
+                  className="btn icon-btn input-grp-middle btn-default"
+                  onClick={() => {
+                    this.getList(this.state.nameFilter);
+                  }}>
+                  <i className={"fa fa-search"} />
+                </button>
+              </span>
+              <span className="input-group-btn">
+                <button
+                  className="btn icon-btn btn-default"
+                  onClick={() => {
+                    this.getList(
+                      this.state.shipList.ships[
+                        this.state.shipList.ships.length - 1
+                      ].title + " "
+                    );
+                  }}
+                  disabled={!this.state.hasMore}>
+                  <i className={"fa fa-mail-forward"} />
+                </button>
+              </span>
+            </div>
+            <button
+              type="button"
+              className="btn btn-default active"
+              disabled={!this.state.allowNew}
+              style={{ marginRight: "5px" }}>
+              <i className="fa fa-plus" /> New Ship
+            </button>
           </div>
-          <input
-            type="text"
-            className="form-control"
-            value={this.state.scriptId}
-            onChange={this.scriptIdChanged}
-            placeholder="Script Id"
-            aria-describedby="script id"
-          />
-          <button
-            className="btn btn-lg btn-block btn-success"
-            onClick={this.launchShipClicked}>
-            Launch or Set Script
-          </button>
+        </form>
+        <div className="panel panel-default">
+          <ul className="list-group">{shipList}</ul>
         </div>
       </div>
     );
@@ -149,79 +143,103 @@ class ShipRow extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      launched: false
+      collapsed: true,
+      listingCodeBodies: false,
+      hasMore: false,
+      hasMoreClicked: false
     };
     // Bind the methods to the object's this
-    this.launchShip = this.launchShip.bind(this);
+    this.fetchShipDetails = this.fetchShipDetails.bind(this);
   }
 
-  launchShip() {
-    {
-      /* In the future want more functionallity...started workin on it. But not now
-      <div
-        style={{
-          width: "100%",
-          position: "fixed",
-          left: 0,
-          right: 0,
-          top: this.props.navbarHeight + "px",
-          bottom: 0
-        }}>
-        <div className="container">
-          
-            <div className="panel panel-default">
-              <div className="input-group">
-                <span className="input-group-btn">
-                  <button
-                    className="btn btn-default"
-                    onClick={this.typeClicked}>
-                    &#8203;
-                    <i
-                      className={
-                        this.state.type === "ships"
-                          ? "fa fa-fw fa-rocket"
-                          : "fa fa-fw fa-cogs"
-                      }
-                    />
-                  </button>
-                  <button
-                    className="btn btn-default"
-                    onClick={() => {
-                                  this.getList(this.state.nameFilter);
-                                }}>
-                    &#8203;
-                    <i className="fa fa-fw fa-plus" />
-                  </button>
-                </span>
-              </div>
-              <LoadingOverlay
-            active={this.state.listingShips}
-            styles={{
-              overlay: base => ({
-                ...base,
-                background: "rgba(0, 0, 0, 0.5)"
-              })
-            }}
-            spinner={<LoadingSpinner />}
-            text="Loading...">
-              <div className="panel-body code-panel-body">
-                <table className="table table-hover no-margin">
-                  <tbody>{shipList}</tbody>
-                </table>
-              </div>
-              </LoadingOverlay>
-            </div>
-          
-        </div>
-      </div>*/
-    }
+  fetchShipDetails() {
+    this.setState({
+      fetchingDetails: true
+    });
+    this.props.fetchService.getJsonWithAuth(
+      "/shipDetails",
+      "application/json",
+      json => {
+        this.setState({
+          fetchingDetails: false,
+          shipDetails: json
+        });
+      },
+      () => {},
+      {
+        shipId: this.props.shipId
+      }
+    );
   }
 
   render() {
     return (
-      <tr>
-        <td />
-      </tr>
+      <li className="list-group-item" key={this.state.id}>
+        <button
+          type="button"
+          className="btn btn-link text-muted no-padding"
+          onClick={() => {
+            if (this.state.fetchingDetails) {
+              this.setState({
+                fetchingDetails: false
+              });
+              //this.listCodeBodies(Number.MAX_SAFE_INTEGER);
+            } else {
+              this.setState({
+                fetchingDetails: true
+              });
+            }
+          }}>
+          <i
+            className={
+              this.state.fetchingDetails
+                ? "fa fa-chevron-up"
+                : "fa fa-chevron-down"
+            }
+          />
+        </button>
+        {" " + this.props.name}{" "}
+        <button
+          type="button"
+          className="btn btn-link text-muted no-padding"
+          onClick={() => {
+            this.props.codeClicked(this.props.title, this.props.latestHash);
+          }}>
+          <i className="fa fa-code fa-fw" />
+        </button>
+        <button
+          type="button"
+          className="btn btn-link text-muted no-padding"
+          onClick={() => {
+            this.props.addAlert({
+              type: "info",
+              text: this.props.latestHash
+            });
+          }}>
+          <i className="fa fa-hashtag fa-fw" />
+        </button>
+        <button
+          type="button"
+          className="btn btn-link text-muted no-padding"
+          onClick={() => {
+            this.listCodeBodies(Number.MAX_SAFE_INTEGER);
+          }}
+          disabled={!this.state.hasMoreClicked}>
+          <i className="fa fa-refresh fa-fw" />
+        </button>
+        <button
+          type="button"
+          className="btn btn-link text-muted no-padding"
+          onClick={() => {
+            this.listCodeBodies(
+              this.state.codeBodies[this.state.codeBodies.length - 1].createTs
+            );
+          }}
+          disabled={!this.state.hasMore}>
+          <i className="fa fa-mail-forward fa-fw" />
+        </button>
+        {" " + moment(this.props.latestCreateTs * 1000).fromNow()}
+      </li>
     );
   }
 }
