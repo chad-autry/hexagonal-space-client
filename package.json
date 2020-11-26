@@ -28,7 +28,7 @@
     "cartesian-hexagonal": "0.0.3",
     "client-auth-jwt": "^0.7.3",
     "data-chains": "^0.4.0",
-    "hex-grid-map": "^0.9.0",
+    "hex-grid-map": "^0.12.0",
     "moment": "^2.18.1",
     "prop-types": "^15.5.10",
     "react-ace": "^4.1.1",

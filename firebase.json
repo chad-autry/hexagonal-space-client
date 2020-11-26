@@ -1,0 +1,70 @@
+{
+    "hosting": {
+      "public": "./target/webapp",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ],
+      "rewrites": [
+        {
+          "source": "/auth",
+          "function": "auth"
+        },
+        {
+          "source": "/newUser",
+          "function": "createUser"
+        },
+        {
+          "source": "/deleteUser",
+          "function": "deleteUser"
+        },
+        {
+          "source": "/getUser",
+          "function": "getUser"
+        },
+        {
+          "source": "/saveCode",
+          "function": "saveCode"
+        },
+        {
+          "source": "/listCodeBodies",
+          "function": "listCodeBodies"
+        },
+        {
+      "source": "/listCode",
+      "function": "listCode"
+        },
+        {
+          "source": "/shipsList",
+          "function": "shipsList"
+        },
+        {
+          "source": "/shipsAdd",
+          "function": "shipsAdd"
+        },
+        {
+          "source": "/shipsLaunch",
+          "function": "shipsLaunch"
+        },
+        {
+          "source": "/viewCode",
+          "function": "viewCode"
+        },{
+          "source": "/listGames",
+          "function": "listGames"
+        },{
+          "source": "/createGame",
+          "function": "createGame"
+        },{
+          "source": "/mapQuery",
+          "function": "mapQuery"
+        },
+        {
+          "source": "**",
+          "destination": "/index.html"
+        }
+      ]
+    }
+  }
+  

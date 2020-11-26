@@ -102,6 +102,7 @@ const Map = class Map extends React.Component {
     //            this.props.glEventHub.off( 'map-state-changed', this.setComponentState );
     window.removeEventListener("resize", this.resizeListener);
     this.hexBoard.clear();
+    this.hexBoard.paper.tool.remove();
   }
 
   setComponentState(mapState) {
