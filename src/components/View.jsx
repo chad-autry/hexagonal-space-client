@@ -2,7 +2,7 @@ import React from "react";
 import DataSource from "hex-grid-map/src/dataSources/DataSource.js";
 import Map from "./Map.jsx";
 import Table from "./Table.jsx";
-import { Route, Switch, Link } from "react-router-dom";
+import { Route, Switch, Link, Redirect } from "react-router-dom";
 
 /**
  * The view component is responsible for making requests and populating the datasource for the Map and Table child components
@@ -131,6 +131,9 @@ const View = class View extends React.Component {
           </div>
         </form>
         <Switch>
+          <Route exact path="/view">
+            <Redirect to="/view/map" />
+          </Route>
           <Route
             path="/view/map"
             render={routeProps => (

@@ -56,7 +56,7 @@ const NavBar = class NavBar extends React.Component {
               : "navbar-collapse"
           }>
           <ul className="nav navbar-nav">
-            <NavItem to="/view/map" location={this.props.location}>
+            <NavItem to="/view" location={this.props.location}>
               <i className="fa fa-eye" /> View
             </NavItem>
             {/*We only ships the code NavItem if the user is logged on*/}
