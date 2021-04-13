@@ -29,7 +29,7 @@ const Alerts = class Alerts extends React.Component {
         </div>
       );
     }
-    return <div>{alerts}</div>;
+    return <div style={{ zIndex: 300, position: "relative" }}>{alerts}</div>;
   }
 };
 

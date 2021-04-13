@@ -1,5 +1,7 @@
 import NavBar from "./NavBar.jsx";
 import Alerts from "./Alerts.jsx";
+import DataSource from "../dataSources/baseDataSource.js";
+import DynamicDataSource from "../dataSources/dynamicDataSource.js";
 import React from "react";
 import Measure from "react-measure";
 import AuthorizingRoute from "./AuthorizingRoute.jsx";
@@ -35,7 +37,77 @@ const AppRoot = class AppRoot extends React.Component {
         logingOn: beginRequest
       });
     });
+    let baseDataLink = new DataSource();
+    let splitDataLink = new DynamicDataSource(
+      { items: [] },
+      `context.items = []; 
+items.forEach(item => {
+  // Check for duplicate
+  // If duplicate exists, add id to 'seenBy'
+  // Else add self
+  item.self.key = item.self.entityId;
+  context.items.add(item.self);
+  //For each sensor result
+  item.sensorData.forEach(sensorItem => {
+    // Check for duplicate
+    // If duplicate exists, add id to 'seenBy' array
+    // Else add sensor item
+    sensorItem.key = sensorItem.entityId;
+    context.items.add(sensorItem);
+  }); 
+}); 
+return true;`,
+      ``,
+      `context.items = [];`,
+      `context.items.forEach(callback)`,
+      `return context.items;`
+    );
+    baseDataLink.addListener({
+      onDataChanged: event => {
+        splitDataLink.clear();
+        splitDataLink.addItems(baseDataLink.getAll());
+      }
+    });
+    let listItemDataLink = new DynamicDataSource(
+      { items: [] },
+      `items.forEach(item => {
+  // Check for duplicate
+  // If duplicate exists, add id to 'seenBy'
+  // Else add self
+  context.items.add({"id":\`\${item.entityId}\`, "jsx":\`<li key='\${item.entityId}' className="list-group-item">
+  <pre>{\\\`\${JSON.stringify(item, null, 4)}\\\`}</pre>
+</li>\`});
+}); 
+return true;`,
+      ``,
+      `context.items = [];`,
+      `context.items.forEach(callback)`,
+      `return context.items;`
+    ); //
+    splitDataLink.addListener({
+      onDataChanged: event => {
+        listItemDataLink.clear();
+        listItemDataLink.addItems(splitDataLink.getAll());
+      }
+    });
+    //Global View state
+    let viewState = {
+      baseDataLink: baseDataLink,
+      mapDataLink: splitDataLink,
+      listDataLink: listItemDataLink,
+      initialMapCenter: { u: 0, v: 0 },
+      queryCollapsed: false,
+      latestTurn: -1,
+      guestQuery: false,
+      queriedSystem: "0:0",
+      queriedEntity: "",
+      queriedTurn: -1,
+      hasMore: false,
+      lastRecord: {}
+    };
+    
     this.state = {
+      viewState: viewState,
       fetchingPolicyAccepted: false,
       pendingUserCreation:
         this.props.authService.isAuthenticated() &&
@@ -49,12 +121,26 @@ const AppRoot = class AppRoot extends React.Component {
     this.setNavHeight = this.setNavHeight.bind(this);
     this.removeAlert = this.removeAlert.bind(this);
     this.addAlert = this.addAlert.bind(this);
+    this.setViewStateProperties = this.setViewStateProperties.bind(this);
   }
 
   setNavHeight(navbarHeight) {
     this.setState({
       navbarHeight: navbarHeight
     });
+  }
+
+  /**
+   * Overrides current properties on the view state
+   * @param {*} nextViewState an onject with the new properties of viewState
+   */
+  setViewStateProperties(nextViewState) {
+    this.setState(prevState => ({
+      viewState: {
+        ...prevState.viewState,
+        ...nextViewState
+      }
+    }));
   }
 
   removeAlert(index) {
@@ -93,7 +179,14 @@ const AppRoot = class AppRoot extends React.Component {
           <Route
             path="/view"
             render={routeProps => (
-              <View fetchService={this.props.fetchService} {...routeProps} />
+              <View
+                fetchService={this.props.fetchService}
+                viewState={this.state.viewState}
+                addAlert={this.addAlert}
+                setViewStateProperties={this.setViewStateProperties}
+                viewQueryCollapseClicked={this.viewQueryCollapseClicked}
+                {...routeProps}
+              />
             )}
           />
           <AuthorizingRoute

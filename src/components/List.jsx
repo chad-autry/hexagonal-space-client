@@ -1,49 +1,45 @@
 import React from "react";
+import JsxParser from "react-jsx-parser";
 
 /**
  * This component is responsible for the table view of the map
  */
-const Table = class View extends React.Component {
+const List = class View extends React.Component {
   constructor(props) {
     super(props);
-    let tableRows = [];
+    let listItems = [];
     this.props.dataLink.forEach(element => {
-      tableRows.push(
-        <li key={element.id} className="list-group-item">
-          <pre>{JSON.stringify(element, null, 4)}</pre>
-        </li>
-      );
+      listItems.push(<JsxParser key={element.id} jsx={element.jsx} />);
     });
-    this.state = { tableRows: tableRows };
+    this.state = { listItems: listItems };
     //Get the dataLink from the props
     //Setup a listener which takes the dataLink values and produces a list into the state
 
     //This is a cheap and dirty listener to create/recreate rows from a datasource
     //Eventually have a chain with filters, decorators, and such
     this.props.dataLink.addListener({
-      onDataChanged: event => {
+      onDataChanged: () => {
         //Whatever the event, this cheap and dirty method is just re-creating a row for each item on the datasource
-        let tableRows = [];
+        let listItems = [];
         this.props.dataLink.forEach(element => {
-          tableRows.push(
-            <li key={element.id} className="list-group-item">
-              <pre>{JSON.stringify(element, null, 4)}</pre>
-            </li>
-          );
+          listItems.push(<JsxParser key={element.id} jsx={element.jsx} />);
         });
-        this.setState({ tableRows: tableRows });
+        this.setState({ listItems: listItems });
       }
     });
-    //TODO remove listener in componentDidUnmount
   }
 
   render() {
     return (
       <div>
-        <ul className="list-group">{this.state.tableRows}</ul>
+        <ul className="list-group">{this.state.listItems}</ul>
       </div>
     );
   }
+
+  componentWillUnmount() {
+    this.props.dataLink.clearListeners();
+  }
 };
 
-export default Table;
+export default List;

@@ -91,7 +91,7 @@ const NavBar = class NavBar extends React.Component {
                     {" "}
                     <i className="fa fa-map" /> Map <span className="caret" />
                   </div>
-                ) : this.props.location.pathname.startsWith("/view/table") ? (
+                ) : this.props.location.pathname.startsWith("/view/list") ? (
                   <div>
                     {" "}
                     <i className="fa fa-list" /> List <span className="caret" />
@@ -113,8 +113,8 @@ const NavBar = class NavBar extends React.Component {
                     <i className="fa fa-map" /> Map
                   </NavItem>
                 ) : null}
-                {!this.props.location.pathname.startsWith("/view/table") ? (
-                  <NavItem to="/view/table" location={this.props.location}>
+                {!this.props.location.pathname.startsWith("/view/list") ? (
+                  <NavItem to="/view/list" location={this.props.location}>
                     <i className="fa fa-list" /> List
                   </NavItem>
                 ) : null}
