@@ -36,7 +36,11 @@ const View = class View extends React.Component {
               : "btn icon-btn btn-default hidden"
           }
           style={{ zIndex: 300, position: "relative" }}
-          onClick={this.props.viewQueryCollapseClicked}>
+          onClick={() => {
+            this.props.setViewStateProperties({
+              queryCollapsed: false
+            });
+          }}>
           <i className="fa fa-chevron-left" />
           {""}
         </button>
@@ -57,7 +61,11 @@ const View = class View extends React.Component {
                     type="button"
                     className="btn icon-btn btn-default"
                     style={{ marginRight: "5px" }}
-                    onClick={this.props.viewQueryCollapseClicked}>
+                    onClick={() => {
+                      this.props.setViewStateProperties({
+                        queryCollapsed: true
+                      });
+                    }}>
                     <i className="fa fa-chevron-right" />
                     {""}
                   </button>
@@ -170,6 +178,7 @@ const View = class View extends React.Component {
             path="/view/list"
             render={routeProps => (
               <List
+                setViewStateProperties={this.props.setViewStateProperties}
                 dataLink={this.props.viewState.listDataLink}
                 {...routeProps}
               />

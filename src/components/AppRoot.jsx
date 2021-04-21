@@ -3,7 +3,6 @@ import Alerts from "./Alerts.jsx";
 import DataSource from "../dataSources/baseDataSource.js";
 import DynamicDataSource from "../dataSources/dynamicDataSource.js";
 import React from "react";
-import Measure from "react-measure";
 import AuthorizingRoute from "./AuthorizingRoute.jsx";
 import { Route, Redirect, Switch } from "react-router-dom";
 import View from "./View.jsx";
@@ -40,18 +39,30 @@ const AppRoot = class AppRoot extends React.Component {
     let baseDataLink = new DataSource();
     let splitDataLink = new DynamicDataSource(
       { items: [] },
-      `context.items = []; 
+      `let recursivePosition =(obj) => {
+for (var k in obj) {
+  if (typeof obj[k] == "object" && obj[k] !== null)
+    recursivePosition(obj[k]);
+  else
+      if (k === 'u') {
+        obj.position = {u:obj.u, v:obj.v}
+      }
+  }
+}
+context.items = []; 
 items.forEach(item => {
   // Check for duplicate
   // If duplicate exists, add id to 'seenBy'
   // Else add self
   item.self.key = item.self.entityId;
+  recursivePosition(item.self);
   context.items.add(item.self);
   //For each sensor result
   item.sensorData.forEach(sensorItem => {
     // Check for duplicate
     // If duplicate exists, add id to 'seenBy' array
     // Else add sensor item
+    recursivePosition(sensorItem);
     sensorItem.key = sensorItem.entityId;
     context.items.add(sensorItem);
   }); 
@@ -74,9 +85,7 @@ return true;`,
   // Check for duplicate
   // If duplicate exists, add id to 'seenBy'
   // Else add self
-  context.items.add({"id":\`\${item.entityId}\`, "jsx":\`<li key='\${item.entityId}' className="list-group-item">
-  <pre>{\\\`\${JSON.stringify(item, null, 4)}\\\`}</pre>
-</li>\`});
+  context.items.add(item);
 }); 
 return true;`,
       ``,
@@ -105,7 +114,7 @@ return true;`,
       hasMore: false,
       lastRecord: {}
     };
-    
+
     this.state = {
       viewState: viewState,
       fetchingPolicyAccepted: false,
@@ -117,17 +126,10 @@ return true;`,
         !this.props.authService.getPayload().pendingUserCreation,
       alerts: []
     };
-    // This line is important!
-    this.setNavHeight = this.setNavHeight.bind(this);
+
     this.removeAlert = this.removeAlert.bind(this);
     this.addAlert = this.addAlert.bind(this);
     this.setViewStateProperties = this.setViewStateProperties.bind(this);
-  }
-
-  setNavHeight(navbarHeight) {
-    this.setState({
-      navbarHeight: navbarHeight
-    });
   }
 
   /**
@@ -158,23 +160,17 @@ return true;`,
   render() {
     return (
       <div>
-        <Measure onMeasure={dimensions => this.setNavHeight(dimensions.height)}>
-          <div style={{ marginBottom: 20 + "px" }}>
-            <NavBar
-              setNavHeight={this.setNavHeight}
-              authService={this.props.authService}
-              pendingUserCreation={this.state.pendingUserCreation}
-              isAuthenticated={this.state.isAuthenticated}
-              location={this.props.location}
-            />
-            {this.state.alerts.length > 0 && (
-              <Alerts
-                removeAlert={this.removeAlert}
-                alerts={this.state.alerts}
-              />
-            )}
-          </div>
-        </Measure>
+        <div style={{ marginBottom: 20 + "px" }}>
+          <NavBar
+            authService={this.props.authService}
+            pendingUserCreation={this.state.pendingUserCreation}
+            isAuthenticated={this.state.isAuthenticated}
+            location={this.props.location}
+          />
+          {this.state.alerts.length > 0 && (
+            <Alerts removeAlert={this.removeAlert} alerts={this.state.alerts} />
+          )}
+        </div>
         <Switch>
           <Route
             path="/view"
@@ -192,7 +188,6 @@ return true;`,
           <AuthorizingRoute
             path="/ships"
             addAlert={this.addAlert}
-            navbarHeight={this.state.navbarHeight}
             authService={this.props.authService}
             fetchService={this.props.fetchService}
             component={Ships}
@@ -200,7 +195,6 @@ return true;`,
           <AuthorizingRoute
             path="/code"
             addAlert={this.addAlert}
-            navbarHeight={this.state.navbarHeight}
             authService={this.props.authService}
             fetchService={this.props.fetchService}
             component={Code}

@@ -369,9 +369,10 @@ const Map = class Map extends React.Component {
   componentWillUnmount() {
     window.removeEventListener("resize", this.resizeListener);
     this.props.setViewStateProperties({
+      // If the board moves positive X, Y: the view moved relatively negative
       initialMapCenter: this.hexDimensions.getReferencePoint(
-        this.hexBoard.dx - this.hexBoard.viewWidth / 2,
-        this.hexBoard.dy - this.hexBoard.viewHeight / 2
+        this.hexBoard.viewWidth / 2 - this.hexBoard.dx,
+        this.hexBoard.viewHeight / 2 - this.hexBoard.dy
       )
     });
     this.hexBoard.clear();

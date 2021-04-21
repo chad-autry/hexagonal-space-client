@@ -4,17 +4,8 @@ import moment from "moment";
 import LoadingSpinner from "./LoadingSpinner.jsx";
 import LoadingOverlay from "react-loading-overlay";
 
-import "brace/mode/javascript";
-import "brace/theme/monokai";
-import "brace/theme/github";
-import "brace/theme/tomorrow";
-import "brace/theme/kuroir";
-import "brace/theme/twilight";
-import "brace/theme/xcode";
-import "brace/theme/textmate";
-import "brace/theme/solarized_dark";
-import "brace/theme/solarized_light";
-import "brace/theme/terminal";
+import "ace-builds/src-noconflict/mode-javascript";
+import "ace-builds/src-noconflict/theme-github";
 
 // Render editor
 const Code = class Code extends React.Component {
@@ -193,33 +184,23 @@ const Code = class Code extends React.Component {
       }
     }
     return (
-      <div
-        style={{
-          width: "100%",
-          position: "fixed",
-          left: 0,
-          right: 0,
-          top: this.props.navbarHeight + "px",
-          bottom: 0
-        }}>
-        <div className="container">
-          <div className="panel panel-default">
-            <div className="panel-heading">
-              <div className="input-group">
-                <span className="input-group-btn">
-                  <button
-                    className="btn icon-btn btn-default"
-                    onClick={this.codeListClicked}>
-                    <i
-                      className={
-                        this.state.codeListCollapsed
-                          ? "fa fa-chevron-left"
-                          : "fa fa-chevron-right"
-                      }
-                    />
-                    {""}
-                  </button>
-                  {/*   <button
+      <div className="panel panel-default">
+        <div className="panel-heading">
+          <div className="input-group">
+            <span className="input-group-btn">
+              <button
+                className="btn icon-btn btn-default"
+                onClick={this.codeListClicked}>
+                <i
+                  className={
+                    this.state.codeListCollapsed
+                      ? "fa fa-chevron-left"
+                      : "fa fa-chevron-right"
+                  }
+                />
+                {""}
+              </button>
+              {/*   <button
                     className="btn btn-default"
                     onClick={this.typeClicked}>
                     <i
@@ -230,8 +211,8 @@ const Code = class Code extends React.Component {
                       }
                     />
                   </button>*/}
-                </span>
-                {/*   <span className="input-group-btn">
+            </span>
+            {/*   <span className="input-group-btn">
                                     <button className="btn btn-default dropdown-toggle" onClick={this.menuClicked} aria-haspopup="true" aria-expanded="true">Menu</button>
                                     <ul className="dropdown-menu" style={{display:!this.state.menuCollapsed ? 'block' : 'none'}}>
                                         <li><a href="#">Show Script List</a></li>
@@ -254,114 +235,113 @@ const Code = class Code extends React.Component {
                                         </li>
                                     </ul>
                                 </span> */}
-                <LoadingOverlay
-                  active={this.state.loadingCode}
-                  styles={{
-                    overlay: base => ({
-                      ...base,
-                      background: "rgba(0, 0, 0, 0.5)"
-                    })
-                  }}
-                  spinner={<LoadingSpinner />}
-                  text="Loading...">
-                  <input
-                    type="text"
-                    className="form-control"
-                    value={this.state.title}
-                    onChange={this.titleChanged}
-                    placeholder="Script Title"
-                    aria-describedby="title"
-                  />
-                </LoadingOverlay>
-                <span className="input-group-btn">
-                  <button
-                    className="btn btn-default"
-                    onClick={this.saveClicked}
-                    disabled={!this.state.title || !this.state.edited}>
-                    Save
-                  </button>
-                </span>
-              </div>
+            <LoadingOverlay
+              active={this.state.loadingCode}
+              styles={{
+                overlay: base => ({
+                  ...base,
+                  background: "rgba(0, 0, 0, 0.5)"
+                })
+              }}
+              spinner={<LoadingSpinner />}
+              text="Loading...">
+              <input
+                type="text"
+                className="form-control"
+                value={this.state.title}
+                onChange={this.titleChanged}
+                placeholder="Script Title"
+                aria-describedby="title"
+              />
+            </LoadingOverlay>
+            <span className="input-group-btn">
+              <button
+                className="btn btn-default"
+                onClick={this.saveClicked}
+                disabled={!this.state.title || !this.state.edited}>
+                Save
+              </button>
+            </span>
+          </div>
+        </div>
+        <div className="panel-body code-panel-body">
+          <div className="row">
+            <div
+              className="col-xs-6 no-padding"
+              style={{
+                display: !this.state.codeListCollapsed ? "block" : "none"
+              }}>
+              <table className="table table-hover no-margin">
+                <tbody>
+                  <tr>
+                    <td>
+                      <div className="input-group">
+                        <input
+                          type="text"
+                          className="form-control"
+                          value={this.state.titleFilter}
+                          onChange={this.titleFilterChanged}
+                          placeholder="Show titles beggining at..."
+                          aria-describedby="title start"
+                        />
+                        <span className="input-group-btn">
+                          <button
+                            className="btn icon-btn input-grp-middle btn-default"
+                            onClick={() => {
+                              this.getList(this.state.titleFilter);
+                            }}>
+                            <i className={"fa fa-search"} />
+                          </button>
+                        </span>
+                        <span className="input-group-btn">
+                          <button
+                            className="btn icon-btn btn-default"
+                            onClick={() => {
+                              this.getList(
+                                this.state.codeList.shipScripts[
+                                  this.state.codeList.shipScripts.length - 1
+                                ].title + " "
+                              );
+                            }}
+                            disabled={!this.state.hasMore}>
+                            <i className={"fa fa-mail-forward"} />
+                          </button>
+                        </span>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+                {scriptList}
+              </table>
             </div>
-            <div className="panel-body code-panel-body">
-              <div className="row">
-                <div
-                  className="col-xs-6 no-padding"
-                  style={{
-                    display: !this.state.codeListCollapsed ? "block" : "none"
-                  }}>
-                  <table className="table table-hover no-margin">
-                    <tbody>
-                      <tr>
-                        <td>
-                          <div className="input-group">
-                            <input
-                              type="text"
-                              className="form-control"
-                              value={this.state.titleFilter}
-                              onChange={this.titleFilterChanged}
-                              placeholder="Show titles beggining at..."
-                              aria-describedby="title start"
-                            />
-                            <span className="input-group-btn">
-                              <button
-                                className="btn icon-btn input-grp-middle btn-default"
-                                onClick={() => {
-                                  this.getList(this.state.titleFilter);
-                                }}>
-                                <i className={"fa fa-search"} />
-                              </button>
-                            </span>
-                            <span className="input-group-btn">
-                              <button
-                                className="btn icon-btn btn-default"
-                                onClick={() => {
-                                  this.getList(
-                                    this.state.codeList.shipScripts[
-                                      this.state.codeList.shipScripts.length - 1
-                                    ].title + " "
-                                  );
-                                }}
-                                disabled={!this.state.hasMore}>
-                                <i className={"fa fa-mail-forward"} />
-                              </button>
-                            </span>
-                          </div>
-                        </td>
-                      </tr>
-                    </tbody>
-                    {scriptList}
-                  </table>
-                </div>
-                <div
-                  className={
-                    this.state.codeListCollapsed
-                      ? "col-xs-12 no-padding"
-                      : "col-xs-6 no-padding"
-                  }>
-                  <LoadingOverlay
-                    active={this.state.loadingCode}
-                    styles={{
-                      overlay: base => ({
-                        ...base,
-                        background: "rgba(0, 0, 0, 0.5)"
-                      })
-                    }}
-                    spinner={<LoadingSpinner />}
-                    text="Loading...">
-                    <AceEditor
-                      mode="javascript"
-                      value={this.state.code}
-                      height="100%"
-                      width="100%"
-                      theme={this.state.editorStyle}
-                      onChange={this.codeChanged}
-                      name="code-editor"
-                      editorProps={{ $blockScrolling: true }}
-                    />
-                  </LoadingOverlay>
-                </div>
-              </div>
+            <div
+              className={
+                this.state.codeListCollapsed
+                  ? "col-xs-12 no-padding"
+                  : "col-xs-6 no-padding"
+              }>
+              <LoadingOverlay
+                active={this.state.loadingCode}
+                styles={{
+                  overlay: base => ({
+                    ...base,
+                    background: "rgba(0, 0, 0, 0.5)"
+                  })
+                }}
+                spinner={<LoadingSpinner />}
+                text="Loading...">
+                <AceEditor
+                  mode="javascript"
+                  value={this.state.code}
+                  height="100%"
+                  width="100%"
+                  theme={this.state.editorStyle}
+                  onChange={this.codeChanged}
+                  name="code-editor"
+                  editorProps={{ $blockScrolling: true }}
+                  setOptions={{ useWorker: false }}
+                />
+              </LoadingOverlay>
             </div>
           </div>
         </div>
