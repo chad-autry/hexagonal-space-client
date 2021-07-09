@@ -8,6 +8,8 @@ const List = class View extends React.Component {
   constructor(props) {
     super(props);
     this.getListItems = this.getListItems.bind(this);
+    this.variablesClicked = this.variablesClicked.bind(this);
+    this.scriptClicked = this.scriptClicked.bind(this);
     this.state = { listItems: this.getListItems() };
 
     //Get the dataLink from the props
@@ -45,7 +47,7 @@ const List = class View extends React.Component {
               },
               variablesId: {
                 clickCallback: element => {
-                  this.mapCoordinatesClicked(element);
+                  this.variablesClicked(element);
                 },
                 title: "Variables",
                 viewBox: "0 0 448 512",
@@ -55,7 +57,7 @@ const List = class View extends React.Component {
               },
               scriptId: {
                 clickCallback: element => {
-                  this.mapCoordinatesClicked(element);
+                  this.scriptClicked(element);
                 },
                 title: "Script",
                 viewBox: "0 0 576 512",
@@ -83,7 +85,28 @@ const List = class View extends React.Component {
     });
     this.props.history.push("/view/map");
   }
-
+  scriptClicked(element) {
+    this.props.viewScript(element.src);
+  }
+  variablesClicked(element) {
+    this.props.fetchService.getJsonWithAuth(
+      "/variables",
+      "application/json",
+      json => {
+        this.props.setViewStateProperties({
+          variables: json.variablesString
+        });
+        this.props.history.push("/view/list#variables");
+      },
+      () => {}, //TODO get the turn, system, entity from the clicked element/record
+      {
+        turn: this.props.viewState.latestTurn,
+        system: this.props.viewState.queriedSystem,
+        entity: this.props.viewState.queriedEntity,
+        variablesId: element.src
+      }
+    );
+  }
   render() {
     return (
       <div>

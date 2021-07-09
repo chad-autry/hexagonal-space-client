@@ -41,7 +41,11 @@ const Code = class Code extends React.Component {
   }
 
   componentDidMount() {
+    window.scrollTo(0, 0);
     this.getList();
+    if (this.props.scriptId != "") {
+      this.codeClicked("", this.props.scriptId);
+    }
   }
   codeChanged(value) {
     this.setState({ code: value, edited: true });

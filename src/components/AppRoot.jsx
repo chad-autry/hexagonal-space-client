@@ -54,15 +54,23 @@ items.forEach(item => {
   // Check for duplicate
   // If duplicate exists, add id to 'seenBy'
   // Else add self
-  item.self.key = item.self.entityId;
-  recursivePosition(item.self);
-  context.items.add(item.self);
+  if (item.self) {
+    item.self.key = item.self.entityId;
+    item.self.turn = item.turn;
+    item.self.seenTurn = item.visibleTurn;
+    item.self.system = item.system;
+    recursivePosition(item.self);
+    context.items.add(item.self);
+  }
   //For each sensor result
   item.sensorData.forEach(sensorItem => {
     // Check for duplicate
     // If duplicate exists, add id to 'seenBy' array
     // Else add sensor item
     recursivePosition(sensorItem);
+    sensorItem.turn = item.turn;
+    sensorItem.seenTurn = item.visibleTurn;
+    sensorItem.system = item.system;
     sensorItem.key = sensorItem.entityId;
     context.items.add(sensorItem);
   }); 
@@ -112,7 +120,9 @@ return true;`,
       queriedEntity: "",
       queriedTurn: -1,
       hasMore: false,
-      lastRecord: {}
+      lastRecord: {},
+      variables: "",
+      turnSelect: "turnEquals"
     };
 
     this.state = {
@@ -124,10 +134,12 @@ return true;`,
       isAuthenticated:
         this.props.authService.isAuthenticated() &&
         !this.props.authService.getPayload().pendingUserCreation,
-      alerts: []
+      alerts: [],
+      scriptId: ""
     };
 
     this.removeAlert = this.removeAlert.bind(this);
+    this.viewScript = this.viewScript.bind(this);
     this.addAlert = this.addAlert.bind(this);
     this.setViewStateProperties = this.setViewStateProperties.bind(this);
   }
@@ -157,6 +169,10 @@ return true;`,
     this.setState({ alerts: alerts });
   }
 
+  viewScript(scriptId) {
+    this.setState({ scriptId: scriptId });
+    this.props.history.push("/code");
+  }
   render() {
     return (
       <div>
@@ -177,6 +193,7 @@ return true;`,
             render={routeProps => (
               <View
                 fetchService={this.props.fetchService}
+                viewScript={this.viewScript}
                 viewState={this.state.viewState}
                 addAlert={this.addAlert}
                 setViewStateProperties={this.setViewStateProperties}
@@ -195,6 +212,7 @@ return true;`,
           <AuthorizingRoute
             path="/code"
             addAlert={this.addAlert}
+            scriptId={this.state.scriptId}
             authService={this.props.authService}
             fetchService={this.props.fetchService}
             component={Code}

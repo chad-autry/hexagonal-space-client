@@ -61,6 +61,10 @@
           "function": "mapQuery"
         },
         {
+          "source": "/variables",
+          "function": "variables"
+        },
+        {
           "source": "**",
           "destination": "/index.html"
         }

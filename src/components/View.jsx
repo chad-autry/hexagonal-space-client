@@ -1,6 +1,7 @@
 import React from "react";
 import Map from "./Map.jsx";
 import List from "./List.jsx";
+import Variables from "./Variables.jsx";
 import { Route, Switch, Redirect } from "react-router-dom";
 
 /**
@@ -10,6 +11,7 @@ const View = class View extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      turnDropdownCollapsed: true,
       map: true,
       table: false,
       system: true,
@@ -19,6 +21,7 @@ const View = class View extends React.Component {
       turn: 0
     };
 
+    this.turnDropDownClicked = this.turnDropDownClicked.bind(this);
     this.query = this.query.bind(this);
     this.queriedSystemChanged = this.queriedSystemChanged.bind(this);
     this.queriedTurnChanged = this.queriedTurnChanged.bind(this);
@@ -86,11 +89,102 @@ const View = class View extends React.Component {
                     className="input-group"
                     role="group"
                     style={{ marginRight: "5px" }}>
-                    <span className="input-group-addon">Turn</span>
+                    <div className="input-group-btn">
+                      <a
+                href="#"
+                        type="button"
+                        className="dropdown-toggle btn btn-default"
+                        onClick={this.turnDropDownClicked}
+                        role="button"
+                        aria-haspopup="true">
+                        {this.props.viewState.turnSelect == "turnEquals" ? (
+                          <span>
+                            Turn {'='} <span className="caret" />
+                          </span>
+                        ) : this.props.viewState.turnSelect ==
+                          "turnGreaterThan" ? (
+                          <span>
+                            Turn {'>'} <span className="caret" />
+                          </span>
+                        ) : this.props.viewState.turnSelect ==
+                          "seenTurnEquals" ? (
+                          <span>
+                            Seen Turn {'='} <span className="caret" />
+                          </span>
+                        ) : (
+                          <span>
+                            Seen Turn {'>'} <span className="caret" />
+                          </span>
+                        )}
+                      </a>
+                      <ul
+                        className={
+                          this.state.turnDropdownCollapsed
+                            ? "dropdown-menu hidden"
+                            : "dropdown-menu"
+                        }>
+                        {this.props.viewState.turnSelect != "turnEquals" ? (
+                          <li>
+                            <a
+                              onClick={() => {
+                                this.turnDropDownSelected("turnEquals");
+                              }}
+                              href="#">
+                              Turn {'='}
+                            </a>
+                          </li>
+                        ) : (
+                          ""
+                        )}
+                        {this.props.viewState.turnSelect !=
+                        "turnGreaterThan" ? (
+                          <li>
+                            <a
+                              onClick={() => {
+                                this.turnDropDownSelected("turnGreaterThan");
+                              }}
+                              href="#">
+                              Turn {'>'}
+                            </a>
+                          </li>
+                        ) : (
+                          ""
+                        )}
+                        {this.props.viewState.turnSelect != "seenTurnEquals" ? (
+                          <li>
+                            <a
+                              onClick={() => {
+                                this.turnDropDownSelected("seenTurnEquals");
+                              }}
+                              href="#">
+                              Seen Turn {'='}
+                            </a>
+                          </li>
+                        ) : (
+                          ""
+                        )}
+                        {this.props.viewState.turnSelect !=
+                        "seenTurnGreaterThan" ? (
+                          <li>
+                            <a
+                              onClick={() => {
+                                this.turnDropDownSelected(
+                                  "seenTurnGreaterThan"
+                                );
+                              }}
+                              href="#">
+                              Seen Turn {'>'}
+                            </a>
+                          </li>
+                        ) : (
+                          ""
+                        )}
+                      </ul>
+                    </div>
                     <input
                       type="number"
                       className="form-control"
-                      min="0"
+                      min="-1"
                       max={this.state.latestTurn}
                       value={this.props.viewState.queriedTurn}
                       style={{ width: "7em", display: "inline-block" }}
@@ -123,14 +217,22 @@ const View = class View extends React.Component {
                   </button>
                   <button
                     type="button"
-                    className="btn btn-default"
+                    className={
+                      !this.state.hasMore
+                        ? "btn btn-default"
+                        : "btn btn-default hidden"
+                    }
                     style={{ marginRight: "5px" }}
                     onClick={this.query}>
                     <i className="fa fa-mail-forward" /> Query
                   </button>
                   <button
                     type="button"
-                    className="btn btn-default"
+                    className={
+                      this.state.hasMore
+                        ? "btn btn-default"
+                        : "btn btn-default hidden"
+                    }
                     style={{ marginRight: "5px" }}
                     disabled={!this.state.hasMore}
                     onClick={this.query}>
@@ -158,6 +260,12 @@ const View = class View extends React.Component {
             </div>
           </div>
         </div>
+        {this.props.viewState.variables != "" && (
+          <Variables
+            variablesString={this.props.viewState.variables}
+            setViewStateProperties={this.props.setViewStateProperties}
+          />
+        )}
         <Switch>
           <Route exact path="/view">
             <Redirect to="/view/map" />
@@ -179,7 +287,10 @@ const View = class View extends React.Component {
             render={routeProps => (
               <List
                 setViewStateProperties={this.props.setViewStateProperties}
+                viewScript={this.props.viewScript}
                 dataLink={this.props.viewState.listDataLink}
+                fetchService={this.props.fetchService}
+                viewState={this.props.viewState}
                 {...routeProps}
               />
             )}
@@ -188,7 +299,17 @@ const View = class View extends React.Component {
       </div>
     );
   }
-
+  turnDropDownSelected(value) {
+    this.props.setViewStateProperties({
+      turnSelect: value
+    });
+    this.turnDropDownClicked();
+  }
+  turnDropDownClicked() {
+    this.setState({
+      turnDropdownCollapsed: !this.state.turnDropdownCollapsed
+    });
+  }
   queriedSystemChanged(event) {
     if (event.target.value) {
       this.props.setViewStateProperties({
@@ -256,6 +377,7 @@ const View = class View extends React.Component {
         let turn = this.state.turn > 0 ? this.state.turn : json.latestTurn;
         this.props.setViewStateProperties({
           hasMore: json.hasMore,
+          latestTurn: json.latestTurn,
           lastRecord:
             json.entities.length > 0 ? json.entities[json.entities.length] : {}
         });
@@ -271,8 +393,9 @@ const View = class View extends React.Component {
         turn: this.props.viewState.queriedTurn,
         system: this.props.viewState.queriedSystem,
         entity: this.props.viewState.queriedEntity,
-        guest: this.props.viewState.guest,
-        lastRecord: this.props.viewState.lastRecord
+        guest: this.props.viewState.guestQuery,
+        lastRecord: this.props.viewState.lastRecord,
+        turnRelation: this.props.viewState.turnSelect
       }
     );
   }
