@@ -31,7 +31,7 @@
     "collections": "^5.1.12",
     "data-chains": "^0.4.0",
     "hex-grid-map": "^0.14.0",
-    "moment": "^2.18.1",
+    "moment": "^2.29.2",
     "prop-types": "^15.5.10",
     "react-ace": "^9.4.0",
     "react-json-view": "^1.21.3",
